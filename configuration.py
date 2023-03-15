@@ -20,7 +20,7 @@ class ConfigurationData:
    # def __del__
 
    def __setattr__( self, attr, value ):
-      attr_list = [ i for i in ConfigurationData.__dict__.keys( ) ]
+      attr_list = [ i for i in self.__class__.__dict__.keys( ) ]
       if attr in attr_list:
          self.__dict__[ attr ] = value
          return
@@ -28,12 +28,9 @@ class ConfigurationData:
    # def __setattr__
 
    def __str__( self ):
-      attr_list = [ i for i in ConfigurationData.__dict__.keys( ) if i[:2] != "__" ]
-      vector = [ ]
-      for attr in attr_list:
-         vector.append( str( attr ) + " = " + str( self.__dict__.get( attr ) ) )
-      name = "ConfigurationData { " + ", ".join( vector ) + " }"
-      return name
+      attr_list = [ i for i in self.__class__.__dict__.keys( ) if i[:2] != pfw.base.struct.ignore_field ]
+      vector = [ f"{str( attr )} = {str( self.__dict__.get( attr ) )}" for attr in attr_list ]
+      return self.__class__.__name__ + " { " + ", ".join( vector ) + " }"
    # def __str__
 
    def __gt__( self, other ):
@@ -58,18 +55,23 @@ class ConfigurationData:
 
 
 
+   # Get name of variable
    def get_name( self ):
       return self.__name
    # def get_name
 
+   # Get index-th value of variable
    def get_value( self, index: int = 0 ):
       return self.__values[ index ] if index < len( self.__values ) else None
    # def get_value
 
+   # Get all values of variable
    def get_values( self ):
       return self.__values
    # def get_values
 
+   # Set single value or list of values of variable
+   # In fact this operation adds new value/values to existing value list of variable
    def set_value( self, value ):
       if None == value:
          return
@@ -77,7 +79,7 @@ class ConfigurationData:
       values_to_add: list = [ ]
       if isinstance( value, list ) or isinstance( value, tuple ):
          values_to_add = value
-      elif isinstance( value, dict ):
+      elif isinstance( value, dict ) or isinstance( value, set ):
          return
       else:
          values_to_add = [ value ]
@@ -85,6 +87,7 @@ class ConfigurationData:
       self.__values.extend( values_to_add )
    # def set_value
 
+   # Clear all values of variable
    def reset_value( self, name: str, value = None ):
       self.__values.clear( )
 
@@ -92,6 +95,7 @@ class ConfigurationData:
          self.__values.append( value )
    # def reset_value
 
+   # Test if value/values exists in list of values of variable
    def test_value( self, value ):
       if None == value:
          return False
@@ -149,7 +153,7 @@ class ConfigurationContainer:
    # def __del__
 
    def __setattr__( self, attr, value ):
-      attr_list = [ i for i in ConfigurationContainer.__dict__.keys( ) ]
+      attr_list = [ i for i in self.__class__.__dict__.keys( ) ]
       if attr in attr_list:
          self.__dict__[ attr ] = value
          return
@@ -157,12 +161,9 @@ class ConfigurationContainer:
    # def __setattr__
 
    def __str__( self ):
-      attr_list = [ i for i in ConfigurationContainer.__dict__.keys( ) if i[:2] != "__" ]
-      vector = [ ]
-      for attr in attr_list:
-         vector.append( str( attr ) + " = " + str( self.__dict__.get( attr ) ) )
-      name = "ConfigurationContainer { " + ", ".join( vector ) + " }"
-      return name
+      attr_list = [ i for i in self.__class__.__dict__.keys( ) if i[:2] != pfw.base.struct.ignore_field ]
+      vector = [ f"{str( attr )} = {str( self.__dict__.get( attr ) )}" for attr in attr_list ]
+      return self.__class__.__name__ + " { " + ", ".join( vector ) + " }"
    # def __str__
 
    def info( self, **kwargs ):
@@ -257,17 +258,11 @@ def process_cmdline( app_data, argv ):
 
    parser.add_argument( "--config", dest = "config", type = str, action = "append", required = False, help = app_data.get_description( "config" ) )
 
-   parser.add_argument( "--include", dest = "include", type = str, action = "append", help = app_data.get_description( "include" ) )
-   parser.add_argument( "--pfw", dest = "pfw", type = str, action = "append", help = app_data.get_description( "pfw" ) )
+   parser.add_argument( "--include", dest = "include", type = str, action = "append", required = False, help = app_data.get_description( "include" ) )
+   parser.add_argument( "--pfw", dest = "pfw", type = str, action = "append", required = False, help = app_data.get_description( "pfw" ) )
 
-   parser.add_argument( "--arch", dest = "arch", type = str, action = "store", required = False, help = app_data.get_description( "arch" ) )
-   parser.add_argument( "--os", dest = "os", type = str, action = "store", required = False, help = app_data.get_description( "os" ) )
-   parser.add_argument( "--compiler", dest = "compiler", type = str, action = "store", required = False, help = app_data.get_description( "compiler" ) )
-   parser.add_argument( "--action", dest = "action", type = str, action = "store", required = False, help = app_data.get_description( "action" ) )
-   parser.add_argument( "--target", dest = "target", type = str, action = "append", required = False, help = app_data.get_description( "target" ) )
-
-   parser.add_argument( "--cfg", dest = "cfg", type = str, action = "store", required = False, help = app_data.get_description( "cfg" ) )
-   parser.add_argument( "--trace", dest = "trace", type = str, action = "store", required = False, help = app_data.get_description( "trace" ) )
+   parser.add_argument( "--project", dest = "project", type = str, action = "store", required = False, default = "*", help = app_data.get_description( "project" ) )
+   parser.add_argument( "--action", dest = "action", type = str, action = "store", required = False, default = "*", help = app_data.get_description( "action" ) )
 
    # parser.print_help( )
    try:
@@ -275,8 +270,8 @@ def process_cmdline( app_data, argv ):
    except argparse.ArgumentError:
       print( 'Catching an ArgumentError' )
 
-   for key in argument.__dict__:
-      add_config( app_data, key, argument.__dict__[ key ] )
+   for key, value in argument.__dict__.items( ):
+      add_config( app_data, key, value )
 # def process_cmdline
 
 
@@ -313,6 +308,8 @@ config: ConfigurationContainer = ConfigurationContainer(
          ConfigurationData( "config"                      , True  , "Path to configuration file" ),
          ConfigurationData( "include"                     , False , "Additional directory to search import packages" ),
          ConfigurationData( "pfw"                         , True  , "Python Framework directory location" ),
+         ConfigurationData( "project"                     , False , "Project name" ),
+         ConfigurationData( "action"                      , False , "Action name" ),
       ]
    )
 

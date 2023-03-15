@@ -60,81 +60,81 @@ variables:
 
 
 projects:
-  # u-boot:
-  #   dir: ${DIRECTORIES.SOURCE}/u-boot
-  #   sources:
-  #     - type: git
-  #       url: ${UBOOT.URL.GITHUB}
-  #       branch: "v2022.07"
-  #   builder:
-  #     - type: uboot
-  #       defconfig: ${UBOOT.CONFIG.ARM64}
-  #       arch: "arm64"
-  #       compiler: "aarch64-linux-gnu-"
-  #       compiler_path: "/usr/aarch64-linux-gnu"
-  #       env:
-  #         - ""
-  #       artifacts:
-  #         - ""
-  #       deps:
-  #         - ""
+  u-boot:
+    dir: ${DIRECTORIES.SOURCE}/u-boot
+    sources:
+      - type: git
+        url: ${UBOOT.URL.GITHUB}
+        branch: "v2022.07"
+    builder:
+      - type: uboot
+        defconfig: ${UBOOT.CONFIG.ARM64}
+        arch: "arm64"
+        compiler: "aarch64-linux-gnu-"
+        compiler_path: "/usr/aarch64-linux-gnu"
+        env:
+          - ""
+        artifacts:
+          - ""
+        deps:
+          - ""
 
-  # busybox:
-  #   dir: ${DIRECTORIES.SOURCE}/busybox
-  #   sources:
-  #     - type: git
-  #       url: ${BUSYBOX.URL.GITHUB}
-  #       branch: "1_36_0"
-  #   builder:
-  #     - type: busybox
-  #       defconfig: ${BUSYBOX.CONFIG.ARM64}
-  #       arch: "arm64"
-  #       compiler: "aarch64-linux-gnu-"
-  #       compiler_path: "/usr/aarch64-linux-gnu"
-  #       env:
-  #         - ""
-  #       artifacts:
-  #         - ""
-  #       deps:
-  #         - ""
+  busybox:
+    dir: ${DIRECTORIES.SOURCE}/busybox
+    sources:
+      - type: git
+        url: ${BUSYBOX.URL.GITHUB}
+        branch: "1_36_0"
+    builder:
+      - type: busybox
+        defconfig: ${BUSYBOX.CONFIG.ARM64}
+        arch: "arm64"
+        compiler: "aarch64-linux-gnu-"
+        compiler_path: "/usr/aarch64-linux-gnu"
+        env:
+          - ""
+        artifacts:
+          - ""
+        deps:
+          - ""
 
-  # buildroot:
-  #   dir: ${DIRECTORIES.SOURCE}/buildroot
-  #   sources:
-  #     - type: git
-  #       url: ${BUILDROOT.URL.GITHUB}
-  #       branch: "2023.02"
-  #   builder:
-  #     - type: buildroot
-  #       defconfig: ${BUILDROOT.CONFIG.ARM64}
-  #       arch: "arm64"
-  #       compiler: "aarch64-linux-gnu-"
-  #       compiler_path: "/usr/aarch64-linux-gnu"
-  #       env:
-  #         - ""
-  #       artifacts:
-  #         - ""
-  #       deps:
-  #         - ""
+  buildroot:
+    dir: ${DIRECTORIES.SOURCE}/buildroot
+    sources:
+      - type: git
+        url: ${BUILDROOT.URL.GITHUB}
+        branch: "2023.02"
+    builder:
+      - type: buildroot
+        defconfig: ${BUILDROOT.CONFIG.ARM64}
+        arch: "arm64"
+        compiler: "aarch64-linux-gnu-"
+        compiler_path: "/usr/aarch64-linux-gnu"
+        env:
+          - ""
+        artifacts:
+          - ""
+        deps:
+          - ""
 
-  # kernel:
-  #   dir: ${DIRECTORIES.SOURCE}/kernel
-  #   sources:
-  #     - type: git
-  #       url: ${KERNEL.URL.GITHUB}
-  #       branch: "v6.2"
-  #   builder:
-  #     - type: kernel
-  #       defconfig: ${KERNEL.CONFIG.ARM64}
-  #       arch: "arm64"
-  #       compiler: "aarch64-linux-gnu-"
-  #       compiler_path: "/usr/aarch64-linux-gnu"
-  #       env:
-  #         - ""
-  #       artifacts:
-  #         - ""
-  #       deps:
-  #         - ""
+  kernel:
+    dir: ${DIRECTORIES.SOURCE}/kernel
+    sources:
+      - type: git
+        url: ${KERNEL.URL.GITHUB}
+        branch: "v6.2"
+    builder:
+      - type: kernel
+        defconfig: ${KERNEL.CONFIG.ARM64}
+        arch: "arm64"
+        compiler: "aarch64-linux-gnu-"
+        compiler_path: "/usr/aarch64-linux-gnu"
+        env:
+          - ""
+        artifacts:
+          - ""
+        deps:
+          - ""
 
 
   xen:

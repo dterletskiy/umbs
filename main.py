@@ -4,15 +4,16 @@
 # 
 # CONFIG=./configuration.cfg
 # PFW=/mnt/dev/repos/github.com/dterletskiy/python_fw
-# ARCH=x86_64
-# OS=linux
+# RPOJECT="u-boot"
 # ACTION=clean_build
-# TARGET=runtime
 # 
 # 
 # 
-# ./build.py --config=./${CONFIG} --include=${PFW} --arch=${ARCH} --os=${OS} --action=${ACTION}
-# ./build.py --config=./${CONFIG} --arch=${ARCH} --os=${OS} --action=${ACTION}
+# ./main.py --config=./${CONFIG}
+# ./main.py --config=./${CONFIG} --include=${PFW}
+# ./main.py --config=./${CONFIG} --project=${RPOJECT}
+# ./main.py --config=./${CONFIG} --action=${ACTION}
+# ./main.py --config=./${CONFIG} --project=${RPOJECT} --action=${ACTION}
 # 
 # In case if variable "INCLUDE" defined with path to "pfw" "--include" option could be omitted.
 # If "INCLUDE" variable defined several times in configuration file all mentioned values will be used.
@@ -22,6 +23,7 @@
 import os
 import sys
 import subprocess
+import copy
 import re
 import yaml
 import pprint
@@ -49,6 +51,7 @@ if sys.version_info < MIN_PYTHON:
 
 
 configuration.configure( sys.argv[1:] )
+configuration.info( )
 
 
 
@@ -62,13 +65,7 @@ import pfw.base.dict
 yaml_fd = open( "configuration.yaml", "r" )
 yaml_data = yaml.load( yaml_fd, Loader = yaml.SafeLoader )
 yaml_stream = yaml.compose( yaml_fd )
-
-
-
-keywords: dict = {
-   "variables": None,
-   "projects": None
-}
+yaml_fd.close( )
 
 
 
@@ -87,18 +84,19 @@ def set_yaml_variable( variable, value ):
 
 
 
-import copy
-
 class AV:
    def __init__( self, a, v ):
       self.address = copy.deepcopy( a )
       self.value = copy.deepcopy( v )
+   # def __init__
+
+   def __del__( self ):
+      pass
+   # def __del__
 
    address: list = [ ]
    value = None
 # class AV
-
-
 
 def replace( value ):
    if not isinstance( value, str ):
@@ -145,8 +143,6 @@ def walk( iterable, address: list, value_processor = None ):
    return for_adaptation
 # def walk
 
-
-
 def process_yaml_data( yaml_data ):
    for item in walk( yaml_data, [ ], replace ):
       pfw.base.dict.set_value_by_list_of_keys( yaml_data, item.address, item.value )
@@ -154,33 +150,123 @@ def process_yaml_data( yaml_data ):
 
 
 
-
-
-
 process_yaml_data( yaml_variables )
-pfw.console.debug.info( pfw.base.str.to_string( yaml_variables ) )
+# pfw.console.debug.info( pfw.base.str.to_string( yaml_variables ) )
 
 process_yaml_data( yaml_projects )
-pfw.console.debug.info( pfw.base.str.to_string( yaml_projects ) )
+# pfw.console.debug.info( pfw.base.str.to_string( yaml_projects ) )
 
 
 
-fetchers: list = [ ]
-builders: list = [ ]
+class Fetcher:
+   def __init__( self, dir: str, yaml_fetcher: dict ):
+      self.__dir = dir
+      self.__module = importlib.import_module( f"fetchers.{yaml_fetcher['type']}", __package__ )
+      self.__fetcher = self.__module.get_fetcher( yaml_fetcher, dir )
+   # def __init__
 
-for name, project in yaml_projects.items( ):
-   pfw.console.debug.info( f"processing project: '{name}'" )
+   def __del__( self ):
+      pass
+   # def __del__
 
-   for item in project["sources"]:
-      pfw.console.debug.info( f"processing fetcher: '{item}'" )
-      module = importlib.import_module( f"fetchers.{item['type']}", __package__ )
-      fetcher = module.get_fetcher( item, project["dir"] )
-      fetchers.append( fetcher )
-      module.do_fetch( fetcher )
+   @staticmethod
+   def creator( dir: str, yaml_fetchers: list ):
+      return [ Fetcher( dir, yaml_fetcher ) for yaml_fetcher in yaml_fetchers ]
+   # def creator
 
-   for item in project["builder"]:
-      pfw.console.debug.info( f"processing builder: '{item}'" )
-      module = importlib.import_module( f"builders.{item['type']}", __package__ )
-      builder = module.get_builder( item, project["dir"] )
-      builders.append( builder )
-      module.do_build( builder )
+   def do_fetch( self ):
+      self.__module.do_fetch( self.__fetcher )
+   # def do_fetch
+
+   __dir: str = None
+   __fetcher = None
+   __module = None
+# class Fetcher
+
+class Builder:
+   def __init__( self, dir: str, yaml_builder: dict ):
+      self.__dir = dir
+      self.__module = importlib.import_module( f"builders.{yaml_builder['type']}", __package__ )
+      self.__builder = self.__module.get_builder( yaml_builder, dir )
+   # def __init__
+
+   def __del__( self ):
+      pass
+   # def __del__
+
+   @staticmethod
+   def creator( dir: str, yaml_builders: list ):
+      return [ Builder( dir, yaml_builder ) for yaml_builder in yaml_builders ]
+   # def creator
+
+   def do_build( self ):
+      self.__module.do_build( self.__builder )
+   # def do_build
+
+   __dir: str = None
+   __builder = None
+   __module = None
+# class Builder
+
+class Project:
+   def __init__( self, name: str, yaml_project: dict ):
+      self.__name = name
+      self.__dir = yaml_project["dir"]
+      self.__fetchers = Fetcher.creator( self.__dir, yaml_project["sources"] )
+      self.__builders = Builder.creator( self.__dir, yaml_project["builder"] )
+
+      self.__action_map = {
+         "fetch": [ self.do_fetch ],
+         "build": [ self.do_build ],
+         "*": [ self.do_fetch, self.do_build ],
+      }
+   # def __init__
+
+   def __del__( self ):
+      pass
+   # def __del__
+
+   @staticmethod
+   def builder( yaml_projects ):
+      projects: dict = { }
+      for name, yaml_project in yaml_projects.items( ):
+         projects[ name ] = Project( name, yaml_project )
+
+      return projects
+   # def builder
+
+   def do_fetch( self ):
+      for fetcher in self.__fetchers:
+         fetcher.do_fetch( )
+   # def do_fetch
+
+   def do_build( self ):
+      for builder in self.__builders:
+         builder.do_build( )
+   # def do_build
+
+   def do_action( self, action: str ):
+      processors = self.__action_map.get( action, [ lambda: pfw.console.debug.error( f"undefined action '{action}'" ) ] )
+      for processor in processors:
+         processor( )
+   # def do_action
+
+   __name: str = None
+   __dir: str = None
+   __fetchers: list = None
+   __builders: list = None
+
+   __action_map: dict = None
+# class Project
+
+
+
+umbs_projects: dict = Project.builder( yaml_projects )
+
+
+
+if "*" == configuration.value( "project" ):
+   for name, project in umbs_projects.items( ):
+      project.do_action( configuration.value( "action" ) )
+else:
+   umbs_projects[ configuration.value( "project" ) ].do_action( configuration.value( "action" ) )
