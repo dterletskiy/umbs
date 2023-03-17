@@ -12,7 +12,7 @@ import docker.image
 import docker.container
 import docker.packages.ubuntu
 
-def docker( ):
+def do_build( ):
    dockerfile = configuration.value( "dockerfile" )
 
    os_name = configuration.value( "docker_os_name" )
@@ -54,7 +54,7 @@ def docker( ):
 
 
    docker.image.build(
-         dokerfile = dockerfile,
+         dockerfile = dockerfile,
          image_name = image_name,
          image_tag = image_tag,
          build_args = build_args
@@ -67,4 +67,4 @@ def docker( ):
          volume_mapping = volume_mapping,
          port_mapping = port_mapping
       )
-# def docker
+# def do_build

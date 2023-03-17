@@ -61,7 +61,7 @@ variables:
 
 projects:
   u-boot:
-    dir: ${DIRECTORIES.SOURCE}/u-boot
+    dir: ${DIRECTORIES.ROOT}/u-boot
     sources:
       - type: git
         url: ${UBOOT.URL.GITHUB}
@@ -80,7 +80,7 @@ projects:
           - ""
 
   busybox:
-    dir: ${DIRECTORIES.SOURCE}/busybox
+    dir: ${DIRECTORIES.ROOT}/busybox
     sources:
       - type: git
         url: ${BUSYBOX.URL.GITHUB}
@@ -99,7 +99,7 @@ projects:
           - ""
 
   buildroot:
-    dir: ${DIRECTORIES.SOURCE}/buildroot
+    dir: ${DIRECTORIES.ROOT}/buildroot
     sources:
       - type: git
         url: ${BUILDROOT.URL.GITHUB}
@@ -118,7 +118,7 @@ projects:
           - ""
 
   kernel:
-    dir: ${DIRECTORIES.SOURCE}/kernel
+    dir: ${DIRECTORIES.ROOT}/kernel
     sources:
       - type: git
         url: ${KERNEL.URL.GITHUB}
@@ -138,7 +138,7 @@ projects:
 
 
   xen:
-    dir: ${DIRECTORIES.SOURCE}/xen
+    dir: ${DIRECTORIES.ROOT}/xen
     sources:
       - type: git
         url: ${XEN.URL.GITHUB}

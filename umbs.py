@@ -34,7 +34,6 @@ import importlib
 import datetime
 
 import configuration
-import docker.main
 
 
 
@@ -62,6 +61,8 @@ import pfw.shell
 import pfw.base.str
 import pfw.base.dict
 import pfw.linux.password
+
+import docker.main
 
 
 
@@ -268,8 +269,19 @@ umbs_projects: dict = Project.builder( yaml_projects )
 
 
 
-if "*" == configuration.value( "project" ):
-   for name, project in umbs_projects.items( ):
-      project.do_action( configuration.value( "action" ) )
-else:
-   umbs_projects[ configuration.value( "project" ) ].do_action( configuration.value( "action" ) )
+def main( ):
+   if "*" == configuration.value( "project" ):
+      for name, project in umbs_projects.items( ):
+         project.do_action( configuration.value( "action" ) )
+   else:
+      umbs_projects[ configuration.value( "project" ) ].do_action( configuration.value( "action" ) )
+# def main
+
+
+
+
+if __name__ == "__main__":
+   pfw.console.debug.ok( "------------------------- BEGIN -------------------------" )
+   # main( )
+   docker.main.do_build( )
+   pfw.console.debug.ok( "-------------------------- END --------------------------" )
