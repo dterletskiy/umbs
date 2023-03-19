@@ -20,18 +20,7 @@
 
 
 
-import os
 import sys
-import subprocess
-import copy
-import re
-import yaml
-import pprint
-import functools
-import operator
-import copy
-import importlib
-import datetime
 
 import configuration
 
@@ -47,14 +36,33 @@ MIN_PYTHON = (3, 8)
 if sys.version_info < MIN_PYTHON:
    print( "Python minimal required version is %s.%s" % MIN_PYTHON )
    print( "Current version is %s.%s" % ( sys.version_info.major, sys.version_info.minor ) )
-   sys.exit( )
+   sys.exit( 255 )
 
 
 
 configuration.configure( sys.argv[1:] )
 configuration.info( )
 
+##########################################################################
+#                                                                        #
+#                           End configuration                            #
+#                                                                        #
+##########################################################################
 
+
+
+import os
+import sys
+import subprocess
+import copy
+import re
+import yaml
+import pprint
+import functools
+import operator
+import copy
+import importlib
+import datetime
 
 import pfw.console
 import pfw.shell
@@ -62,210 +70,133 @@ import pfw.base.str
 import pfw.base.dict
 import pfw.linux.password
 
+import projects.main
 import docker.main
 
 
 
-yaml_fd = open( "configuration.yaml", "r" )
-yaml_data = yaml.load( yaml_fd, Loader = yaml.SafeLoader )
-yaml_stream = yaml.compose( yaml_fd )
-yaml_fd.close( )
+class Config:
+   def __init__( self, file: str ):
+      yaml_fd = open( file, "r" )
+      yaml_data = yaml.load( yaml_fd, Loader = yaml.SafeLoader )
+      yaml_stream = yaml.compose( yaml_fd )
+      yaml_fd.close( )
 
+      self.__variables = yaml_data.get( "variables", { } )
+      self.__projects = yaml_data.get( "projects", { } )
 
+      self.__process_yaml_data( self.__variables )
+      # pfw.console.debug.info( pfw.base.str.to_string( self.__variables ) )
 
-yaml_variables = yaml_data.get( "variables", { } )
-yaml_projects = yaml_data.get( "projects", { } )
-
-
-
-def get_yaml_variable( variable ):
-   return pfw.base.dict.get_value( yaml_variables, variable )
-# def get_yaml_variable
-
-def set_yaml_variable( variable, value ):
-   pfw.base.dict.set_value( yaml_variables, variable, value )
-# def set_yaml_variable
-
-
-
-class AV:
-   def __init__( self, a, v ):
-      self.address = copy.deepcopy( a )
-      self.value = copy.deepcopy( v )
+      self.__process_yaml_data( self.__projects )
+      # pfw.console.debug.info( pfw.base.str.to_string( self.__projects ) )
    # def __init__
 
    def __del__( self ):
       pass
    # def __del__
 
-   address: list = [ ]
-   value = None
-# class AV
 
-def replace( value ):
-   if not isinstance( value, str ):
-      pfw.console.debug.warning( f"ERROR: '{value}' is not a string" )
-      return ( False, value )
 
-   replaced: bool = False
-   if findall := re.findall( r'\$\{(.+?)\}', value ):
-      for item in findall:
-         value = value.replace( "${" + item + "}", get_yaml_variable( item ) )
-      value = replace( value )[1]
-      replaced = True
+   def get_variable( self, variable ):
+      return pfw.base.dict.get_value( self.__variables, variable )
+   # def get_variable
 
-   return ( replaced, value )
-# def replace
+   def set_variable( self, variable, value ):
+      pfw.base.dict.set_value( self.__variables, variable, value )
+   # def set_variable
 
-def walk( iterable, address: list, value_processor = None ):
-   # pfw.console.debug.info( f"-> address = {address}" )
+   def get_project( self, name: str ):
+      return self.__projects[ name ]
+   # def get_project
 
-   for_adaptation: list = [ ]
-   if isinstance( iterable, dict ):
-      for key, value in iterable.items( ):
-         new_address = address
-         new_address.append( key )
-         for_adaptation.extend( walk( value, new_address, value_processor ) )
-         del address[-1]
-   elif isinstance( iterable, list ) or isinstance( iterable, tuple ):
-      for index, item in enumerate( iterable ):
-         new_address = address
-         new_address.append( index )
-         for_adaptation.extend( walk( item, new_address, value_processor ) )
-         del address[-1]
-   # elif isinstance( iterable, str ):
-   else:
-      ( replaced, new_value ) = value_processor( iterable )
-      if replaced:
-         # print( f"address = {address}" )
-         # print( f"old_value = {iterable}" )
-         # print( f"new_value = {new_value}" )
-         for_adaptation.append( AV( address, new_value ) )
+   def get_variables( self ):
+      return self.__variables
+   # def get_variables
 
-   # pfw.console.debug.info( f"<- address = {address}" )
-
-   return for_adaptation
-# def walk
-
-def process_yaml_data( yaml_data ):
-   for item in walk( yaml_data, [ ], replace ):
-      pfw.base.dict.set_value_by_list_of_keys( yaml_data, item.address, item.value )
-# def process_yaml_data
+   def get_projects( self ):
+      return self.__projects
+   # def get_projects
 
 
 
-process_yaml_data( yaml_variables )
-# pfw.console.debug.info( pfw.base.str.to_string( yaml_variables ) )
+   class AV:
+      def __init__( self, a, v ):
+         self.address = copy.deepcopy( a )
+         self.value = copy.deepcopy( v )
+      # def __init__
 
-process_yaml_data( yaml_projects )
-# pfw.console.debug.info( pfw.base.str.to_string( yaml_projects ) )
+      def __del__( self ):
+         pass
+      # def __del__
 
+      address: list = [ ]
+      value = None
+   # class AV
 
+   def __replace( self, value ):
+      if not isinstance( value, str ):
+         pfw.console.debug.warning( f"ERROR: '{value}' is not a string" )
+         return ( False, value )
 
-class Fetcher:
-   def __init__( self, dir: str, yaml_fetcher: dict ):
-      self.__dir = dir
-      self.__module = importlib.import_module( f"fetchers.{yaml_fetcher['type']}", __package__ )
-      self.__fetcher = self.__module.get_fetcher( yaml_fetcher, dir )
-   # def __init__
+      replaced: bool = False
+      if findall := re.findall( r'\$\{(.+?)\}', value ):
+         for item in findall:
+            value = value.replace( "${" + item + "}", self.get_variable( item ) )
+         value = self.__replace( value )[1]
+         replaced = True
 
-   def __del__( self ):
-      pass
-   # def __del__
+      return ( replaced, value )
+   # def __replace
 
-   @staticmethod
-   def creator( dir: str, yaml_fetchers: list ):
-      return [ Fetcher( dir, yaml_fetcher ) for yaml_fetcher in yaml_fetchers ]
-   # def creator
+   def __walk( self, iterable, address: list, value_processor = None ):
+      # pfw.console.debug.info( f"-> address = {address}" )
 
-   def do_fetch( self ):
-      self.__module.do_fetch( self.__fetcher )
-   # def do_fetch
+      for_adaptation: list = [ ]
+      if isinstance( iterable, dict ):
+         for key, value in iterable.items( ):
+            new_address = address
+            new_address.append( key )
+            for_adaptation.extend( self.__walk( value, new_address, value_processor ) )
+            del address[-1]
+      elif isinstance( iterable, list ) or isinstance( iterable, tuple ):
+         for index, item in enumerate( iterable ):
+            new_address = address
+            new_address.append( index )
+            for_adaptation.extend( self.__walk( item, new_address, value_processor ) )
+            del address[-1]
+      # elif isinstance( iterable, str ):
+      else:
+         ( replaced, new_value ) = value_processor( iterable )
+         if replaced:
+            # print( f"address = {address}" )
+            # print( f"old_value = {iterable}" )
+            # print( f"new_value = {new_value}" )
+            for_adaptation.append( Config.AV( address, new_value ) )
 
-   __dir: str = None
-   __fetcher = None
-   __module = None
-# class Fetcher
+      # pfw.console.debug.info( f"<- address = {address}" )
 
-class Builder:
-   def __init__( self, dir: str, yaml_builder: dict ):
-      self.__dir = dir
-      self.__module = importlib.import_module( f"builders.{yaml_builder['type']}", __package__ )
-      self.__builder = self.__module.get_builder( yaml_builder, dir )
-   # def __init__
+      return for_adaptation
+   # def __walk
 
-   def __del__( self ):
-      pass
-   # def __del__
-
-   @staticmethod
-   def creator( dir: str, yaml_builders: list ):
-      return [ Builder( dir, yaml_builder ) for yaml_builder in yaml_builders ]
-   # def creator
-
-   def do_build( self ):
-      self.__module.do_build( self.__builder )
-   # def do_build
-
-   __dir: str = None
-   __builder = None
-   __module = None
-# class Builder
-
-class Project:
-   def __init__( self, name: str, yaml_project: dict ):
-      self.__name = name
-      self.__dir = yaml_project["dir"]
-      self.__fetchers = Fetcher.creator( self.__dir, yaml_project["sources"] )
-      self.__builders = Builder.creator( self.__dir, yaml_project["builder"] )
-
-      self.__action_map = {
-         "fetch": [ self.do_fetch ],
-         "build": [ self.do_build ],
-         "*": [ self.do_fetch, self.do_build ],
-      }
-   # def __init__
-
-   def __del__( self ):
-      pass
-   # def __del__
-
-   @staticmethod
-   def builder( yaml_projects ):
-      projects: dict = { }
-      for name, yaml_project in yaml_projects.items( ):
-         projects[ name ] = Project( name, yaml_project )
-
-      return projects
-   # def builder
-
-   def do_fetch( self ):
-      for fetcher in self.__fetchers:
-         fetcher.do_fetch( )
-   # def do_fetch
-
-   def do_build( self ):
-      for builder in self.__builders:
-         builder.do_build( )
-   # def do_build
-
-   def do_action( self, action: str ):
-      processors = self.__action_map.get( action, [ lambda: pfw.console.debug.error( f"undefined action '{action}'" ) ] )
-      for processor in processors:
-         processor( )
-   # def do_action
-
-   __name: str = None
-   __dir: str = None
-   __fetchers: list = None
-   __builders: list = None
-
-   __action_map: dict = None
-# class Project
+   def __process_yaml_data( self, yaml_data ):
+      for item in self.__walk( yaml_data, [ ], self.__replace ):
+         pfw.base.dict.set_value_by_list_of_keys( yaml_data, item.address, item.value )
+   # def __process_yaml_data
 
 
 
-umbs_projects: dict = Project.builder( yaml_projects )
+   __variables: dict = [ ] 
+   __projects: dict = [ ]
+# class Config
+
+
+
+
+yaml_config: Config = Config( "configuration.yaml" )
+
+
+umbs_projects: dict = projects.main.Project.builder( yaml_config )
 
 
 
@@ -282,6 +213,6 @@ def main( ):
 
 if __name__ == "__main__":
    pfw.console.debug.ok( "------------------------- BEGIN -------------------------" )
-   # main( )
-   docker.main.do_build( )
+   main( )
+   # docker.main.do_build( )
    pfw.console.debug.ok( "-------------------------- END --------------------------" )

@@ -1,7 +1,7 @@
 import pfw.console
 import pfw.archive
 import pfw.shell
-import pfw.linux.git
+import pfw.linux.repo
 
 
 
@@ -15,10 +15,12 @@ def do_fetch( repo ):
 
 class Fetcher:
    def __init__( self, config, destination, **kwargs ):
-      self.__repo = pfw.linux.git.Repo(
-            url = config["url"],
-            branch = config.get( "branch", None ),
-            directory = destination,
+      self.__repo = pfw.linux.repo.Repo(
+            destination = destination,
+            manifest_url = config.get( "manifest-url", None ),
+            manifest_name = config.get( "manifest-name", None ),
+            manifest_branch = config.get( "manifest-branch", None ),
+            manifest_depth = config.get( "manifest-depth", None ),
             depth = config.get( "depth", 1 )
          )
    # def __init__
@@ -49,14 +51,16 @@ class Fetcher:
    # def info
 
    def fetch( self, **kwargs ):
-      self.__repo.clone( )
+      self.__repo.install( )
+      self.__repo.init( )
+      self.__repo.sync( )
    # def sync
 
    def remove( self ):
-      self.__repo.remove( )
+      pass
    # def remove
 
 
 
-   __repo: pfw.linux.git.Repo = None
+   __repo: pfw.linux.repo.Repo = None
 # class Fetcher

@@ -5,63 +5,63 @@ builder_min_version: "0.1"
 
 
 variables:
-   DIRECTORIES:
-      ROOT: "/mnt/dev/tmp/build/"
-      SOURCE: ${DIRECTORIES.ROOT}/source/
-      BUILD: ${DIRECTORIES.ROOT}/build/
-      DEPLOY: ${DIRECTORIES.ROOT}/deploy/
-      TEST: ${DIRECTORIES.ROOT}/_____/${DIRECTORIES.SOURCE}/_____/${DIRECTORIES.BUILD}/_____/${DIRECTORIES.DEPLOY}/
-   XEN:
-      URL:
-         GIT: "https://xenbits.xen.org/git-http/xen.git"
-         GITHUB: "https://github.com/xen-project/xen.git"
-      CONFIG:
-         ARM: defconfig
-         ARM64: defconfig
-         X86: qemu-defconfig
-         X86_64: qemu-defconfig
-   UBOOT:
-      URL:
-         GIT: "https://source.denx.de/u-boot/u-boot.git"
-         GITHUB: "https://github.com/u-boot/u-boot.git"
-      CONFIG:
-         ARM: qemu_arm_defconfig
-         ARM64: qemu_arm64_defconfig
-         X86: qemu-x86_defconfig
-         X86_64: qemu-x86_64_defconfig
-   BUSYBOX:
-      URL:
-         GIT: "https://git.busybox.net/busybox/"
-         GITHUB: "https://github.com/mirror/busybox.git"
-      CONFIG:
-         ARM: defconfig
-         ARM64: defconfig
-         X86: defconfig
-         X86_64: defconfig
-   BUILDROOT:
-      URL:
-         GIT: "https://git.buildroot.net/buildroot"
-         GITHUB: "https://github.com/buildroot/buildroot.git"
-      CONFIG:
-         ARM: qemu_arm_vexpress_defconfig
-         ARM64: qemu_aarch64_virt_defconfig
-         X86: qemu_x86_defconfig
-         X86_64: qemu_x86_64_defconfig
-   KERNEL:
-      URL:
-         GIT: "https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git"
-         GITHUB: "https://github.com/torvalds/linux.git"
-      CONFIG:
-         ARM: vexpress_defconfig
-         ARM64: defconfig
-         X86: x86_64_defconfig
-         X86_64: x86_64_defconfig
+  DIRECTORIES:
+    ROOT: "/mnt/dev/tmp/build/"
+    SOURCE: ${DIRECTORIES.ROOT}/source/
+    BUILD: ${DIRECTORIES.ROOT}/build/
+    DEPLOY: ${DIRECTORIES.ROOT}/deploy/
+    TEST: ${DIRECTORIES.ROOT}/_____/${DIRECTORIES.SOURCE}/_____/${DIRECTORIES.BUILD}/_____/${DIRECTORIES.DEPLOY}/
+  XEN:
+    URL:
+      GIT: "https://xenbits.xen.org/git-http/xen.git"
+      GITHUB: "https://github.com/xen-project/xen.git"
+    CONFIG:
+      ARM: defconfig
+      ARM64: defconfig
+      X86: qemu-defconfig
+      X86_64: qemu-defconfig
+  UBOOT:
+    URL:
+      GIT: "https://source.denx.de/u-boot/u-boot.git"
+      GITHUB: "https://github.com/u-boot/u-boot.git"
+    CONFIG:
+      ARM: qemu_arm_defconfig
+      ARM64: qemu_arm64_defconfig
+      X86: qemu-x86_defconfig
+      X86_64: qemu-x86_64_defconfig
+  BUSYBOX:
+    URL:
+      GIT: "https://git.busybox.net/busybox/"
+      GITHUB: "https://github.com/mirror/busybox.git"
+    CONFIG:
+      ARM: defconfig
+      ARM64: defconfig
+      X86: defconfig
+      X86_64: defconfig
+  BUILDROOT:
+    URL:
+      GIT: "https://git.buildroot.net/buildroot"
+      GITHUB: "https://github.com/buildroot/buildroot.git"
+    CONFIG:
+      ARM: qemu_arm_vexpress_defconfig
+      ARM64: qemu_aarch64_virt_defconfig
+      X86: qemu_x86_defconfig
+      X86_64: qemu_x86_64_defconfig
+  KERNEL:
+    URL:
+      GIT: "https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git"
+      GITHUB: "https://github.com/torvalds/linux.git"
+    CONFIG:
+      ARM: vexpress_defconfig
+      ARM64: defconfig
+      X86: x86_64_defconfig
+      X86_64: x86_64_defconfig
 
 
 
 projects:
   u-boot:
-    dir: ${DIRECTORIES.ROOT}/u-boot
+    dir: u-boot
     sources:
       - type: git
         url: ${UBOOT.URL.GITHUB}
@@ -80,7 +80,7 @@ projects:
           - ""
 
   busybox:
-    dir: ${DIRECTORIES.ROOT}/busybox
+    dir: busybox
     sources:
       - type: git
         url: ${BUSYBOX.URL.GITHUB}
@@ -99,7 +99,7 @@ projects:
           - ""
 
   buildroot:
-    dir: ${DIRECTORIES.ROOT}/buildroot
+    dir: buildroot
     sources:
       - type: git
         url: ${BUILDROOT.URL.GITHUB}
@@ -118,7 +118,7 @@ projects:
           - ""
 
   kernel:
-    dir: ${DIRECTORIES.ROOT}/kernel
+    dir: kernel
     sources:
       - type: git
         url: ${KERNEL.URL.GITHUB}
@@ -138,7 +138,7 @@ projects:
 
 
   xen:
-    dir: ${DIRECTORIES.ROOT}/xen
+    dir: xen
     sources:
       - type: git
         url: ${XEN.URL.GITHUB}
@@ -156,5 +156,24 @@ projects:
         deps:
           - ""
 
+  android-u-boot:
+    dir: android/u-boot
+    sources:
+      - type: repo
+        manifest-url: "https://github.com/dterletskiy/aosp_manifest.git"
+        manifest-branch: "u-boot/manifest/u-boot-mainline-9671786"
+        manifest-name: "default.xml"
+    builder:
+      - type: uboot
+        defconfig: ${UBOOT.CONFIG.ARM64}
+        arch: "arm64"
+        compiler: "aarch64-linux-gnu-"
+        compiler_path: "/usr/aarch64-linux-gnu"
+        env:
+          - ""
+        artifacts:
+          - ""
+        deps:
+          - ""
 
 
