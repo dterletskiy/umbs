@@ -83,18 +83,23 @@ class Config:
       yaml_fd.close( )
 
       self.__variables = yaml_data.get( "variables", { } )
-      self.__projects = yaml_data.get( "projects", { } )
-
       self.__process_yaml_data( self.__variables )
-      # pfw.console.debug.info( pfw.base.str.to_string( self.__variables ) )
 
+      self.__projects = yaml_data.get( "projects", { } )
       self.__process_yaml_data( self.__projects )
-      # pfw.console.debug.info( pfw.base.str.to_string( self.__projects ) )
    # def __init__
 
    def __del__( self ):
       pass
    # def __del__
+
+   def info( self, **kwargs ):
+      kw_tabs = kwargs.get( "tabs", 0 )
+      kw_msg = kwargs.get( "msg", "" )
+      pfw.console.debug.info( f"{kw_msg} (type {self.__class__.__name__}):", tabs = ( kw_tabs + 0 ) )
+      pfw.console.debug.info( pfw.base.str.to_string( self.__variables ) )
+      pfw.console.debug.info( pfw.base.str.to_string( self.__projects ) )
+   # def info
 
 
 
@@ -194,6 +199,7 @@ class Config:
 
 
 yaml_config: Config = Config( "configuration.yaml" )
+yaml_config.info( )
 
 
 umbs_projects: dict = projects.main.Project.builder( yaml_config )

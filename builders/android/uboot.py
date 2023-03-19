@@ -20,14 +20,6 @@ class Builder:
    def __init__( self, config, directory, **kwargs ):
       self.__config = config
       self.__dir = directory
-
-      self.__command = "make"
-      # self.__command += f" O={self.__dir}"
-      self.__command += f" -C {self.__dir}"
-      self.__command += f" V=1"
-      # self.__command += f" ARCH={self.__config['arch']}"
-      # self.__command += f" -j{self.__config['cores']}"
-      self.__command += f" CROSS_COMPILE={self.__config['compiler']}"
    # def __init__
 
    def __del__( self ):
@@ -55,24 +47,21 @@ class Builder:
    # def info
 
    def config( self, **kwargs ):
-      command = self.__command
-      targets = kwargs.get( "targets", self.__config['defconfig'] )
+      command = f""
 
-      pfw.shell.execute( command, targets, cwd = self.__dir, print = False, collect = False )
+      pfw.shell.execute( command, cwd = self.__dir, print = False, collect = False )
    # def config
 
    def build( self, **kwargs ):
-      command = self.__command
-      targets = kwargs.get( "targets", "all" )
+      command = f"tools/bazel run {self.__config['config']}_dist -- --dist_dir=out/deploy/{self.__config['config']}"
 
-      pfw.shell.execute( command, targets, output = pfw.shell.eOutput.PTY, cwd = self.__dir )
+      pfw.shell.execute( command, output = pfw.shell.eOutput.PTY, cwd = self.__dir )
    # def build
 
    def clean( self, **kwargs ):
-      command = self.__command
-      targets = kwargs.get( "targets", "clean distclean mrproper" )
+      command = f""
 
-      pfw.shell.execute( command, targets, output = pfw.shell.eOutput.PTY, cwd = self.__dir )
+      pfw.shell.execute( command, output = pfw.shell.eOutput.PTY, cwd = self.__dir )
    # def clean
 
    def deploy( self, **kwargs ):
@@ -94,5 +83,4 @@ class Builder:
 
    __config: dict = None
    __dir: dict = None
-   __command: str = None
 # class Builder

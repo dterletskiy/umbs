@@ -1,6 +1,6 @@
 author: "dterletskiy"
 version: "1.1.0"
-builder_min_version: "0.1"
+umbs_min_version: "0.1"
 
 
 
@@ -12,63 +12,83 @@ variables:
     DEPLOY: ${DIRECTORIES.ROOT}/deploy/
     TEST: ${DIRECTORIES.ROOT}/_____/${DIRECTORIES.SOURCE}/_____/${DIRECTORIES.BUILD}/_____/${DIRECTORIES.DEPLOY}/
   XEN:
-    URL:
-      GIT: "https://xenbits.xen.org/git-http/xen.git"
-      GITHUB: "https://github.com/xen-project/xen.git"
+    SOURCE:
+      GITHUB:
+        URL: "https://github.com/xen-project/xen.git"
+        BRANCH: "RELEASE-4.16.2"
     CONFIG:
       ARM: defconfig
       ARM64: defconfig
       X86: qemu-defconfig
       X86_64: qemu-defconfig
   UBOOT:
-    URL:
-      GIT: "https://source.denx.de/u-boot/u-boot.git"
-      GITHUB: "https://github.com/u-boot/u-boot.git"
+    SOURCE:
+      GITHUB:
+        URL: "https://github.com/u-boot/u-boot.git"
+        BRANCH: "v2022.07"
     CONFIG:
       ARM: qemu_arm_defconfig
       ARM64: qemu_arm64_defconfig
       X86: qemu-x86_defconfig
       X86_64: qemu-x86_64_defconfig
   BUSYBOX:
-    URL:
-      GIT: "https://git.busybox.net/busybox/"
-      GITHUB: "https://github.com/mirror/busybox.git"
+    SOURCE:
+      GITHUB:
+        URL: "https://github.com/mirror/busybox.git"
+        BRANCH: "1_36_0"
     CONFIG:
       ARM: defconfig
       ARM64: defconfig
       X86: defconfig
       X86_64: defconfig
   BUILDROOT:
-    URL:
-      GIT: "https://git.buildroot.net/buildroot"
-      GITHUB: "https://github.com/buildroot/buildroot.git"
+    SOURCE:
+      GITHUB:
+        URL: "https://github.com/buildroot/buildroot.git"
+        BRANCH: "2023.02"
     CONFIG:
       ARM: qemu_arm_vexpress_defconfig
       ARM64: qemu_aarch64_virt_defconfig
       X86: qemu_x86_defconfig
       X86_64: qemu_x86_64_defconfig
   KERNEL:
-    URL:
-      GIT: "https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git"
-      GITHUB: "https://github.com/torvalds/linux.git"
+    SOURCE:
+      GITHUB:
+        URL: "https://github.com/torvalds/linux.git"
+        BRANCH: "v6.2"
     CONFIG:
       ARM: vexpress_defconfig
       ARM64: defconfig
       X86: x86_64_defconfig
       X86_64: x86_64_defconfig
+  ANDROID:
+    UBOOT:
+      SOURCE:
+        GITHUB:
+          URL: "https://github.com/dterletskiy/aosp_manifest.git"
+          BRANCH: "u-boot/manifest/u-boot-mainline-9671786"
+      CONFIG:
+        ARM64: "//u-boot:qemu_aarch64"
+    KERNEL:
+      SOURCE:
+        GITHUB:
+          URL: "https://github.com/dterletskiy/aosp_manifest.git"
+          BRANCH: "kernel/manifest/common-android14-6.1-dev"
+      CONFIG:
+        ARM64: "//common-modules/virtual-device:virtual_device_aarch64"
 
 
 
 projects:
-  u-boot:
-    dir: u-boot
+  xen:
+    dir: xen
     sources:
       - type: git
-        url: ${UBOOT.URL.GITHUB}
-        branch: "v2022.07"
+        url: ${XEN.SOURCE.GITHUB.URL}
+        branch: ${XEN.SOURCE.GITHUB.BRANCH}
     builder:
-      - type: uboot
-        defconfig: ${UBOOT.CONFIG.ARM64}
+      - type: xen
+        defconfig: ${XEN.CONFIG.ARM64}
         arch: "arm64"
         compiler: "aarch64-linux-gnu-"
         compiler_path: "/usr/aarch64-linux-gnu"
@@ -79,12 +99,31 @@ projects:
         deps:
           - ""
 
+  u-boot:
+    dir: u-boot
+    sources:
+      - type: git
+        url: ${UBOOT.SOURCE.GITHUB.URL}
+        branch: ${UBOOT.SOURCE.GITHUB.BRANCH}
+    builder:
+      - type: uboot
+        defconfig: ${UBOOT.CONFIG.ARM64}
+        arch: "arm64"
+        compiler: "aarch64-linux-gnu-"
+        compiler_path: "/usr/aarch64-linux-gnu"
+        env:
+          - ""
+        artifacts:
+          - "u-boot.bin"
+        deps:
+          - ""
+
   busybox:
     dir: busybox
     sources:
       - type: git
-        url: ${BUSYBOX.URL.GITHUB}
-        branch: "1_36_0"
+        url: ${BUSYBOX.SOURCE.GITHUB.URL}
+        branch: ${BUSYBOX.SOURCE.GITHUB.BRANCH}
     builder:
       - type: busybox
         defconfig: ${BUSYBOX.CONFIG.ARM64}
@@ -102,8 +141,8 @@ projects:
     dir: buildroot
     sources:
       - type: git
-        url: ${BUILDROOT.URL.GITHUB}
-        branch: "2023.02"
+        url: ${BUILDROOT.SOURCE.GITHUB.URL}
+        branch: ${BUILDROOT.SOURCE.GITHUB.BRANCH}
     builder:
       - type: buildroot
         defconfig: ${BUILDROOT.CONFIG.ARM64}
@@ -121,31 +160,11 @@ projects:
     dir: kernel
     sources:
       - type: git
-        url: ${KERNEL.URL.GITHUB}
-        branch: "v6.2"
+        url: ${KERNEL.SOURCE.GITHUB.URL}
+        branch: ${KERNEL.SOURCE.GITHUB.BRANCH}
     builder:
       - type: kernel
         defconfig: ${KERNEL.CONFIG.ARM64}
-        arch: "arm64"
-        compiler: "aarch64-linux-gnu-"
-        compiler_path: "/usr/aarch64-linux-gnu"
-        env:
-          - ""
-        artifacts:
-          - ""
-        deps:
-          - ""
-
-
-  xen:
-    dir: xen
-    sources:
-      - type: git
-        url: ${XEN.URL.GITHUB}
-        branch: "RELEASE-4.16.2"
-    builder:
-      - type: xen
-        defconfig: ${XEN.CONFIG.ARM64}
         arch: "arm64"
         compiler: "aarch64-linux-gnu-"
         compiler_path: "/usr/aarch64-linux-gnu"
@@ -160,19 +179,33 @@ projects:
     dir: android/u-boot
     sources:
       - type: repo
-        manifest-url: "https://github.com/dterletskiy/aosp_manifest.git"
-        manifest-branch: "u-boot/manifest/u-boot-mainline-9671786"
+        manifest-url: ${ANDROID.UBOOT.SOURCE.GITHUB.URL}
+        manifest-branch: ${ANDROID.UBOOT.SOURCE.GITHUB.BRANCH}
         manifest-name: "default.xml"
     builder:
-      - type: uboot
-        defconfig: ${UBOOT.CONFIG.ARM64}
-        arch: "arm64"
-        compiler: "aarch64-linux-gnu-"
-        compiler_path: "/usr/aarch64-linux-gnu"
+      - type: android.uboot
+        config: ${ANDROID.UBOOT.CONFIG.ARM64}
         env:
           - ""
         artifacts:
+          - "out/deploy/${ANDROID.UBOOT.CONFIG.ARM64}/u-boot.bin"
+        deps:
           - ""
+
+  android-kernel:
+    dir: android/kernel
+    sources:
+      - type: repo
+        manifest-url: ${ANDROID.KERNEL.SOURCE.GITHUB.URL}
+        manifest-branch: ${ANDROID.KERNEL.SOURCE.GITHUB.BRANCH}
+        manifest-name: "default.xml"
+    builder:
+      - type: android.kernel
+        config: ${ANDROID.KERNEL.CONFIG.ARM64}
+        env:
+          - ""
+        artifacts:
+          - "out/deploy/${ANDROID.UBOOT.CONFIG.ARM64}/u-boot.bin"
         deps:
           - ""
 

@@ -1,3 +1,5 @@
+import os
+
 import pfw.console
 import pfw.archive
 import pfw.shell
@@ -5,15 +7,16 @@ import pfw.shell
 
 
 def get_builder( config, directory, **kwargs ):
-   return Qemu( config, directory, **kwargs )
+   return Builder( config, directory, **kwargs )
 
 def do_build( builder ):
    builder.config( )
    builder.build( )
+   builder.test( )
 
 
 
-class Qemu:
+class Builder:
    def __init__( self, config, directory, **kwargs ):
       self.__config = config
       self.__dir = directory
@@ -76,9 +79,20 @@ class Qemu:
       pass
    # def deploy
 
+   def test( self, **kwargs ):
+      result: bool = True
+
+      for artifact in self.__config["artifacts"]:
+         if not os.path.exists( os.path.join( self.__dir, artifact ) ):
+            pfw.console.debug.error( f"artifact '{artifact}' does not exist" )
+            result = False
+
+      return result
+   # def test
+
 
 
    __config: dict = None
    __dir: dict = None
    __command: str = None
-# class Qemu
+# class Builder
