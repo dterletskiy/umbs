@@ -81,6 +81,7 @@ variables:
 
 projects:
   xen:
+    active: true
     dir: xen
     sources:
       - type: git
@@ -100,6 +101,7 @@ projects:
           - ""
 
   u-boot:
+    active: true
     dir: u-boot
     sources:
       - type: git
@@ -119,6 +121,7 @@ projects:
           - ""
 
   busybox:
+    active: true
     dir: busybox
     sources:
       - type: git
@@ -138,6 +141,7 @@ projects:
           - ""
 
   buildroot:
+    active: true
     dir: buildroot
     sources:
       - type: git
@@ -158,6 +162,7 @@ projects:
           - ""
 
   kernel:
+    active: true
     dir: kernel
     sources:
       - type: git
@@ -178,6 +183,7 @@ projects:
           - ""
 
   android-u-boot:
+    active: true
     dir: android/u-boot
     sources:
       - type: repo
@@ -195,6 +201,7 @@ projects:
           - ""
 
   android-kernel:
+    active: true
     dir: android/kernel
     sources:
       - type: repo
@@ -214,6 +221,7 @@ projects:
 
 
   boot:
+    active: true
     dir: images
     builder:
       - type: image.partition
@@ -231,6 +239,7 @@ projects:
           - ""
 
   main:
+    active: true
     dir: images
     builder:
       - type: image.drive

@@ -12,6 +12,16 @@ import fetchers.main
 
 
 class Project:
+   def __new__( cls, name: str, yaml_config: base.Config ):
+      yaml_project = yaml_config.get_project( name )
+
+      if "active" in yaml_project:
+         if False == yaml_project["active"]:
+            return None
+
+      return object.__new__( cls )
+   # def __new__
+
    def __init__( self, name: str, yaml_config: base.Config ):
       root_dir = yaml_config.get_variable( "DIRECTORIES.ROOT" )
       yaml_project = yaml_config.get_project( name )
@@ -50,7 +60,8 @@ class Project:
    def creator( yaml_config ):
       projects: dict = { }
       for name in yaml_config.get_projects( ):
-         projects[ name ] = Project( name, yaml_config )
+         if project := Project( name, yaml_config ):
+            projects[ name ] = project
 
       return projects
    # def creator

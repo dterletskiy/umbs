@@ -171,6 +171,43 @@ class Derived( Base ):
 
 
 
-item: Derived = Derived( id = 12345 )
+# item: Derived = Derived( id = 12345 )
 # item.__test_filed = 1
-pfw.console.debug.info( item )
+# pfw.console.debug.info( item )
+
+
+
+class Test:
+   def __new__( cls, id ):
+      pfw.console.debug.info( )
+      return object.__new__( cls )
+   # def __new__
+
+   def __init__( self, id, **kwargs ):
+      pfw.console.debug.info( )
+   # def __init__
+
+   def __del__( self ):
+      pfw.console.debug.info( )
+   # def __del__
+
+   def __setattr__( self, attr, value ):
+      attr_list = [ i for i in self.__class__.__dict__.keys( ) ]
+      if attr in attr_list:
+         self.__dict__[ attr ] = value
+         return
+      raise AttributeError
+   # def __setattr__
+
+   def __str__( self ):
+      base_attr_list = [ i for i in super( ).__dict__.keys( ) if i[:2] != pfw.base.struct.ignore_field ]
+      pfw.console.debug.info( f"base_attr_list: {base_attr_list}" )
+      attr_list = [ i for i in self.__class__.__dict__.keys( ) if i[:2] != pfw.base.struct.ignore_field ]
+      pfw.console.debug.info( f"attr_list: {attr_list}" )
+      attr_list.extend( base_attr_list )
+      vector = [ f"{str( attr )} = {str( self.__dict__.get( attr ) )}" for attr in attr_list ]
+      return self.__class__.__name__ + " { " + ", ".join( vector ) + " }"
+   # def __str__
+# class Test
+
+test = Test( 1 )
