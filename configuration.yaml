@@ -152,7 +152,8 @@ projects:
         env:
           - ""
         artifacts:
-          - ""
+          - "output/images/rootfs.cpio"
+          - "output/images/rootfs.ext2"
         deps:
           - ""
 
@@ -171,7 +172,8 @@ projects:
         env:
           - ""
         artifacts:
-          - ""
+          - "arch/arm64/boot/Image"
+          - "arch/arm64/boot/Image.gz"
         deps:
           - ""
 
@@ -206,6 +208,41 @@ projects:
           - ""
         artifacts:
           - "out/deploy/${ANDROID.UBOOT.CONFIG.ARM64}/u-boot.bin"
+        deps:
+          - ""
+
+
+
+  boot:
+    dir: images
+    builder:
+      - type: image.partition
+        file: "boot.img"
+        fs: ext4
+        size: 256 MB
+        content:
+          - from: "u-boot/u-boot.bin"
+            to: "boot/u-boot.bin"
+          - from: "kernel/arch/arm64/boot/Image"
+            to: "kernel/kernel"
+        artifacts:
+          - "boot.img"
+        deps:
+          - ""
+
+  main:
+    dir: images
+    builder:
+      - type: image.drive
+        file: "main.img"
+        partitions:
+          - label: boot
+            file: "images/boot.img"            
+          - label: data
+            size: 1024 MB
+            fs: ext4
+        artifacts:
+          - "main.img"
         deps:
           - ""
 

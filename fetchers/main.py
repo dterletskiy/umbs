@@ -5,10 +5,10 @@ import importlib
 
 
 class Fetcher:
-   def __init__( self, dir: str, yaml_fetcher: dict ):
+   def __init__( self, yaml_fetcher: dict, dir: str, **kwargs ):
       self.__dir = dir
       self.__module = importlib.import_module( f"fetchers.{yaml_fetcher['type']}", __package__ )
-      self.__fetcher = self.__module.get_fetcher( yaml_fetcher, dir )
+      self.__fetcher = self.__module.get_fetcher( yaml_fetcher, dir, **kwargs )
    # def __init__
 
    def __del__( self ):
@@ -16,8 +16,8 @@ class Fetcher:
    # def __del__
 
    @staticmethod
-   def creator( dir: str, yaml_fetchers: list ):
-      return [ Fetcher( dir, yaml_fetcher ) for yaml_fetcher in yaml_fetchers ]
+   def creator( yaml_fetchers: list, dir: str, **kwargs ):
+      return [ Fetcher( yaml_fetcher, dir, **kwargs ) for yaml_fetcher in yaml_fetchers ]
    # def creator
 
    def do_fetch( self ):

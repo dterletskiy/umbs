@@ -93,6 +93,6 @@ class Builder:
 
 
    __config: dict = None
-   __dir: dict = None
+   __dir: str = None
    __command: str = None
 # class Builder

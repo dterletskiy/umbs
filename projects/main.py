@@ -3,18 +3,37 @@
 import os
 
 import pfw.console
+import pfw.shell
 
+import base
 import builders.main
 import fetchers.main
 
 
 
 class Project:
-   def __init__( self, name: str, yaml_config ):
+   def __init__( self, name: str, yaml_config: base.Config ):
+      root_dir = yaml_config.get_variable( "DIRECTORIES.ROOT" )
+      yaml_project = yaml_config.get_project( name )
       self.__name = name
-      self.__dir = os.path.join( yaml_config.get_variable( "DIRECTORIES.ROOT" ), yaml_config.get_project( name )["dir"] )
-      self.__fetchers = fetchers.main.Fetcher.creator( self.__dir, yaml_config.get_project( name )["sources"] )
-      self.__builders = builders.main.Builder.creator( self.__dir, yaml_config.get_project( name )["builder"] )
+
+      if "dir" in yaml_project:
+         self.__dir = os.path.join( root_dir, yaml_project["dir"] )
+         pfw.shell.execute( f"mkdir -p {self.__dir}" )
+      else:
+         raise base.YamlFormatError( f"Filed 'dir' must be defined in the project '{name}'" )
+
+      if "sources" in yaml_project:
+         self.__fetchers = fetchers.main.Fetcher.creator( yaml_project["sources"], self.__dir, root_dir = root_dir )
+      else:
+         self.__fetchers = [ ]
+         pfw.console.debug.warning( f"Filed 'sources' is not defined in the project '{name}'" )
+
+      if "builder" in yaml_project:
+         self.__builders = builders.main.Builder.creator( yaml_project["builder"], self.__dir, root_dir = root_dir )
+      else:
+         self.__builders = [ ]
+         pfw.console.debug.warnin( f"Filed 'builder' must be defined in the project '{name}'" )
 
       self.__action_map = {
          "fetch": [ self.do_fetch ],
@@ -28,13 +47,13 @@ class Project:
    # def __del__
 
    @staticmethod
-   def builder( yaml_config ):
+   def creator( yaml_config ):
       projects: dict = { }
       for name in yaml_config.get_projects( ):
          projects[ name ] = Project( name, yaml_config )
 
       return projects
-   # def builder
+   # def creator
 
    def do_fetch( self ):
       for fetcher in self.__fetchers:

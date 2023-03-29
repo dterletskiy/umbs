@@ -53,7 +53,7 @@ class Builder:
    # def config
 
    def build( self, **kwargs ):
-      command = f"tools/bazel run {self.__config['config']}_dist -- --dist_dir=out/deploy/{self.__config['config']}"
+      command = f"tools/bazel run --sandbox_debug {self.__config['config']}_dist -- --dist_dir=out/deploy/{self.__config['config']}"
 
       pfw.shell.execute( command, output = pfw.shell.eOutput.PTY, cwd = self.__dir )
    # def build
@@ -82,5 +82,5 @@ class Builder:
 
 
    __config: dict = None
-   __dir: dict = None
+   __dir: str = None
 # class Builder
