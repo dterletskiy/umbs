@@ -133,8 +133,10 @@ class Builder:
    def test( self, **kwargs ):
       result: bool = True
 
-      for artifact in self.__config["artifacts"]:
-         if not os.path.exists( os.path.join( self.__dir, artifact ) ):
+      for artifact in self.__artifacts:
+         if os.path.exists( artifact ):
+            pfw.console.debug.ok( f"artifact '{artifact}' exists" )
+         else:
             pfw.console.debug.error( f"artifact '{artifact}' does not exist" )
             result = False
 

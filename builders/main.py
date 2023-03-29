@@ -5,6 +5,10 @@ import importlib
 
 
 class Builder:
+   def __new__( cls, yaml_builder: dict, dir: str, **kwargs ):
+      return object.__new__( cls )
+   # def __new__
+
    def __init__( self, yaml_builder: dict, dir: str, **kwargs ):
       self.__dir = dir
       self.__module = importlib.import_module( f"builders.{yaml_builder['type']}", __package__ )

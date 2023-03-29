@@ -18,8 +18,12 @@ def do_build( builder ):
 
 class Builder:
    def __init__( self, config, directory, **kwargs ):
+      self.__root_dir = kwargs.get( "root_dir", None )
+
       self.__config = config
       self.__dir = directory
+
+      self.__artifacts = [ os.path.join( self.__dir, artifact ) for artifact in self.__config.get( "artifacts", [ ] ) ]
 
       self.__command = "make"
       self.__command += f" XEN_TARGET_ARCH={self.__config['arch']}"
@@ -78,8 +82,10 @@ class Builder:
    def test( self, **kwargs ):
       result: bool = True
 
-      for artifact in self.__config["artifacts"]:
-         if not os.path.exists( os.path.join( self.__dir, artifact ) ):
+      for artifact in self.__artifacts:
+         if os.path.exists( artifact ):
+            pfw.console.debug.ok( f"artifact '{artifact}' exists" )
+         else:
             pfw.console.debug.error( f"artifact '{artifact}' does not exist" )
             result = False
 
@@ -90,5 +96,8 @@ class Builder:
 
    __config: dict = None
    __dir: str = None
+   __root_dir: str = None
+   __artifacts: list = [ ]
+
    __command: str = None
 # class Builder
