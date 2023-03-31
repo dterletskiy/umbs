@@ -12,7 +12,7 @@ import docker.image
 import docker.container
 import docker.packages.ubuntu
 
-def do_build( ):
+def do_action( action ):
    dockerfile = configuration.value( "dockerfile" )
 
    os_name = configuration.value( "docker_os_name" )
@@ -53,18 +53,21 @@ def do_build( ):
 
 
 
-   docker.image.build(
-         dockerfile = dockerfile,
-         image_name = image_name,
-         image_tag = image_tag,
-         build_args = build_args
-      )
-
-   docker.container.run(
-         container_name = container_name,
-         image_name = image_name,
-         image_tag = image_tag,
-         volume_mapping = volume_mapping,
-         port_mapping = port_mapping
-      )
-# def do_build
+   if "build" == action:
+      docker.image.build(
+            dockerfile = dockerfile,
+            build_args = build_args,
+            image_name = image_name,
+            image_tag = image_tag,
+         )
+   elif "run" == action:
+      docker.container.run(
+            container_name = container_name,
+            image_name = image_name,
+            image_tag = image_tag,
+            volume_mapping = volume_mapping,
+            port_mapping = port_mapping,
+         )
+   else:
+      pfw.console.debug.error( f"Undefined action: '{action}'" )
+# def do_action

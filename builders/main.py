@@ -19,14 +19,11 @@ class Builder:
       pass
    # def __del__
 
-   @staticmethod
-   def creator( yaml_builders: list, dir: str, **kwargs ):
-      return [ Builder( yaml_builder, dir, **kwargs ) for yaml_builder in yaml_builders ]
-   # def creator
-
    def do_build( self ):
       self.__module.do_build( self.__builder )
    # def do_build
+
+
 
    __dir: str = None
    __builder = None

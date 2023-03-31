@@ -257,6 +257,7 @@ def process_cmdline( app_data, argv ):
    parser.add_argument( "--version", action = "version", version = '%(prog)s 2.0' )
 
    parser.add_argument( "--config", dest = "config", type = str, action = "append", required = False, help = app_data.get_description( "config" ) )
+   parser.add_argument( "--yaml_config", dest = "config", type = str, action = "append", required = False, help = app_data.get_description( "config" ) )
 
    parser.add_argument( "--include", dest = "include", type = str, action = "append", required = False, help = app_data.get_description( "include" ) )
    parser.add_argument( "--pfw", dest = "pfw", type = str, action = "append", required = False, help = app_data.get_description( "pfw" ) )
@@ -306,6 +307,7 @@ def process_configuration( app_data, argv ):
 config: ConfigurationContainer = ConfigurationContainer(
       [
          ConfigurationData( "config"                      , True  , "Path to configuration file" ),
+         ConfigurationData( "yaml_config"                 , True  , "Path to yaml project configuration file" ),
          ConfigurationData( "include"                     , False , "Additional directory to search import packages" ),
          ConfigurationData( "pfw"                         , True  , "Python Framework directory location" ),
          ConfigurationData( "project"                     , False , "Project name" ),

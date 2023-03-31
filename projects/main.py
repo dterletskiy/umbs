@@ -12,9 +12,7 @@ import fetchers.main
 
 
 class Project:
-   def __new__( cls, name: str, yaml_config: base.Config ):
-      yaml_project = yaml_config.get_project( name )
-
+   def __new__( cls, name: str, yaml_project: dict, root_dir: str ):
       if "active" in yaml_project:
          if False == yaml_project["active"]:
             return None
@@ -22,9 +20,7 @@ class Project:
       return object.__new__( cls )
    # def __new__
 
-   def __init__( self, name: str, yaml_config: base.Config ):
-      root_dir = yaml_config.get_variable( "DIRECTORIES.ROOT" )
-      yaml_project = yaml_config.get_project( name )
+   def __init__( self, name: str, yaml_project: dict, root_dir: str ):
       self.__name = name
 
       if "dir" in yaml_project:
@@ -33,16 +29,18 @@ class Project:
       else:
          raise base.YamlFormatError( f"Filed 'dir' must be defined in the project '{name}'" )
 
+      self.__fetchers = [ ]
       if "sources" in yaml_project:
-         self.__fetchers = fetchers.main.Fetcher.creator( yaml_project["sources"], self.__dir, root_dir = root_dir )
+         for yaml_source in yaml_project["sources"]:
+            self.__fetchers.append( fetchers.main.Fetcher( yaml_source, self.__dir, root_dir = root_dir ) )
       else:
-         self.__fetchers = [ ]
          pfw.console.debug.warning( f"Filed 'sources' is not defined in the project '{name}'" )
 
-      if "builder" in yaml_project:
-         self.__builders = builders.main.Builder.creator( yaml_project["builder"], self.__dir, root_dir = root_dir )
+      self.__builders = [ ]
+      if "builders" in yaml_project:
+         for yaml_builder in yaml_project["builders"]:
+            self.__builders.append( builders.main.Builder( yaml_builder, self.__dir, root_dir = root_dir ) )
       else:
-         self.__builders = [ ]
          pfw.console.debug.warnin( f"Filed 'builder' must be defined in the project '{name}'" )
 
       self.__action_map = {
@@ -81,6 +79,8 @@ class Project:
       for processor in processors:
          processor( )
    # def do_action
+
+
 
    __name: str = None
    __dir: str = None

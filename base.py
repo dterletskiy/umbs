@@ -30,6 +30,9 @@ class Config:
 
       self.__projects = yaml_data.get( "projects", { } )
       self.__process_yaml_data( self.__projects )
+
+      self.__tools = yaml_data.get( "tools", { } )
+      self.__process_yaml_data( self.__tools )
    # def __init__
 
    def __del__( self ):
@@ -42,6 +45,7 @@ class Config:
       pfw.console.debug.info( f"{kw_msg} (type {self.__class__.__name__}):", tabs = ( kw_tabs + 0 ) )
       pfw.console.debug.info( pfw.base.str.to_string( self.__variables ) )
       pfw.console.debug.info( pfw.base.str.to_string( self.__projects ) )
+      pfw.console.debug.info( pfw.base.str.to_string( self.__tools ) )
    # def info
 
 
@@ -65,6 +69,14 @@ class Config:
    def get_projects( self ):
       return self.__projects
    # def get_projects
+
+   def get_tool( self, name: str ):
+      return self.__tools[ name ]
+   # def get_tool
+
+   def get_tools( self ):
+      return self.__tools
+   # def get_tools
 
 
 
@@ -134,7 +146,8 @@ class Config:
 
 
 
-   __variables: dict = [ ] 
-   __projects: dict = [ ]
+   __variables: dict = { }
+   __projects: dict = { }
+   __tools: dict = { }
 # class Config
 

@@ -19,14 +19,11 @@ class Fetcher:
       pass
    # def __del__
 
-   @staticmethod
-   def creator( yaml_fetchers: list, dir: str, **kwargs ):
-      return [ Fetcher( yaml_fetcher, dir, **kwargs ) for yaml_fetcher in yaml_fetchers ]
-   # def creator
-
    def do_fetch( self ):
       self.__module.do_fetch( self.__fetcher )
    # def do_fetch
+
+
 
    __dir: str = None
    __fetcher = None
