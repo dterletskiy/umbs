@@ -98,6 +98,10 @@ projects:
         arch: "arm64"
         compiler: "aarch64-linux-gnu-"
         compiler_path: "/usr/aarch64-linux-gnu"
+        jobs: 4
+        targets:
+          - "dist-xen"
+          - "dist-doc"
         env:
           - ""
         artifacts:
@@ -118,6 +122,7 @@ projects:
         arch: "arm64"
         compiler: "aarch64-linux-gnu-"
         compiler_path: "/usr/aarch64-linux-gnu"
+        jobs: 4
         env:
           - ""
         artifacts:
@@ -145,6 +150,7 @@ projects:
         arch: "arm64"
         compiler: "aarch64-linux-gnu-"
         compiler_path: "/usr/aarch64-linux-gnu"
+        jobs: 4
         env:
           - ""
         artifacts:
@@ -165,6 +171,7 @@ projects:
         arch: "arm64"
         compiler: "aarch64-linux-gnu-"
         compiler_path: "/usr/aarch64-linux-gnu"
+        jobs: 4
         env:
           - ""
         artifacts:
@@ -186,6 +193,7 @@ projects:
         arch: "arm64"
         compiler: "aarch64-linux-gnu-"
         compiler_path: "/usr/aarch64-linux-gnu"
+        jobs: 4
         env:
           - ""
         artifacts:

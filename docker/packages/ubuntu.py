@@ -103,6 +103,10 @@ packages_dev: list = [
    "python3",
    "python3-dev",
    "python3-doc",
+   "python3-pip",
+
+   "python3-yaml",
+   "python3-filetype",
 
    "perl",
    "perl-doc",

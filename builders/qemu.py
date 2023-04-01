@@ -14,6 +14,9 @@ def do_build( builder ):
    builder.build( )
    builder.test( )
 
+def do_clean( builder ):
+   builder.clean( )
+
 
 
 class Builder:
@@ -29,9 +32,14 @@ class Builder:
       # self.__command += f" O={self.__dir}"
       self.__command += f" -C {self.__dir}"
       self.__command += f" V=1"
-      self.__command += f" ARCH={self.__config['arch']}"
-      self.__command += f" CROSS_COMPILE={self.__config['compiler']}"
-      # self.__command += f" -j{self.__config['cores']}"
+      self.__command += f" -j{str( self.__config['jobs'] )}" if "jobs" in self.__config else ""
+      if all( key in self.__config for key in ( "arch", "compiler" ) ):
+         self.__command += f" ARCH={self.__config['arch']}"
+         self.__command += f" CROSS_COMPILE={self.__config['compiler']}"
+
+      self.__targets = ' '.join( self.__config["targets"] ) if "targets" in self.__config else "all"
+
+      self.__defconfig = self.__config["defconfig"]
    # def __init__
 
    def __del__( self ):
@@ -59,24 +67,19 @@ class Builder:
    # def info
 
    def config( self, **kwargs ):
-      command = self.__command
-      targets = kwargs.get( "targets", self.__config['defconfig'] )
+      command = "./configure"
+      # parameters = "--enable-gtk --enable-kvm --static --disable-system --enable-linux-user --enable-user"
+      parameters = ""
 
-      pfw.shell.execute( command, targets, cwd = self.__dir, print = False, collect = False )
+      pfw.shell.execute( command, parameters, cwd = self.__dir, print = False, collect = False )
    # def config
 
    def build( self, **kwargs ):
-      command = self.__command
-      targets = kwargs.get( "targets", "all" )
-
-      pfw.shell.execute( command, targets, output = pfw.shell.eOutput.PTY, cwd = self.__dir )
+      pfw.shell.execute( self.__command, self.__targets, output = pfw.shell.eOutput.PTY, cwd = self.__dir )
    # def build
 
    def clean( self, **kwargs ):
-      command = self.__command
-      targets = kwargs.get( "targets", "clean distclean mrproper" )
-
-      pfw.shell.execute( command, targets, output = pfw.shell.eOutput.PTY, cwd = self.__dir )
+      pfw.shell.execute( self.__command, "clean distclean mrproper", output = pfw.shell.eOutput.PTY, cwd = self.__dir )
    # def clean
 
    def deploy( self, **kwargs ):

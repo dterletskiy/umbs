@@ -60,8 +60,36 @@ def do_action( action ):
             image_name = image_name,
             image_tag = image_tag,
          )
+   elif "create" == action:
+      docker.container.create(
+            container_name = container_name,
+            image_name = image_name,
+            image_tag = image_tag,
+            volume_mapping = volume_mapping,
+            port_mapping = port_mapping,
+         )
+   elif "remove" == action:
+      docker.container.remove(
+            container_name = container_name,
+         )
+   elif "start" == action:
+      docker.container.start(
+            container_name = container_name,
+         )
+   elif "stop" == action:
+      docker.container.stop(
+            container_name = container_name,
+         )
    elif "run" == action:
       docker.container.run(
+            container_name = container_name,
+            image_name = image_name,
+            image_tag = image_tag,
+            volume_mapping = volume_mapping,
+            port_mapping = port_mapping,
+         )
+   elif "exec" == action:
+      docker.container.exec(
             container_name = container_name,
             image_name = image_name,
             image_tag = image_tag,

@@ -14,6 +14,9 @@ def do_build( builder ):
    builder.build( )
    builder.test( )
 
+def do_clean( builder ):
+   builder.clean( )
+
 
 
 class Builder:

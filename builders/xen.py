@@ -14,6 +14,9 @@ def do_build( builder ):
    builder.build( )
    builder.test( )
 
+def do_clean( builder ):
+   builder.clean( )
+
 
 
 class Builder:
@@ -26,9 +29,12 @@ class Builder:
       self.__artifacts = [ os.path.join( self.__dir, artifact ) for artifact in self.__config.get( "artifacts", [ ] ) ]
 
       self.__command = "make"
-      self.__command += f" XEN_TARGET_ARCH={self.__config['arch']}"
-      self.__command += f" CROSS_COMPILE={self.__config['compiler']}"
-      # self.__command += f" -j{self.__config['cores']}"
+      self.__command += f" -j{str( self.__config['jobs'] )}" if "jobs" in self.__config else ""
+      if all( key in self.__config for key in ( "arch", "compiler" ) ):
+         self.__command += f" XEN_TARGET_ARCH={self.__config['arch']}"
+         self.__command += f" CROSS_COMPILE={self.__config['compiler']}"
+
+      self.__targets = ' '.join( self.__config["targets"] ) if "targets" in self.__config else "dist dist-xen dist-tools dist-docs"
    # def __init__
 
    def __del__( self ):
@@ -62,17 +68,11 @@ class Builder:
    # def config
 
    def build( self, **kwargs ):
-      command = self.__command
-      targets = kwargs.get( "targets", "dist-xen" )
-
-      pfw.shell.execute( command, targets, output = pfw.shell.eOutput.PTY, cwd = self.__dir )
+      pfw.shell.execute( self.__command, self.__targets, output = pfw.shell.eOutput.PTY, cwd = self.__dir )
    # def build
 
    def clean( self, **kwargs ):
-      command = self.__command
-      targets = kwargs.get( "targets", "mrproper" )
-
-      pfw.shell.execute( command, targets, output = pfw.shell.eOutput.PTY, cwd = self.__dir )
+      pfw.shell.execute( self.__command, "clean distclean mrproper", output = pfw.shell.eOutput.PTY, cwd = self.__dir )
    # def clean
 
    def deploy( self, **kwargs ):
@@ -100,4 +100,5 @@ class Builder:
    __artifacts: list = [ ]
 
    __command: str = None
+   __targets: str = None
 # class Builder

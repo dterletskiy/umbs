@@ -46,6 +46,7 @@ class Project:
       self.__action_map = {
          "fetch": [ self.do_fetch ],
          "build": [ self.do_build ],
+         "clean": [ self.do_clean ],
          "*": [ self.do_fetch, self.do_build ],
       }
    # def __init__
@@ -73,6 +74,11 @@ class Project:
       for builder in self.__builders:
          builder.do_build( )
    # def do_build
+
+   def do_clean( self ):
+      for builder in self.__builders:
+         builder.do_clean( )
+   # def do_clean
 
    def do_action( self, action: str ):
       processors = self.__action_map.get( action, [ lambda: pfw.console.debug.error( f"undefined action '{action}'" ) ] )
