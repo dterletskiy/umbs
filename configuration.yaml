@@ -2,6 +2,8 @@ author: "dterletskiy"
 version: "1.1.0"
 umbs_min_version: "0.1"
 
+include: "variables.yaml"
+
 
 
 variables:
@@ -97,7 +99,6 @@ projects:
         defconfig: ${XEN.CONFIG.ARM64}
         arch: "arm64"
         compiler: "aarch64-linux-gnu-"
-        compiler_path: "/usr/aarch64-linux-gnu"
         jobs: 4
         targets:
           - "dist-xen"
@@ -121,7 +122,6 @@ projects:
         defconfig: ${UBOOT.CONFIG.ARM64}
         arch: "arm64"
         compiler: "aarch64-linux-gnu-"
-        compiler_path: "/usr/aarch64-linux-gnu"
         jobs: 4
         env:
           - ""
@@ -149,7 +149,6 @@ projects:
         defconfig: ${BUSYBOX.CONFIG.ARM64}
         arch: "arm64"
         compiler: "aarch64-linux-gnu-"
-        compiler_path: "/usr/aarch64-linux-gnu"
         jobs: 4
         env:
           - ""
@@ -170,7 +169,6 @@ projects:
         defconfig: ${BUILDROOT.CONFIG.ARM64}
         arch: "arm64"
         compiler: "aarch64-linux-gnu-"
-        compiler_path: "/usr/aarch64-linux-gnu"
         jobs: 4
         env:
           - ""
@@ -192,7 +190,6 @@ projects:
         defconfig: ${KERNEL.CONFIG.ARM64}
         arch: "arm64"
         compiler: "aarch64-linux-gnu-"
-        compiler_path: "/usr/aarch64-linux-gnu"
         jobs: 4
         env:
           - ""
