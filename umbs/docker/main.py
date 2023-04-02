@@ -7,10 +7,12 @@ import pfw.base.str
 import pfw.base.dict
 import pfw.linux.password
 
-import configuration
-import docker.image
-import docker.container
-import docker.packages.ubuntu
+import umbs.configuration
+import umbs.docker.image
+import umbs.docker.container
+import umbs.docker.packages.ubuntu
+
+
 
 def do_action( action ):
    dockerfile = configuration.value( "dockerfile" )

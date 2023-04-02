@@ -1,23 +1,25 @@
 import pfw.console
 import pfw.shell
-
-import base
-
-
-
-def get_tool( config, **kwargs ):
-   return Tool( config, **kwargs )
+import pfw.linux.git
 
 
 
-class Tool:
-   def __init__( self, config, **kwargs ):
-      self.__config = config
+def get_fetcher( config, destination, **kwargs ):
+   return Fetcher( config, destination, **kwargs )
 
-      if "exe" not in self.__config:
-         raise base.YamlFormatError( f"Filed 'exe' must be defined in tool" )
+def do_fetch( repo ):
+   repo.fetch( )
 
-      self.__exe = self.__config["exe"]
+
+
+class Fetcher:
+   def __init__( self, config, destination, **kwargs ):
+      self.__repo = pfw.linux.git.Repo(
+            url = config["url"],
+            branch = config.get( "branch", None ),
+            directory = destination,
+            depth = config.get( "depth", 1 )
+         )
    # def __init__
 
    def __del__( self ):
@@ -42,10 +44,18 @@ class Tool:
       kw_tabs = kwargs.get( "tabs", 0 )
       kw_msg = kwargs.get( "msg", "" )
       pfw.console.debug.info( f"{kw_msg} (type {self.__class__.__name__}):", tabs = ( kw_tabs + 0 ) )
+      self.__repo.info( )
    # def info
 
+   def fetch( self, **kwargs ):
+      self.__repo.clone( )
+   # def sync
+
+   def remove( self ):
+      self.__repo.remove( )
+   # def remove
 
 
-   __config: dict = None
-   __exe: str = None
-# class Tool
+
+   __repo: pfw.linux.git.Repo = None
+# class Fetcher

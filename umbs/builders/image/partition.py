@@ -9,7 +9,7 @@ import pfw.linux.image
 import pfw.linux.fs
 import pfw.linux.file
 
-import base
+import umbs.base
 
 
 
@@ -34,19 +34,27 @@ class Builder:
       self.__dir = directory
 
       if "file" not in self.__config:
-         raise base.YamlFormatError( f"Filed 'file' must be defined in builder" )
+         raise umbs.base.YamlFormatError( f"Filed 'file' must be defined in builder" )
+      if "size" not in self.__config:
+         raise umbs.base.YamlFormatError( f"Filed 'size' must be defined in builder" )
+      if "fs" not in self.__config:
+         raise umbs.base.YamlFormatError( f"Filed 'fs' must be defined in builder" )
 
 
-      if "size" in self.__config:
-         if match := re.match( r'(\d+[.]?\d*)\s*(\w+)', self.__config["size"] ):
-            if not pfw.size.text_to_size( match.group( 2 ) ):
-               raise base.YamlFormatError( f"image size dimention error" )
-            self.__size = pfw.size.Size( float( match.group( 1 ) ), pfw.size.text_to_size( match.group( 2 ) ) )
-         else:
-            raise base.YamlFormatError( f"image size format error" )
+      if match := re.match( r'(\d+[.]?\d*)\s*(\w+)', self.__config["size"] ):
+         if not pfw.size.text_to_size( match.group( 2 ) ):
+            raise umbs.base.YamlFormatError( f"image size dimention error" )
+         self.__size = pfw.size.Size( float( match.group( 1 ) ), pfw.size.text_to_size( match.group( 2 ) ) )
+      else:
+         raise umbs.base.YamlFormatError( f"image size format error" )
+
+      self.__fs = pfw.linux.fs.builder( self.__config["fs"] )
+      if not self.__fs:
+         raise umbs.base.YamlFormatError( f"image fs format error" )
 
       self.__file = os.path.join( self.__dir, self.__config["file"] )
-      self.__partitions = self.__config.get( "partitions", [ ] )
+      self.__label = self.__config.get( "label", "NoLabel" )
+      self.__content = self.__config.get( "content", [ ] )
       self.__artifacts = [ os.path.join( self.__dir, artifact ) for artifact in self.__config.get( "artifacts", [ ] ) ]
    # def __init__
 
@@ -79,41 +87,18 @@ class Builder:
    # def config
 
    def build( self, **kwargs ):
-      partitions = [ ]
-      for partition in self.__partitions:
-         if "file" in partition:
-            partitions.append(
-                  pfw.linux.image.Partition(
-                        clone_from = os.path.join( self.__root_dir, partition["file"] ),
-                        label = partition.get( "label", None )
-                     )
-               )
-         elif "size" in partition and "fs" in partition:
-            size = None
-            if match := re.match( r'(\d+[.]?\d*)\s*(\w+)', partition["size"] ):
-               if not pfw.size.text_to_size( match.group( 2 ) ):
-                  raise base.YamlFormatError( f"aprtition size dimention error" )
-               size = pfw.size.Size( float( match.group( 1 ) ), pfw.size.text_to_size( match.group( 2 ) ) )
-            else:
-               raise base.YamlFormatError( f"partition size format error" )
+      pfw.linux.image.create( self.__file, self.__size )
+      pfw.linux.image.format( self.__file, self.__fs, label = self.__label )
+      mount_point = pfw.linux.image.mount( self.__file )
 
-            fs = pfw.linux.fs.builder( partition["fs"] )
-            if not fs:
-               raise base.YamlFormatError( f"partition fs format error" )
+      for item in self.__content:
+         pfw.linux.file.copy(
+               os.path.join( self.__root_dir, item["from"] ),
+               os.path.join( mount_point, item["to"] ),
+               sudo = True, force = True
+            )
 
-            partitions.append(
-                  pfw.linux.image.Partition(
-                        size = size,
-                        fs = fs,
-                        label = partition["label"]
-                     )
-               )
-         else:
-            raise base.YamlFormatError( f"Filed 'file' or 'size' and 'fs' must be defined in partition definition" )
-
-      device = pfw.linux.image.Device( partitions = partitions )
-      pfw.linux.image.create( self.__file, device.size( ) )
-      pfw.linux.image.init_device( self.__file, device )
+      pfw.linux.image.umount( self.__file )
 
       def processor( **kwargs ):
          kw_mount_point = kwargs.get( "mount_point", None )
@@ -152,9 +137,11 @@ class Builder:
    __config: dict = None
    __dir: str = None
    __root_dir: str = None
-   __partitions: list = None
-   __artifacts: list = None
+   __artifacts: list = [ ]
 
    __size: pfw.size.Size = None
+   __fs: pfw.linux.fs = None
+   __label: str = None
    __file: str = None
+   __content: list = None
 # class Builder

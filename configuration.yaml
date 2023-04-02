@@ -84,7 +84,7 @@ variables:
 tools:
   mkimage:
     type: mkimage
-    exe: "u-boot/tools/mkimage"
+    exe: "linux/u-boot/tools/mkimage"
 
 projects:
   xen:
@@ -112,7 +112,7 @@ projects:
 
   u-boot:
     active: true
-    dir: u-boot
+    dir: linux/u-boot
     sources:
       - type: git
         url: ${UBOOT.SOURCE.GITHUB.URL}
@@ -139,7 +139,7 @@ projects:
 
   busybox:
     active: true
-    dir: busybox
+    dir: linux/busybox
     sources:
       - type: git
         url: ${BUSYBOX.SOURCE.GITHUB.URL}
@@ -159,7 +159,7 @@ projects:
 
   buildroot:
     active: true
-    dir: buildroot
+    dir: linux/buildroot
     sources:
       - type: git
         url: ${BUILDROOT.SOURCE.GITHUB.URL}
@@ -180,7 +180,7 @@ projects:
 
   kernel:
     active: true
-    dir: kernel
+    dir: linux/kernel
     sources:
       - type: git
         url: ${KERNEL.SOURCE.GITHUB.URL}
@@ -213,6 +213,7 @@ projects:
         env:
           - ""
         artifacts:
+          - "out/deploy/${ANDROID.UBOOT.CONFIG.ARM64}/u-boot"
           - "out/deploy/${ANDROID.UBOOT.CONFIG.ARM64}/u-boot.bin"
         deps:
           - ""
@@ -231,7 +232,10 @@ projects:
         env:
           - ""
         artifacts:
-          - "out/deploy/${ANDROID.UBOOT.CONFIG.ARM64}/u-boot.bin"
+          - "out/deploy/${ANDROID.KERNEL.CONFIG.ARM64}/boot.img"
+          - "out/deploy/${ANDROID.KERNEL.CONFIG.ARM64}/Image"
+          - "out/deploy/${ANDROID.KERNEL.CONFIG.ARM64}/initramfs.img"
+          - "out/deploy/${ANDROID.KERNEL.CONFIG.ARM64}/vmlinux"
         deps:
           - ""
 
@@ -244,10 +248,10 @@ projects:
         fs: ext4
         size: 256 MB
         content:
-          - from: "u-boot/u-boot.bin"
-            to: "boot/u-boot.bin"
-          - from: "kernel/arch/arm64/boot/Image"
-            to: "kernel/kernel"
+          - from: "linux/u-boot/u-boot.bin"
+            to: "linux/boot/u-boot.bin"
+          - from: "linux/kernel/arch/arm64/boot/Image"
+            to: "linux/kernel/kernel"
         artifacts:
           - "boot.img"
         deps:

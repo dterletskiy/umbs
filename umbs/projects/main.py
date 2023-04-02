@@ -5,9 +5,9 @@ import os
 import pfw.console
 import pfw.shell
 
-import base
-import builders.main
-import fetchers.main
+import umbs.base
+import umbs.builders.main
+import umbs.fetchers.main
 
 
 
@@ -27,19 +27,19 @@ class Project:
          self.__dir = os.path.join( root_dir, yaml_project["dir"] )
          pfw.shell.execute( f"mkdir -p {self.__dir}" )
       else:
-         raise base.YamlFormatError( f"Filed 'dir' must be defined in the project '{name}'" )
+         raise umbs.base.YamlFormatError( f"Filed 'dir' must be defined in the project '{name}'" )
 
       self.__fetchers = [ ]
       if "sources" in yaml_project:
          for yaml_source in yaml_project["sources"]:
-            self.__fetchers.append( fetchers.main.Fetcher( yaml_source, self.__dir, root_dir = root_dir ) )
+            self.__fetchers.append( umbs.fetchers.main.Fetcher( yaml_source, self.__dir, root_dir = root_dir ) )
       else:
          pfw.console.debug.warning( f"Filed 'sources' is not defined in the project '{name}'" )
 
       self.__builders = [ ]
       if "builders" in yaml_project:
          for yaml_builder in yaml_project["builders"]:
-            self.__builders.append( builders.main.Builder( yaml_builder, self.__dir, root_dir = root_dir ) )
+            self.__builders.append( umbs.builders.main.Builder( yaml_builder, self.__dir, root_dir = root_dir ) )
       else:
          pfw.console.debug.warnin( f"Filed 'builder' must be defined in the project '{name}'" )
 
