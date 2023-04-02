@@ -88,6 +88,7 @@ class Builder:
       for artifact in self.__artifacts:
          if os.path.exists( artifact ):
             pfw.console.debug.ok( f"artifact '{artifact}' exists" )
+            pfw.shell.execute( f"file {artifact}", output = pfw.shell.eOutput.PTY )
          else:
             pfw.console.debug.error( f"artifact '{artifact}' does not exist" )
             result = False

@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 import importlib
+import pfw.console
 
 
 
@@ -22,6 +23,10 @@ class Builder:
    def do_build( self ):
       self.__module.do_build( self.__builder )
    # def do_build
+
+   def do_clean( self ):
+      self.__module.do_clean( self.__builder )
+   # def do_clean
 
 
 

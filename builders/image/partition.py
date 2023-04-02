@@ -111,7 +111,7 @@ class Builder:
    # def build
 
    def clean( self, **kwargs ):
-      pass
+      pfw.shell.execute( f"rm -rf {' '.join( self.__artifacts )}", output = pfw.shell.eOutput.PTY )
    # def clean
 
    def deploy( self, **kwargs ):
@@ -124,6 +124,7 @@ class Builder:
       for artifact in self.__artifacts:
          if os.path.exists( artifact ):
             pfw.console.debug.ok( f"artifact '{artifact}' exists" )
+            pfw.shell.execute( f"file {artifact}", output = pfw.shell.eOutput.PTY )
          else:
             pfw.console.debug.error( f"artifact '{artifact}' does not exist" )
             result = False
