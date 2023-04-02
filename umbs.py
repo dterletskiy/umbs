@@ -5,7 +5,7 @@
 # CONFIG=./configuration.cfg
 # PFW=/mnt/dev/repos/github.com/dterletskiy/python_fw
 # RPOJECT="u-boot"
-# ACTION=clean_build
+# ACTION=build
 # 
 # 
 # 
@@ -57,6 +57,9 @@ import umbs.main
 
 
 
-if __name__ == "__main__":
+def main( ):
    init( )
    umbs.main.main( )
+
+if __name__ == "__main__":
+   main( )
