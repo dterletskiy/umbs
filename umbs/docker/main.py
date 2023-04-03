@@ -15,21 +15,21 @@ import umbs.docker.packages.ubuntu
 
 
 def do_action( action ):
-   dockerfile = configuration.value( "dockerfile" )
+   dockerfile = umbs.configuration.value( "dockerfile" )
 
-   os_name = configuration.value( "docker_os_name" )
-   os_version = configuration.value( "docker_os_version" )
-   image_name = configuration.value( "docker_image_name" )
-   image_tag = configuration.value( "docker_image_tag" ) # datetime.datetime.now( ).strftime( "%Y.%m.%d_%H.%M.%S" )
+   os_name = umbs.configuration.value( "docker_os_name" )
+   os_version = umbs.configuration.value( "docker_os_version" )
+   image_name = umbs.configuration.value( "docker_image_name" )
+   image_tag = umbs.configuration.value( "docker_image_tag" ) # datetime.datetime.now( ).strftime( "%Y.%m.%d_%H.%M.%S" )
    user_id = 1000
    user_gid = 1000
-   user_name = configuration.value( "docker_user_name" )
-   user_password = configuration.value( "docker_user_password" )
-   user_password_salt = configuration.value( "docker_user_password_salt" )
+   user_name = umbs.configuration.value( "docker_user_name" )
+   user_password = umbs.configuration.value( "docker_user_password" )
+   user_password_salt = umbs.configuration.value( "docker_user_password_salt" )
    user_hashed_password = pfw.linux.password.build_hashed_password( user_password, user_password_salt )
-   user_workdir = configuration.value( "docker_user_workdir" )
-   container_name = configuration.value( "docker_container_name" )
-   packages = " ".join( docker.packages.ubuntu.packages_all )
+   user_workdir = umbs.configuration.value( "docker_user_workdir" )
+   container_name = umbs.configuration.value( "docker_container_name" )
+   packages = " ".join( umbs.docker.packages.ubuntu.packages_all )
    build_args = [
          f"ARG_OS_NAME={os_name}",
          f"ARG_OS_VERSION={os_version}",
@@ -56,14 +56,14 @@ def do_action( action ):
 
 
    if "build" == action:
-      docker.image.build(
+      umbs.docker.image.build(
             dockerfile = dockerfile,
             build_args = build_args,
             image_name = image_name,
             image_tag = image_tag,
          )
    elif "create" == action:
-      docker.container.create(
+      umbs.docker.container.create(
             container_name = container_name,
             image_name = image_name,
             image_tag = image_tag,
@@ -71,19 +71,19 @@ def do_action( action ):
             port_mapping = port_mapping,
          )
    elif "remove" == action:
-      docker.container.remove(
+      umbs.docker.container.remove(
             container_name = container_name,
          )
    elif "start" == action:
-      docker.container.start(
+      umbs.docker.container.start(
             container_name = container_name,
          )
    elif "stop" == action:
-      docker.container.stop(
+      umbs.docker.container.stop(
             container_name = container_name,
          )
    elif "run" == action:
-      docker.container.run(
+      umbs.docker.container.run(
             container_name = container_name,
             image_name = image_name,
             image_tag = image_tag,
@@ -91,7 +91,7 @@ def do_action( action ):
             port_mapping = port_mapping,
          )
    elif "exec" == action:
-      docker.container.exec(
+      umbs.docker.container.exec(
             container_name = container_name,
             image_name = image_name,
             image_tag = image_tag,
