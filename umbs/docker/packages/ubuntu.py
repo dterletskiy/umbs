@@ -107,6 +107,8 @@ packages_dev: list = [
 
    "python3-yaml",
    "python3-filetype",
+   "python3-paramiko",
+   "python3-coloredlogs",
 
    "perl",
    "perl-doc",
