@@ -33,8 +33,9 @@ class Builder:
       self.__config = config
       self.__dir = directory
 
-      if "file" not in self.__config:
-         raise umbs.base.YamlFormatError( f"Filed 'file' must be defined in builder" )
+      for key in [ "file" ]:
+         if key not in self.__config:
+            raise umbs.base.YamlFormatError( f"Filed '{key}' must be defined in builder" )
 
 
       if "size" in self.__config:

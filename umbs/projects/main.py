@@ -23,11 +23,13 @@ class Project:
    def __init__( self, name: str, yaml_project: dict, root_dir: str ):
       self.__name = name
 
-      if "dir" in yaml_project:
-         self.__dir = os.path.join( root_dir, yaml_project["dir"] )
-         pfw.shell.execute( f"mkdir -p {self.__dir}" )
-      else:
-         raise umbs.base.YamlFormatError( f"Filed 'dir' must be defined in the project '{name}'" )
+      for key in [ "dir" ]:
+         if key not in yaml_project:
+            raise umbs.base.YamlFormatError( f"Filed '{key}' must be defined in the project '{name}'" )
+
+
+      self.__dir = os.path.join( root_dir, yaml_project["dir"] )
+      pfw.shell.execute( f"mkdir -p {self.__dir}" )
 
       self.__fetchers = [ ]
       if "sources" in yaml_project:

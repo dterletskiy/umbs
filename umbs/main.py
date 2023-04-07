@@ -8,7 +8,6 @@ import umbs.base
 import umbs.configuration
 import umbs.docker.main
 import umbs.projects.main
-import umbs.tools.main
 
 
 
@@ -24,15 +23,6 @@ def init_projects( yaml_config ):
    return projects_map
 # def init_projects
 
-def init_tools( yaml_config ):
-   tools_map: dict = { }
-   for name in yaml_config.get_tools( ):
-      if tool := umbs.tools.main.Tool( name, yaml_config.get_tool( name ), yaml_config.get_variable( "DIRECTORIES.ROOT" ) ):
-         tools_map[ name ] = tool
-
-   return tools_map
-# def init_tools
-
 
 
 yaml_config: umbs.base.Config = umbs.base.Config( umbs.configuration.value( "yaml_config" ) )
@@ -40,7 +30,6 @@ yaml_config.info( )
 
 
 umbs_projects: dict = init_projects( yaml_config )
-umbs_tools: dict = init_tools( yaml_config )
 
 
 

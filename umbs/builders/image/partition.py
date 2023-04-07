@@ -33,12 +33,9 @@ class Builder:
       self.__config = config
       self.__dir = directory
 
-      if "file" not in self.__config:
-         raise umbs.base.YamlFormatError( f"Filed 'file' must be defined in builder" )
-      if "size" not in self.__config:
-         raise umbs.base.YamlFormatError( f"Filed 'size' must be defined in builder" )
-      if "fs" not in self.__config:
-         raise umbs.base.YamlFormatError( f"Filed 'fs' must be defined in builder" )
+      for key in [ "file", "size", "fs" ]:
+         if key not in self.__config:
+            raise umbs.base.YamlFormatError( f"Filed '{key}' must be defined in builder" )
 
 
       if match := re.match( r'(\d+[.]?\d*)\s*(\w+)', self.__config["size"] ):

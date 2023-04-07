@@ -30,7 +30,7 @@ class Builder:
 
       self.__command = "make"
       self.__command += f" -j{str( self.__config['jobs'] )}" if "jobs" in self.__config else ""
-      if all( key in self.__config for key in ( "arch", "compiler" ) ):
+      if all( key in self.__config for key in [ "arch", "compiler" ] ):
          self.__command += f" XEN_TARGET_ARCH={self.__config['arch']}"
          self.__command += f" CROSS_COMPILE={self.__config['compiler']}"
 
