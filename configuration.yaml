@@ -239,7 +239,7 @@ projects:
     dir: images
     builders:
       - type: tools.mkscr
-        source: "loader/u-boot-scripts/main.scr"
+        source: "configurations/scripts/boot.scr/main.scr"
         out: "boot.scr"
         artifacts:
           - "boot.scr"

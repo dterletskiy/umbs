@@ -111,6 +111,8 @@ class Tool:
    # def __build_uboot_script_lines
 
    def __build_uboot_script( self, script_in_file: str, script_out_file: str ):
+      pfw.shell.execute( f"mkdir -p {os.path.dirname( script_out_file )}", output = pfw.shell.eOutput.PTY, cwd = self.__dir )
+
       code = self.__build_uboot_script_lines( script_in_file )
       script_out_file_h = open( script_out_file, "w+" )
       script_out_file_h.write( code )
