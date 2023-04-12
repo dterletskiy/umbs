@@ -4,11 +4,12 @@ import pfw.console
 import pfw.shell
 
 import umbs.base
+import umbs.builders.base
 
 
 
 def get_builder( config, directory, **kwargs ):
-   return Tool( config, directory, **kwargs )
+   return Builder( config, directory, **kwargs )
 
 def do_build( tool ):
    tool.build( )
@@ -19,14 +20,9 @@ def do_clean( tool ):
 
 
 
-class Tool:
+class Builder( umbs.builders.base.Builder ):
    def __init__( self, config, directory, **kwargs ):
-      self.__root_dir = kwargs.get( "root_dir", None )
-
-      self.__config = config
-      self.__dir = directory
-
-      self.__artifacts = [ os.path.join( self.__dir, artifact ) for artifact in self.__config.get( "artifacts", [ ] ) ]
+      super( ).__init__( config, directory, **kwargs )
 
       for key in [ "exe", "kernel", "ramdisk", "out" ]:
          if key not in self.__config:
@@ -78,25 +74,11 @@ class Tool:
       pass
    # def __del__
 
-   def __setattr__( self, attr, value ):
-      attr_list = [ i for i in self.__class__.__dict__.keys( ) ]
-      if attr in attr_list:
-         self.__dict__[ attr ] = value
-         return
-      raise AttributeError
-   # def __setattr__
-
    def __str__( self ):
       attr_list = [ i for i in self.__class__.__dict__.keys( ) if i[:2] != pfw.base.struct.ignore_field ]
       vector = [ f"{str( attr )} = {str( self.__dict__.get( attr ) )}" for attr in attr_list ]
       return self.__class__.__name__ + " { " + ", ".join( vector ) + " }"
    # def __str__
-
-   def info( self, **kwargs ):
-      kw_tabs = kwargs.get( "tabs", 0 )
-      kw_msg = kwargs.get( "msg", "" )
-      pfw.console.debug.info( f"{kw_msg} (type {self.__class__.__name__}):", tabs = ( kw_tabs + 0 ) )
-   # def info
 
    def clean( self, **kwargs ):
       pfw.shell.execute( f"rm {self.__out}", output = pfw.shell.eOutput.PTY, cwd = self.__dir )
@@ -105,28 +87,4 @@ class Tool:
    def build( self, **kwargs ):
       pfw.shell.execute( self.__command, output = pfw.shell.eOutput.PTY, cwd = self.__dir )
    # def build
-
-   def test( self, **kwargs ):
-      result: bool = True
-
-      for artifact in self.__artifacts:
-         if os.path.exists( artifact ):
-            pfw.console.debug.ok( f"artifact '{artifact}' exists" )
-            pfw.shell.execute( f"file {artifact}", output = pfw.shell.eOutput.PTY )
-         else:
-            pfw.console.debug.error( f"artifact '{artifact}' does not exist" )
-            result = False
-
-      return result
-   # def test
-
-
-
-   __config: dict = None
-   __dir: str = None
-   __root_dir: str = None
-   __artifacts: list = [ ]
-
-   __command: str = None
-   __out: str = None
-# class Tool
+# class Builder
