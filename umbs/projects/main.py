@@ -8,6 +8,7 @@ import pfw.shell
 import umbs.base
 import umbs.builders.main
 import umbs.fetchers.main
+import umbs.tools.main
 
 
 
@@ -43,13 +44,21 @@ class Project:
          for yaml_builder in yaml_project["builders"]:
             self.__builders.append( umbs.builders.main.Builder( yaml_builder, self.__dir, root_dir = root_dir ) )
       else:
-         pfw.console.debug.warnin( f"Filed 'builder' must be defined in the project '{name}'" )
+         pfw.console.debug.warning( f"Filed 'builder' must be defined in the project '{name}'" )
+
+      self.__tools = [ ]
+      if "patches" in yaml_project:
+         for yaml_tool in yaml_project["patches"]:
+            self.__tools.append( umbs.tools.main.Tool( yaml_tool, self.__dir, root_dir = root_dir ) )
+      else:
+         pfw.console.debug.warning( f"Filed 'patches' must be defined in the project '{name}'" )
 
       self.__action_map = {
          "fetch": [ self.do_fetch ],
+         "patch": [ self.do_patch ],
          "build": [ self.do_build ],
          "clean": [ self.do_clean ],
-         "*": [ self.do_fetch, self.do_build ],
+         "*": [ self.do_fetch, self.do_patch, self.do_build ],
       }
    # def __init__
 
@@ -86,6 +95,11 @@ class Project:
          fetcher.do_fetch( )
    # def do_fetch
 
+   def do_patch( self ):
+      for tool in self.__tools:
+         tool.do_exec( )
+   # def do_patch
+
    def do_build( self ):
       for builder in self.__builders:
          builder.do_build( )
@@ -107,6 +121,7 @@ class Project:
    __name: str = None
    __dir: str = None
    __fetchers: list = None
+   __tools: list = None
    __builders: list = None
 
    __action_map: dict = None

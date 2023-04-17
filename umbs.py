@@ -9,10 +9,7 @@
 # 
 # 
 # 
-# ./main.py --config=./${CONFIG}
-# ./main.py --config=./${CONFIG} --include=${PFW}
-# ./main.py --config=./${CONFIG} --project=${RPOJECT}
-# ./main.py --config=./${CONFIG} --action=${ACTION}
+# ./main.py --config=./${CONFIG} --include=${PFW} --project=${RPOJECT} --action=${ACTION}
 # ./main.py --config=./${CONFIG} --project=${RPOJECT} --action=${ACTION}
 # 
 # In case if variable "INCLUDE" defined with path to "pfw" "--include" option could be omitted.

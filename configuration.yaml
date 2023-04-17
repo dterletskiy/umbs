@@ -82,6 +82,13 @@ variables:
 
 
 projects:
+  config:
+    active: true
+    dir: lfs
+    sources:
+      - type: git
+        url: "git@github.com:dterletskiy/linux_from_scratch.git"
+
   xen:
     active: true
     dir: xen
@@ -90,7 +97,7 @@ projects:
         url: ${XEN.SOURCE.GITHUB.URL}
         branch: ${XEN.SOURCE.GITHUB.BRANCH}
     builders:
-      - type: xen
+      - type: make.xen
         defconfig: ${XEN.CONFIG.ARM64}
         arch: "arm64"
         compiler: "aarch64-linux-gnu-"
@@ -112,8 +119,13 @@ projects:
       - type: git
         url: ${UBOOT.SOURCE.GITHUB.URL}
         branch: ${UBOOT.SOURCE.GITHUB.BRANCH}
+    patches:
+      - type: copy
+        content:
+          - from: "lfs/configuration/config/u-boot/v2022.07/qemu_arm64_defconfig/exp/defconfig"
+            to: "configs/qemu_arm64_exp_defconfig"
     builders:
-      - type: uboot
+      - type: make.uboot
         defconfig: ${UBOOT.CONFIG.ARM64}
         arch: "arm64"
         compiler: "aarch64-linux-gnu-"
@@ -140,7 +152,7 @@ projects:
         url: ${BUSYBOX.SOURCE.GITHUB.URL}
         branch: ${BUSYBOX.SOURCE.GITHUB.BRANCH}
     builders:
-      - type: busybox
+      - type: make.busybox
         defconfig: ${BUSYBOX.CONFIG.ARM64}
         arch: "arm64"
         compiler: "aarch64-linux-gnu-"
@@ -160,7 +172,7 @@ projects:
         url: ${BUILDROOT.SOURCE.GITHUB.URL}
         branch: ${BUILDROOT.SOURCE.GITHUB.BRANCH}
     builders:
-      - type: buildroot
+      - type: make.buildroot
         defconfig: ${BUILDROOT.CONFIG.ARM64}
         arch: "arm64"
         compiler: "aarch64-linux-gnu-"
@@ -181,7 +193,7 @@ projects:
         url: ${KERNEL.SOURCE.GITHUB.URL}
         branch: ${KERNEL.SOURCE.GITHUB.BRANCH}
     builders:
-      - type: kernel
+      - type: make.kernel
         defconfig: ${KERNEL.CONFIG.ARM64}
         arch: "arm64"
         compiler: "aarch64-linux-gnu-"
@@ -237,13 +249,13 @@ projects:
   boot:
     active: true
     dir: images
-    builders:
-      - type: tools.mkscr
-        source: "configurations/scripts/boot.scr/main.scr"
+    patches:
+      - type: mkscr
+        source: "lfs/configuration/scripts/boot.scr/main.scr"
         out: "boot.scr"
         artifacts:
           - "boot.scr"
-      - type: tools.mkimage
+      - type: mkimage
         exe: "loader/u-boot/tools/mkimage"
         sources:
           - "linux/kernel/arch/arm64/boot/Image"
@@ -259,6 +271,7 @@ projects:
         deps:
           - "loader/u-boot/tools/mkimage"
           - "linux/kernel/arch/arm64/boot/Image"
+    builders:
       - type: image.partition
         file: "boot.img"
         fs: ext4

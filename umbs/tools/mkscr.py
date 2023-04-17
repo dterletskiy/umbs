@@ -5,15 +5,15 @@ import pfw.console
 import pfw.shell
 
 import umbs.base
-import umbs.builders.base
+import umbs.tools.base
 
 
 
-def get_builder( config, directory, **kwargs ):
-   return Builder( config, directory, **kwargs )
+def get_tool( config, directory, **kwargs ):
+   return Tool( config, directory, **kwargs )
 
-def do_build( tool ):
-   tool.build( )
+def do_exec( tool ):
+   tool.exec( )
    tool.test( )
 
 def do_clean( tool ):
@@ -21,7 +21,7 @@ def do_clean( tool ):
 
 
 
-class Builder( umbs.builders.base.Builder ):
+class Tool( umbs.tools.base.Tool ):
    def __init__( self, config, directory, **kwargs ):
       super( ).__init__( config, directory, **kwargs )
 
@@ -44,13 +44,13 @@ class Builder( umbs.builders.base.Builder ):
       return self.__class__.__name__ + " { " + ", ".join( vector ) + " }"
    # def __str__
 
+   def exec( self, **kwargs ):
+      self.__build_uboot_script( self.__source, self.__out )
+   # def exec
+
    def clean( self, **kwargs ):
       pfw.shell.execute( f"rm {self.__out}", output = pfw.shell.eOutput.PTY, cwd = self.__dir )
    # def clean
-
-   def build( self, **kwargs ):
-      self.__build_uboot_script( self.__source, self.__out )
-   # def build
 
    # Function for building u-boot script from different u-boot scripts.
    # This smaller u-boot scripts are used for decomposition and more convenient usage.
@@ -86,4 +86,4 @@ class Builder( umbs.builders.base.Builder ):
       script_out_file_h.write( code )
       script_out_file_h.close( )
    # def __build_uboot_script
-# class Builder
+# class Tool
