@@ -26,7 +26,7 @@ def init_projects( yaml_config ):
 
 
 def main( ):
-   yaml_config: umbs.base.Config = umbs.base.Config( umbs.configuration.value( "yaml_config" ) )
+   yaml_config: umbs.base.Config = umbs.base.Config( umbs.configuration.value( "yaml_config" ), root_dir = umbs.configuration.value( "root_dir" ) )
    yaml_config.info( )
    umbs_projects: dict = init_projects( yaml_config )
 

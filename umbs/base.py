@@ -19,13 +19,18 @@ class YamlFormatError( Exception ):
 
 
 class Config:
-   def __init__( self, file: str ):
+   def __init__( self, file: str, **kwargs ):
+      root_dir = kwargs.get( "root_dir", None )
+
       yaml_fd = open( file, "r" )
       yaml_data = yaml.load( yaml_fd, Loader = yaml.SafeLoader )
       yaml_stream = yaml.compose( yaml_fd )
       yaml_fd.close( )
 
       self.__variables = yaml_data.get( "variables", { } )
+      if root_dir:
+         # Override yaml variable "DIRECTORIES.ROOT" by the value obtained from configuration file or command line parameter. 
+         self.set_variable( "DIRECTORIES.ROOT", root_dir )
       self.__process_yaml_data( self.__variables )
 
       self.__projects = yaml_data.get( "projects", { } )
