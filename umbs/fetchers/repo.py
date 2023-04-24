@@ -1,12 +1,13 @@
 import pfw.console
-import pfw.archive
 import pfw.shell
 import pfw.linux.repo
 
+import os
 
 
-def get_fetcher( config, destination, **kwargs ):
-   return Fetcher( config, destination, **kwargs )
+
+def get_instance( config, **kwargs ):
+   return Fetcher( config, **kwargs )
 
 def do_fetch( repo ):
    repo.fetch( )
@@ -14,9 +15,9 @@ def do_fetch( repo ):
 
 
 class Fetcher:
-   def __init__( self, config, destination, **kwargs ):
+   def __init__( self, config, **kwargs ):
       self.__repo = pfw.linux.repo.Repo(
-            destination = destination,
+            destination = kwargs.get( "project_dir", None ),
             manifest_url = config.get( "manifest-url", None ),
             manifest_name = config.get( "manifest-name", None ),
             manifest_branch = config.get( "manifest-branch", None ),

@@ -14,8 +14,8 @@ import umbs.builders.base
 
 
 
-def get_builder( config, directory, **kwargs ):
-   return Builder( config, directory, **kwargs )
+def get_instance( config, **kwargs ):
+   return Builder( config, **kwargs )
 
 def do_build( builder ):
    builder.config( )
@@ -28,8 +28,8 @@ def do_clean( builder ):
 
 
 class Builder( umbs.builders.base.Builder ):
-   def __init__( self, config, directory, **kwargs ):
-      super( ).__init__( config, directory, **kwargs )
+   def __init__( self, config, **kwargs ):
+      super( ).__init__( config, **kwargs )
 
       for key in [ "file", "size", "fs" ]:
          if key not in self.__config:
@@ -47,7 +47,7 @@ class Builder( umbs.builders.base.Builder ):
       if not self.__fs:
          raise umbs.base.YamlFormatError( f"image fs format error" )
 
-      self.__file = os.path.join( self.__dir, self.__config["file"] )
+      self.__file = os.path.join( self.__target_dir, self.__config["file"] )
       self.__label = self.__config.get( "label", "NoLabel" )
       self.__content = self.__config.get( "content", [ ] )
    # def __init__

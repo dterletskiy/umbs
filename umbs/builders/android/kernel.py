@@ -8,8 +8,8 @@ import umbs.builders.base
 
 
 
-def get_builder( config, directory, **kwargs ):
-   return Builder( config, directory, **kwargs )
+def get_instance( config, **kwargs ):
+   return Builder( config, **kwargs )
 
 def do_build( builder ):
    builder.config( )
@@ -22,8 +22,8 @@ def do_clean( builder ):
 
 
 class Builder( umbs.builders.base.Builder ):
-   def __init__( self, config, directory, **kwargs ):
-      super( ).__init__( config, directory, **kwargs )
+   def __init__( self, config, **kwargs ):
+      super( ).__init__( config, **kwargs )
 
       self.__target = self.__config['config']
    # def __init__
@@ -41,18 +41,18 @@ class Builder( umbs.builders.base.Builder ):
    def config( self, **kwargs ):
       command = f""
 
-      pfw.shell.execute( command, cwd = self.__dir, print = False, collect = False )
+      pfw.shell.execute( command, cwd = self.__target_dir, print = False, collect = False )
    # def config
 
    def build( self, **kwargs ):
       command = f"tools/bazel run --sandbox_debug {self.__target}_dist -- --dist_dir=out/deploy/{self.__target}"
 
-      pfw.shell.execute( command, output = pfw.shell.eOutput.PTY, cwd = self.__dir )
+      pfw.shell.execute( command, output = pfw.shell.eOutput.PTY, cwd = self.__target_dir )
    # def build
 
    def clean( self, **kwargs ):
       command = f"tools/bazel clean --expunge"
 
-      pfw.shell.execute( command, output = pfw.shell.eOutput.PTY, cwd = self.__dir )
+      pfw.shell.execute( command, output = pfw.shell.eOutput.PTY, cwd = self.__target_dir )
    # def clean
 # class Builder

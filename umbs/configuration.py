@@ -309,6 +309,7 @@ config: ConfigurationContainer = ConfigurationContainer(
       [
          ConfigurationData( "config"                      , True  , "Path to configuration file" ),
          ConfigurationData( "yaml_config"                 , True  , "Path to yaml project configuration file" ),
+         ConfigurationData( "root_dir"                    , False  , "Path to project root directory" ),
          ConfigurationData( "include"                     , False , "Additional directory to search import packages" ),
          ConfigurationData( "pfw"                         , True  , "Python Framework directory location" ),
          ConfigurationData( "project"                     , False , "Project name" ),

@@ -9,8 +9,8 @@ import umbs.tools.base
 
 
 
-def get_tool( config, directory, **kwargs ):
-   return Tool( config, directory, **kwargs )
+def get_instance( config, **kwargs ):
+   return Tool( config, **kwargs )
 
 def do_exec( tool ):
    tool.exec( )
@@ -22,8 +22,8 @@ def do_clean( tool ):
 
 
 class Tool( umbs.tools.base.Tool ):
-   def __init__( self, config, directory, **kwargs ):
-      super( ).__init__( config, directory, **kwargs )
+   def __init__( self, config, **kwargs ):
+      super( ).__init__( config, **kwargs )
 
       for key in [ "source", "out" ]:
          if key not in self.__config:
@@ -31,7 +31,7 @@ class Tool( umbs.tools.base.Tool ):
 
 
       self.__source = os.path.join( self.__root_dir, self.__config["source"] )
-      self.__out = os.path.join( self.__dir, self.__config["out"] )
+      self.__out = os.path.join( self.__target_dir, self.__config["out"] )
    # def __init__
 
    def __del__( self ):
@@ -49,7 +49,7 @@ class Tool( umbs.tools.base.Tool ):
    # def exec
 
    def clean( self, **kwargs ):
-      pfw.shell.execute( f"rm {self.__out}", output = pfw.shell.eOutput.PTY, cwd = self.__dir )
+      pfw.shell.execute( f"rm {self.__out}", output = pfw.shell.eOutput.PTY, cwd = self.__target_dir )
    # def clean
 
    # Function for building u-boot script from different u-boot scripts.
@@ -79,7 +79,7 @@ class Tool( umbs.tools.base.Tool ):
    # def __build_uboot_script_lines
 
    def __build_uboot_script( self, script_in_file: str, script_out_file: str ):
-      pfw.shell.execute( f"mkdir -p {os.path.dirname( script_out_file )}", output = pfw.shell.eOutput.PTY, cwd = self.__dir )
+      pfw.shell.execute( f"mkdir -p {os.path.dirname( script_out_file )}", output = pfw.shell.eOutput.PTY, cwd = self.__target_dir )
 
       code = self.__build_uboot_script_lines( script_in_file )
       script_out_file_h = open( script_out_file, "w+" )

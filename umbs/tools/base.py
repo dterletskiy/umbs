@@ -2,17 +2,18 @@ import os
 
 import pfw.console
 import pfw.shell
+import pfw.base.dict
 
 
 
 class Tool:
-   def __init__( self, config, directory, **kwargs ):
-      self.__root_dir = kwargs.get( "root_dir", None )
-
+   def __init__( self, config, **kwargs ):
       self.__config = config
-      self.__dir = directory
+      self.__root_dir = kwargs.get( "root_dir", None )
+      self.__project_dir = kwargs.get( "project_dir", None )
+      self.__target_dir = os.path.join( self.__project_dir, self.__config.get( "subdir", "" ) )
 
-      self.__artifacts = [ os.path.join( self.__dir, artifact ) for artifact in self.__config.get( "artifacts", [ ] ) ]
+      self.__artifacts = [ os.path.join( self.__project_dir, artifact ) for artifact in self.__config.get( "artifacts", [ ] ) ]
    # def __init__
 
    def __del__( self ):
@@ -60,4 +61,10 @@ class Tool:
 
       return result
    # def test
+
+
+
+   def __get_config( self, keys ):
+      return pfw.base.dict.get_value( self.__config, keys )
+   # def __get_config
 # class Tool

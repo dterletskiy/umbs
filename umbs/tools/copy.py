@@ -8,8 +8,8 @@ import umbs.tools.base
 
 
 
-def get_tool( config, directory, **kwargs ):
-   return Tool( config, directory, **kwargs )
+def get_instance( config, **kwargs ):
+   return Tool( config, **kwargs )
 
 def do_exec( tool ):
    tool.exec( )
@@ -21,8 +21,8 @@ def do_clean( tool ):
 
 
 class Tool( umbs.tools.base.Tool ):
-   def __init__( self, config, directory, **kwargs ):
-      super( ).__init__( config, directory, **kwargs )
+   def __init__( self, config, **kwargs ):
+      super( ).__init__( config, **kwargs )
 
       for key in [ "content" ]:
          if key not in self.__config:
@@ -44,14 +44,14 @@ class Tool( umbs.tools.base.Tool ):
 
    def clean( self, **kwargs ):
       for item in self.__content:
-         pfw.shell.execute( f"rm {os.path.join( self.__dir, item['to'] )}", output = pfw.shell.eOutput.PTY, cwd = self.__dir )
+         pfw.shell.execute( f"rm {os.path.join( self.__target_dir, item['to'] )}", output = pfw.shell.eOutput.PTY, cwd = self.__target_dir )
    # def clean
 
    def exec( self, **kwargs ):
       for item in self.__content:
          pfw.linux.file.copy(
                os.path.join( self.__root_dir, item["from"] ),
-               os.path.join( self.__dir, item["to"] ),
+               os.path.join( self.__target_dir, item["to"] ),
                force = True
             )
    # def exec

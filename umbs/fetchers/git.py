@@ -2,10 +2,12 @@ import pfw.console
 import pfw.shell
 import pfw.linux.git
 
+import os
 
 
-def get_fetcher( config, destination, **kwargs ):
-   return Fetcher( config, destination, **kwargs )
+
+def get_instance( config, **kwargs ):
+   return Fetcher( config, **kwargs )
 
 def do_fetch( repo ):
    repo.fetch( )
@@ -13,11 +15,11 @@ def do_fetch( repo ):
 
 
 class Fetcher:
-   def __init__( self, config, destination, **kwargs ):
+   def __init__( self, config, **kwargs ):
       self.__repo = pfw.linux.git.Repo(
             url = config["url"],
             branch = config.get( "branch", None ),
-            directory = destination,
+            directory = os.path.join( kwargs.get( "project_dir", None ), config.get( "dir", "" ) ),
             depth = config.get( "depth", 1 )
          )
    # def __init__

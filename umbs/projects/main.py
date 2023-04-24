@@ -24,34 +24,34 @@ class Project:
    def __init__( self, name: str, yaml_project: dict, root_dir: str ):
       self.__name = name
 
-      for key in [ "dir" ]:
+      for key in [ "project_subdir" ]:
          if key not in yaml_project:
             raise umbs.base.YamlFormatError( f"Filed '{key}' must be defined in the project '{name}'" )
 
 
-      self.__dir = os.path.join( root_dir, yaml_project["dir"] )
-      pfw.shell.execute( f"mkdir -p {self.__dir}" )
+      self.__project_dir = os.path.join( root_dir, yaml_project["project_subdir"] )
+      pfw.shell.execute( f"mkdir -p {self.__project_dir}" )
 
       self.__fetchers = [ ]
       if "sources" in yaml_project:
          for yaml_source in yaml_project["sources"]:
-            self.__fetchers.append( umbs.fetchers.main.Fetcher( yaml_source, self.__dir, root_dir = root_dir ) )
+            self.__fetchers.append( umbs.fetchers.main.Fetcher( yaml_source, root_dir = root_dir, project_dir = self.__project_dir ) )
       else:
          pfw.console.debug.warning( f"Filed 'sources' is not defined in the project '{name}'" )
 
       self.__builders = [ ]
       if "builders" in yaml_project:
          for yaml_builder in yaml_project["builders"]:
-            self.__builders.append( umbs.builders.main.Builder( yaml_builder, self.__dir, root_dir = root_dir ) )
+            self.__builders.append( umbs.builders.main.Builder( yaml_builder, root_dir = root_dir, project_dir = self.__project_dir ) )
       else:
-         pfw.console.debug.warning( f"Filed 'builder' must be defined in the project '{name}'" )
+         pfw.console.debug.warning( f"Filed 'builder' is not defined in the project '{name}'" )
 
       self.__tools = [ ]
       if "patches" in yaml_project:
          for yaml_tool in yaml_project["patches"]:
-            self.__tools.append( umbs.tools.main.Tool( yaml_tool, self.__dir, root_dir = root_dir ) )
+            self.__tools.append( umbs.tools.main.Tool( yaml_tool, root_dir = root_dir, project_dir = self.__project_dir ) )
       else:
-         pfw.console.debug.warning( f"Filed 'patches' must be defined in the project '{name}'" )
+         pfw.console.debug.warning( f"Filed 'patches' is not defined in the project '{name}'" )
 
       self.__action_map = {
          "fetch": [ self.do_fetch ],
@@ -119,7 +119,7 @@ class Project:
 
 
    __name: str = None
-   __dir: str = None
+   __project_dir: str = None
    __fetchers: list = None
    __tools: list = None
    __builders: list = None

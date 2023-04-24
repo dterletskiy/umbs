@@ -5,14 +5,14 @@ import importlib
 
 
 class Tool:
-   def __new__( cls, yaml_tool: dict, dir: str, **kwargs ):
+   def __new__( cls, yaml_data: dict, **kwargs ):
       return object.__new__( cls )
    # def __new__
 
-   def __init__( self, yaml_tool: dict, dir: str, **kwargs ):
-      self.__dir = dir
-      self.__module = importlib.import_module( f"umbs.tools.{yaml_tool['type']}", __package__ )
-      self.__tool = self.__module.get_tool( yaml_tool, dir, **kwargs )
+   def __init__( self, yaml_data: dict, **kwargs ):
+      namespase = "umbs.tools"
+      self.__module = importlib.import_module( f"{namespase}.{yaml_data['type']}", __package__ )
+      self.__instance = self.__module.get_instance( yaml_data, **kwargs )
    # def __init__
 
    def __del__( self ):
@@ -34,16 +34,15 @@ class Tool:
    # def __str__
 
    def do_exec( self ):
-      self.__module.do_exec( self.__tool )
+      self.__module.do_exec( self.__instance )
    # def do_exec
 
    def do_clean( self ):
-      self.__module.do_clean( self.__tool )
+      self.__module.do_clean( self.__instance )
    # def do_clean
 
 
 
-   __dir: str = None
-   __tool = None
+   __instance = None
    __module = None
 # class Tool

@@ -8,8 +8,8 @@ import umbs.tools.base
 
 
 
-def get_tool( config, directory, **kwargs ):
-   return Tool( config, directory, **kwargs )
+def get_instance( config, **kwargs ):
+   return Tool( config, **kwargs )
 
 def do_exec( tool ):
    tool.exec( )
@@ -21,14 +21,16 @@ def do_clean( tool ):
 
 
 class Tool( umbs.tools.base.Tool ):
-   def __init__( self, config, directory, **kwargs ):
-      super( ).__init__( config, directory, **kwargs )
+   def __init__( self, config, **kwargs ):
+      super( ).__init__( config, **kwargs )
 
-      for key in [ "exe", "kernel", "ramdisk", "out" ]:
+      for key in [ "kernel", "ramdisk", "out" ]:
          if key not in self.__config:
             raise umbs.base.YamlFormatError( f"Filed '{key}' must be defined in tool" )
 
-      __exe = os.path.join( self.__root_dir, self.__config["exe"] )
+      __exe = "mkbootimg"
+      if "exe" in self.__config:
+         __exe = os.path.join( self.__root_dir, self.__config["exe"] )
       __kernel = os.path.join( self.__root_dir, self.__config["kernel"] )
       __ramdisk = os.path.join( self.__root_dir, self.__config["ramdisk"] )
       __dtb = self.__config.get( "dtb", None )
@@ -46,7 +48,7 @@ class Tool( umbs.tools.base.Tool ):
       __vendor_bootconfig = self.__config.get( "vendor_bootconfig", None )
       __vendor_boot = self.__config.get( "vendor_boot", None )
 
-      __out = os.path.join( self.__dir, self.__config["out"] )
+      __out = os.path.join( self.__target_dir, self.__config["out"] )
 
       command: str = f" {exe}"
       command += f" --header_version {__header_version}"
@@ -81,10 +83,10 @@ class Tool( umbs.tools.base.Tool ):
    # def __str__
 
    def exec( self, **kwargs ):
-      pfw.shell.execute( self.__command, output = pfw.shell.eOutput.PTY, cwd = self.__dir )
+      pfw.shell.execute( self.__command, output = pfw.shell.eOutput.PTY, cwd = self.__target_dir )
    # def exec
 
    def clean( self, **kwargs ):
-      pfw.shell.execute( f"rm {self.__out}", output = pfw.shell.eOutput.PTY, cwd = self.__dir )
+      pfw.shell.execute( f"rm {self.__out}", output = pfw.shell.eOutput.PTY, cwd = self.__target_dir )
    # def clean
 # class Tool

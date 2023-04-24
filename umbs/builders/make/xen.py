@@ -7,8 +7,8 @@ import umbs.builders.base
 
 
 
-def get_builder( config, directory, **kwargs ):
-   return Builder( config, directory, **kwargs )
+def get_instance( config, **kwargs ):
+   return Builder( config, **kwargs )
 
 def do_build( builder ):
    builder.config( )
@@ -21,8 +21,8 @@ def do_clean( builder ):
 
 
 class Builder( umbs.builders.base.Builder ):
-   def __init__( self, config, directory, **kwargs ):
-      super( ).__init__( config, directory, **kwargs )
+   def __init__( self, config, **kwargs ):
+      super( ).__init__( config, **kwargs )
 
       self.__command = "make"
       self.__command += f" -j{str( self.__config['jobs'] )}" if "jobs" in self.__config else ""
@@ -46,14 +46,14 @@ class Builder( umbs.builders.base.Builder ):
    def config( self, **kwargs ):
       command = "./configure"
 
-      pfw.shell.execute( command, cwd = self.__dir, print = False, collect = False )
+      pfw.shell.execute( command, cwd = self.__target_dir, print = False, collect = False )
    # def config
 
    def build( self, **kwargs ):
-      pfw.shell.execute( self.__command, self.__targets, output = pfw.shell.eOutput.PTY, cwd = self.__dir )
+      pfw.shell.execute( self.__command, self.__targets, output = pfw.shell.eOutput.PTY, cwd = self.__target_dir )
    # def build
 
    def clean( self, **kwargs ):
-      pfw.shell.execute( self.__command, "clean distclean mrproper", output = pfw.shell.eOutput.PTY, cwd = self.__dir )
+      pfw.shell.execute( self.__command, "clean distclean mrproper", output = pfw.shell.eOutput.PTY, cwd = self.__target_dir )
    # def clean
 # class Builder

@@ -36,9 +36,9 @@ def do_action( action ):
          f"ARG_USER_ID={user_id}",
          f"ARG_USER_GID={user_gid}",
          f"ARG_USER_NAME={user_name}",
-         # f"ARG_USER_PASSWORD={user_password}",
-         # f"ARG_USER_PASSWORD_SALT={user_password_salt}",
-         # f"ARG_USER_HASHED_PASSWORD={user_hashed_password}",
+         f"ARG_USER_PASSWORD={user_password}",
+         f"ARG_USER_PASSWORD_SALT={user_password_salt}",
+         f"ARG_USER_HASHED_PASSWORD={user_hashed_password}",
          f"ARG_PACKAGES='{packages}'",
          f"ARG_USER_WORKDIR='{user_workdir}'",
       ]

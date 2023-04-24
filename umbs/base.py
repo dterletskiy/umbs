@@ -16,6 +16,12 @@ class YamlFormatError( Exception ):
       super( ).__init__( self.message )
 # class YamlFormatError
 
+class ConfigurationFormatError( Exception ):
+   def __init__( self, message ):
+      self.message = message
+      super( ).__init__( self.message )
+# class ConfigurationFormatError
+
 
 
 class Config:
@@ -27,11 +33,19 @@ class Config:
       yaml_stream = yaml.compose( yaml_fd )
       yaml_fd.close( )
 
+      # Read "variables" section from yaml file
       self.__variables = yaml_data.get( "variables", { } )
+      # Override some field according to "config" file or command line
       if root_dir:
          # Override yaml variable "DIRECTORIES.ROOT" by the value obtained from configuration file or command line parameter. 
          self.set_variable( "DIRECTORIES.ROOT", root_dir )
+      # Substitute valiables' values
       self.__process_yaml_data( self.__variables )
+      # Test critical variables
+      if None == self.get_variable( "DIRECTORIES.ROOT" ):
+         raise ConfigurationFormatError(
+               "Root directory must be defined in command line or confiruration file as 'root_dit', or in yaml file as 'DIRECTORIES.ROOT'"
+            )
 
       self.__projects = yaml_data.get( "projects", { } )
       self.__process_yaml_data( self.__projects )
@@ -100,6 +114,8 @@ class Config:
    # class AV
 
    def __replace( self, value ):
+      pfw.console.debug.trace( f"processing value: '{value}'" )
+
       if not isinstance( value, str ):
          pfw.console.debug.warning( f"ERROR: '{value}' is not a string" )
          return ( False, value )
@@ -107,7 +123,17 @@ class Config:
       replaced: bool = False
       if findall := re.findall( r'\$\{(.+?)\}', value ):
          for item in findall:
-            value = value.replace( "${" + item + "}", self.get_variable( item ) )
+            variable = self.get_variable( item )
+            pfw.console.debug.trace( f"{item} -> {variable} ({type(variable)})" )
+            if isinstance( variable, str ) or isinstance( variable, int ) or isinstance( variable, float ):
+               value = value.replace( "${" + item + "}", str(variable) )
+            elif isinstance( variable, list ) or isinstance( variable, tuple ) or isinstance( variable, dict ):
+               if value == "${" + f"{item}" + "}":
+                  value = variable
+               else:
+                  pfw.console.debug.error( "can substitute only single variable without any other characters by list, tuple or map" )
+                  raise YamlFormatError( f"Wrong yaml format error for substitutuion variable '{item}'" )
+
          value = self.__replace( value )[1]
          replaced = True
 

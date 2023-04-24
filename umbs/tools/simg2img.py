@@ -9,8 +9,8 @@ import umbs.tools.base
 
 
 
-def get_tool( config, directory, **kwargs ):
-   return Tool( config, directory, **kwargs )
+def get_instance( config, **kwargs ):
+   return Tool( config, **kwargs )
 
 def do_exec( tool ):
    tool.exec( )
@@ -22,8 +22,8 @@ def do_clean( tool ):
 
 
 class Tool( umbs.tools.base.Tool ):
-   def __init__( self, config, directory, **kwargs ):
-      super( ).__init__( config, directory, **kwargs )
+   def __init__( self, config, **kwargs ):
+      super( ).__init__( config, **kwargs )
 
       for key in [ "exe", "source", "out" ]:
          if key not in self.__config:
@@ -32,7 +32,7 @@ class Tool( umbs.tools.base.Tool ):
 
       __exe = os.path.join( self.__root_dir, self.__config["exe"] )
       __source = os.path.join( self.__root_dir, self.__config["source"] )
-      __out = os.path.join( self.__dir, self.__config["out"] )
+      __out = os.path.join( self.__target_dir, self.__config["out"] )
 
       self.__command = f"mkdir -p {os.path.dirname( __out )};"
       self.__command += f" {__exe} {__source} {__out}"
@@ -51,10 +51,10 @@ class Tool( umbs.tools.base.Tool ):
    # def __str__
 
    def exec( self, **kwargs ):
-      pfw.shell.execute( self.__command, output = pfw.shell.eOutput.PTY, cwd = self.__dir )
+      pfw.shell.execute( self.__command, output = pfw.shell.eOutput.PTY, cwd = self.__target_dir )
    # def exec
 
    def clean( self, **kwargs ):
-      pfw.shell.execute( f"rm {self.__out}", output = pfw.shell.eOutput.PTY, cwd = self.__dir )
+      pfw.shell.execute( f"rm {self.__out}", output = pfw.shell.eOutput.PTY, cwd = self.__target_dir )
    # def clean
 # class Tool
