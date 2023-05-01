@@ -63,17 +63,37 @@ class Builder( umbs.builders.base.Builder ):
    # def __str__
 
    def build( self, **kwargs ):
+      self.pre_build( **kwargs )
+      self.do_build( **kwargs )
+      self.post_build( **kwargs )
+      self.deploy( )
+   # def build
+
+   def pre_build( self, **kwargs ):
       pfw.linux.image.create( self.__file, self.__size )
       pfw.linux.image.format( self.__file, self.__fs, label = self.__label )
-      mount_point = pfw.linux.image.mount( self.__file )
+      self.__mount_point = pfw.linux.image.mount( self.__file )
+      pfw.shell.execute( f"chown -R {os.geteuid( )}:{os.getegid( )} {self.__mount_point}", sudo = True, output = pfw.shell.eOutput.PTY )
+   # def pre_build
 
+   def do_build( self, **kwargs ):
       for item in self.__content:
-         pfw.linux.file.copy(
-               os.path.join( self.__root_dir, item["from"] ),
-               os.path.join( mount_point, item["to"] ),
-               sudo = True, force = True
-            )
+         if "copy" == item["action"]:
+            pfw.linux.file.copy(
+                  os.path.join( self.__root_dir, item["from"] ),
+                  os.path.join( self.__mount_point, item["to"] ),
+                  # sudo = True,
+                  force = True
+               )
+         elif "extract" == item["action"]:
+            pfw.archive.extract(
+                  os.path.join( self.__root_dir, item["from"] ),
+                  None,
+                  os.path.join( self.__mount_point, item["to"] )
+               )
+   # def do_build
 
+   def post_build( self, **kwargs ):
       pfw.linux.image.umount( self.__file )
 
       def processor( **kwargs ):
@@ -84,9 +104,19 @@ class Builder( umbs.builders.base.Builder ):
             pfw.console.debug.promt( )
       # def processor
       pfw.linux.image.map( self.__file, processor = processor )
-   # def build
+   # def post_build
+
+   def deploy( self, **kwargs ):
+      pfw.shell.execute( f"mv {self.__file} {self.__deploy_dir}", output = pfw.shell.eOutput.PTY )
+   # def deploy
 
    def clean( self, **kwargs ):
       pfw.shell.execute( f"rm -rf {' '.join( self.__artifacts )}", output = pfw.shell.eOutput.PTY )
    # def clean
+
+
+
+   def mount_point( self ):
+      return self.__mount_point
+   # def mount_point
 # class Builder

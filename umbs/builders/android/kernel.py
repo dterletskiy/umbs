@@ -12,6 +12,7 @@ def get_instance( config, **kwargs ):
    return Builder( config, **kwargs )
 
 def do_build( builder ):
+   builder.prepare( )
    builder.config( )
    builder.build( )
    builder.test( )
@@ -45,7 +46,7 @@ class Builder( umbs.builders.base.Builder ):
    # def config
 
    def build( self, **kwargs ):
-      command = f"tools/bazel run --sandbox_debug {self.__target}_dist -- --dist_dir=out/deploy/{self.__target}"
+      command = f"tools/bazel run --sandbox_debug {self.__target}_dist -- --dist_dir={self.__deploy_dir}"
 
       pfw.shell.execute( command, output = pfw.shell.eOutput.PTY, cwd = self.__target_dir )
    # def build

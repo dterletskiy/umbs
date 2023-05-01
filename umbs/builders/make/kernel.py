@@ -11,6 +11,7 @@ def get_instance( config, **kwargs ):
    return Builder( config, **kwargs )
 
 def do_build( builder ):
+   builder.prepare( )
    builder.config( )
    builder.build( )
    builder.test( )
@@ -24,8 +25,10 @@ class Builder( umbs.builders.base.Builder ):
    def __init__( self, config, **kwargs ):
       super( ).__init__( config, **kwargs )
 
-      self.__command = "make"
-      # self.__command += f" O={self.__target_dir}"
+      self.__command = f"export INSTALL_PATH={self.__deploy_dir};"
+      self.__command += f" export INSTALL_MOD_PATH={self.__deploy_dir};"
+      self.__command += f" make"
+      self.__command += f" O={self.__product_dir}"
       self.__command += f" -C {self.__target_dir}"
       self.__command += f" V=1"
       self.__command += f" -j{str( self.__config['jobs'] )}" if "jobs" in self.__config else ""
@@ -50,10 +53,14 @@ class Builder( umbs.builders.base.Builder ):
 
    def config( self, **kwargs ):
       pfw.shell.execute( self.__command, self.__defconfig, cwd = self.__target_dir, print = False, collect = False )
+      # pfw.shell.execute( self.__command, "menuconfig", cwd = self.__target_dir, print = False, collect = False )
+      # pfw.shell.execute( self.__command, "savedefconfig", cwd = self.__target_dir, print = False, collect = False )
    # def config
 
    def build( self, **kwargs ):
       pfw.shell.execute( self.__command, self.__targets, output = pfw.shell.eOutput.PTY, cwd = self.__target_dir )
+      pfw.shell.execute( self.__command, "install", output = pfw.shell.eOutput.PTY, cwd = self.__target_dir )
+      pfw.shell.execute( self.__command, "modules_install", output = pfw.shell.eOutput.PTY, cwd = self.__target_dir )
    # def build
 
    def clean( self, **kwargs ):

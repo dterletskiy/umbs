@@ -12,6 +12,8 @@ class Builder:
       self.__root_dir = kwargs.get( "root_dir", None )
       self.__project_dir = kwargs.get( "project_dir", None )
       self.__target_dir = os.path.join( self.__project_dir, self.__config.get( "subdir", "" ) )
+      self.__product_dir = os.path.join( self.__project_dir, self.__config.get( "product_subdir", "" ) )
+      self.__deploy_dir = os.path.join( self.__project_dir, self.__config.get( "deploy_subdir", "" ) )
 
       self.__artifacts = [ os.path.join( self.__project_dir, artifact ) for artifact in self.__config.get( "artifacts", [ ] ) ]
    # def __init__
@@ -31,6 +33,12 @@ class Builder:
       kw_msg = kwargs.get( "msg", "" )
       pfw.console.debug.info( f"{kw_msg} (type {self.__class__.__name__}):", tabs = ( kw_tabs + 0 ) )
    # def info
+
+   def prepare( self, **kwargs ):
+      pfw.shell.execute( f"mkdir -p {self.__target_dir}" )
+      pfw.shell.execute( f"mkdir -p {self.__product_dir}" )
+      pfw.shell.execute( f"mkdir -p {self.__deploy_dir}" )
+   # def prepare
 
    def config( self, **kwargs ):
       pass

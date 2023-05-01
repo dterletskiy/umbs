@@ -25,6 +25,34 @@ def init_projects( yaml_config ):
 
 
 
+def run( project, action, umbs_projects ):
+   if "*" == project:
+      for name, project in umbs_projects.items( ):
+         project.do_action( action )
+   else:
+      umbs_projects[ project ].do_action( action )
+# def run
+
+
+
+def run_in_container( ):
+   cfg = open( "configuration_gen.cgf", "w" )
+   for config in umbs.configuration.config.get_data_list( ):
+      skip = False
+      for key in [ "container", "config" ]:
+         if key == config.get_name( ):
+            skip = True
+            break
+      if skip:
+         continue
+
+      for value in config.get_values( ):
+         cfg.write( f"{config.get_name( )}:         {value}\n" )
+   cfg.close( )
+# def run_in_container
+
+
+
 def main( ):
    yaml_config: umbs.base.Config = umbs.base.Config( umbs.configuration.value( "yaml_config" ), root_dir = umbs.configuration.value( "root_dir" ) )
    yaml_config.info( )
@@ -35,13 +63,10 @@ def main( ):
    project = umbs.configuration.value( "project" )
    action = umbs.configuration.value( "action" )
 
-   if "docker" == project:
-      umbs.docker.main.do_action( action )
-   elif "*" == project:
-      for name, project in umbs_projects.items( ):
-         project.do_action( action )
+   if umbs.configuration.value( 'container' ):
+      run_in_container( )
    else:
-      umbs_projects[ project ].do_action( action )
+      run( project, action, umbs_projects )
 
    pfw.console.debug.ok( "-------------------------- END --------------------------" )
 # def main

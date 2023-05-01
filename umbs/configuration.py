@@ -70,9 +70,17 @@ class ConfigurationData:
       return self.__values
    # def get_values
 
+   def set_value( self, value ):
+      self.set_value_single( value )
+   # def set_value
+
+   def set_value_single( self, value ):
+      self.__values.append( value )
+   # def set_value_single
+
    # Set single value or list of values of variable
    # In fact this operation adds new value/values to existing value list of variable
-   def set_value( self, value ):
+   def set_value_ext( self, value ):
       if None == value:
          return
 
@@ -85,7 +93,7 @@ class ConfigurationData:
          values_to_add = [ value ]
 
       self.__values.extend( values_to_add )
-   # def set_value
+   # def set_value_ext
 
    # Clear all values of variable
    def reset_value( self, name: str, value = None ):
@@ -168,7 +176,8 @@ class ConfigurationContainer:
 
    def info( self, **kwargs ):
       print( self.__class__.__name__, ":" )
-      for data in self.__list: data.info( )
+      for data in self.__list:
+         data.info( )
    # def info
 
 
@@ -184,6 +193,10 @@ class ConfigurationContainer:
 
       return None
    # def get_data
+
+   def get_data_list( self ):
+      return self.__list
+   # def get_data_list
 
    def test( self, name: str ):
       return None != self.get_data( name )
@@ -242,8 +255,9 @@ class ConfigurationContainer:
 def add_config( app_data, name, value ):
    app_data.set_value( name, value )
 
-   if "antlr_outdir" == name or "pfw" == name:
-      app_data.set_value( "include", value )
+   for key in [ "pfw" ]:
+      if key == name:
+         app_data.set_value( "include", value )
 # def add_config
 
 
@@ -256,7 +270,7 @@ def process_cmdline( app_data, argv ):
 
    parser.add_argument( "--version", action = "version", version = '%(prog)s 2.0' )
 
-   parser.add_argument( "--config", dest = "config", type = str, action = "store", required = False, help = app_data.get_description( "config" ) )
+   parser.add_argument( "--config", dest = "config", type = str, action = "append", required = False, help = app_data.get_description( "config" ) )
    parser.add_argument( "--yaml_config", dest = "yaml_config", type = str, action = "store", required = False, help = app_data.get_description( "yaml_config" ) )
    parser.add_argument( "--root_dir", dest = "root_dir", type = str, action = "store", required = False, help = app_data.get_description( "root_dir" ) )
 
@@ -266,6 +280,8 @@ def process_cmdline( app_data, argv ):
    parser.add_argument( "--project", dest = "project", type = str, action = "store", required = False, default = "*", help = app_data.get_description( "project" ) )
    parser.add_argument( "--action", dest = "action", type = str, action = "store", required = False, default = "*", help = app_data.get_description( "action" ) )
 
+   parser.add_argument( "--container", dest = "container", type = str, action = "store", required = False, default = None, help = app_data.get_description( "container" ) )
+
    # parser.print_help( )
    try:
       argument = parser.parse_args( )
@@ -273,7 +289,14 @@ def process_cmdline( app_data, argv ):
       print( 'Catching an ArgumentError' )
 
    for key, value in argument.__dict__.items( ):
-      add_config( app_data, key, value )
+      if None == value:
+         continue
+
+      if isinstance( value, list ) or isinstance( value, tuple ):
+         for item in value:
+            add_config( app_data, key, item )
+      else:
+         add_config( app_data, key, value )
 # def process_cmdline
 
 
@@ -281,13 +304,18 @@ def process_cmdline( app_data, argv ):
 def process_config_file( app_data ):
    pattern: str = r"^\s*(.*)\s*:\s*(.*)\s*$"
 
-   for config_file in app_data.get_values( "config" ):
+   config_files = app_data.get_values( "config" )
+   print( f"Processing config files: {config_files}" )
+   for config_file in config_files:
+      print( f"Processing config file: '{config_file}'" )
       config_file_h = open( config_file, "r" )
       for line in config_file_h:
          match = re.match( pattern, line )
          if match:
             add_config( app_data, match.group( 1 ), match.group( 2 ) )
       config_file_h.close( )
+      print( f"Processed config file: '{config_file}'" )
+   print( f"Processed config files: {config_files}" )
 # def process_config_file
 
 
@@ -307,13 +335,14 @@ def process_configuration( app_data, argv ):
 
 config: ConfigurationContainer = ConfigurationContainer(
       [
-         ConfigurationData( "config"                      , True  , "Path to configuration file" ),
-         ConfigurationData( "yaml_config"                 , True  , "Path to yaml project configuration file" ),
-         ConfigurationData( "root_dir"                    , False  , "Path to project root directory" ),
-         ConfigurationData( "include"                     , False , "Additional directory to search import packages" ),
-         ConfigurationData( "pfw"                         , True  , "Python Framework directory location" ),
-         ConfigurationData( "project"                     , False , "Project name" ),
-         ConfigurationData( "action"                      , False , "Action name" ),
+         ConfigurationData( "config"            , True  , "Path to configuration file" ),
+         ConfigurationData( "yaml_config"       , True  , "Path to yaml project configuration file" ),
+         ConfigurationData( "root_dir"          , False , "Path to project root directory" ),
+         ConfigurationData( "include"           , False , "Additional directory to search import packages" ),
+         ConfigurationData( "pfw"               , True  , "Python Framework directory location" ),
+         ConfigurationData( "project"           , False , "Project name" ),
+         ConfigurationData( "action"            , False , "Action name" ),
+         ConfigurationData( "container"         , False , "Indicates is this script must be run in container" ),
       ]
    )
 

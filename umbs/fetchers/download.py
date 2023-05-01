@@ -2,7 +2,7 @@ import os
 
 import pfw.console
 import pfw.shell
-import pfw.linux.git
+import pfw.base.net
 
 import umbs.base
 import umbs.fetchers.base
@@ -21,12 +21,7 @@ class Fetcher( umbs.fetchers.base.Fetcher ):
    def __init__( self, config, **kwargs ):
       super( ).__init__( config, **kwargs )
 
-      self.__repo = pfw.linux.git.Repo(
-            url = self.__config["url"],
-            branch = self.__config.get( "branch", None ),
-            directory = self.__target_dir,
-            depth = self.__config.get( "depth", 1 )
-         )
+      self.__url = self.__config["url"]
    # def __init__
 
    def __del__( self ):
@@ -40,10 +35,11 @@ class Fetcher( umbs.fetchers.base.Fetcher ):
    # def __str__
 
    def fetch( self, **kwargs ):
-      self.__repo.clone( )
+      pfw.base.net.download( self.__url, self.__target_dir )
    # def sync
 
    def remove( self ):
-      self.__repo.remove( )
+      # @TDA: To be implemented
+      pass
    # def remove
 # class Fetcher

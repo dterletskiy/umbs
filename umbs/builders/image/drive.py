@@ -59,6 +59,11 @@ class Builder( umbs.builders.base.Builder ):
    # def __str__
 
    def build( self, **kwargs ):
+      self.do_build( **kwargs )
+      self.deploy( )
+   # def build
+
+   def do_build( self, **kwargs ):
       partitions = [ ]
       for partition in self.__partitions:
          if "file" in partition:
@@ -103,7 +108,11 @@ class Builder( umbs.builders.base.Builder ):
             pfw.console.debug.promt( )
       # def processor
       pfw.linux.image.map( self.__file, processor = processor )
-   # def build
+   # def do_build
+
+   def deploy( self, **kwargs ):
+      pfw.shell.execute( f"mv {self.__file} {self.__deploy_dir}", output = pfw.shell.eOutput.PTY )
+   # def deploy
 
    def clean( self, **kwargs ):
       pfw.shell.execute( f"rm -rf {' '.join( self.__artifacts )}", output = pfw.shell.eOutput.PTY )

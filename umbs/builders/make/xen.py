@@ -11,6 +11,7 @@ def get_instance( config, **kwargs ):
    return Builder( config, **kwargs )
 
 def do_build( builder ):
+   builder.prepare( )
    builder.config( )
    builder.build( )
    builder.test( )

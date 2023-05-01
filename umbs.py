@@ -51,12 +51,10 @@ init( )
 
 
 import umbs.main
-import pfw.shell
 
 
 
 def main( ):
-   # pfw.shell.init( "/mnt/docker/builder_arm64v8_ubuntu_22.04/logs/log.txt" )
    umbs.main.main( )
 
 if __name__ == "__main__":

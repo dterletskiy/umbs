@@ -11,6 +11,7 @@ def get_instance( config, **kwargs ):
    return Builder( config, **kwargs )
 
 def do_build( builder ):
+   builder.prepare( )
    builder.config( )
    builder.build( )
    builder.test( )
@@ -25,7 +26,7 @@ class Builder( umbs.builders.base.Builder ):
       super( ).__init__( config, **kwargs )
 
       self.__command = "make"
-      # self.__command += f" O={self.__target_dir}"
+      self.__command += f" O={self.__product_dir}"
       self.__command += f" -C {self.__target_dir}"
       self.__command += f" V=1"
       self.__command += f" -j{str( self.__config['jobs'] )}" if "jobs" in self.__config else ""

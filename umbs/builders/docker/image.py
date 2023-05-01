@@ -40,8 +40,8 @@ class Builder( umbs.builders.base.Builder ):
          if "tag" in self.__config["from"]:
             self.__build_args.append( f"ARG_OS_VERSION={self.__config['from']['tag']}" )
       if "user" in self.__config:
-         if "id" in self.__config["user"]:
-            self.__build_args.append( f"ARG_USER_ID={self.__config['user']['id']}" )
+         if "uid" in self.__config["user"]:
+            self.__build_args.append( f"ARG_USER_UID={self.__config['user']['uid']}" )
          if "gid" in self.__config["user"]:
             self.__build_args.append( f"ARG_USER_GID={self.__config['user']['gid']}" )
          if "name" in self.__config["user"]:
@@ -61,7 +61,8 @@ class Builder( umbs.builders.base.Builder ):
             if isinstance( data, str ):
                pkg = data
             elif isinstance( data, list ) or isinstance( data, tuple ):
-               pkg = " ".join( data )
+               for item in data:
+                  pkg += " " + process_packages( item )
             elif isinstance( data, dict ):
                for key, value in data.items( ):
                   pkg += " " + process_packages( value )
