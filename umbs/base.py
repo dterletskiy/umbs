@@ -2,6 +2,7 @@
 
 import copy
 import re
+import os
 import yaml
 
 import pfw.console
@@ -28,10 +29,31 @@ class Config:
    def __init__( self, file: str, **kwargs ):
       root_dir = kwargs.get( "root_dir", None )
 
-      yaml_fd = open( file, "r" )
-      yaml_data = yaml.load( yaml_fd, Loader = yaml.SafeLoader )
-      yaml_stream = yaml.compose( yaml_fd )
-      yaml_fd.close( )
+      def read_file( file ):
+         pfw.console.debug.error( f"processing file: {file}" )
+         pattern: str = r"^\s*include:\s*\"(.*)\"\s*$"
+
+         lines: str = ""
+         file_dir = os.path.dirname( file )
+
+         yaml_fd = open( file, "r" )
+
+         for line in yaml_fd:
+            pfw.console.debug.warning( f"processing line: {file}" )
+            match = re.match( pattern, line )
+            if match:
+               import_file_name = match.group( 1 )
+               import_file_path = os.path.join( file_dir, import_file_name )
+               lines += read_file( import_file_path )
+            else:
+               lines += line
+
+         yaml_fd.close( )
+         return lines
+      # def read_file
+
+      yaml_data = yaml.load( read_file( file ), Loader = yaml.SafeLoader )
+      # yaml_stream = yaml.compose( yaml_fd )
 
       # Read "variables" section from yaml file
       self.__variables = yaml_data.get( "variables", { } )
