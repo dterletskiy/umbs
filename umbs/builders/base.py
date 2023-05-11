@@ -35,25 +35,35 @@ class Builder:
    # def info
 
    def prepare( self, **kwargs ):
-      pfw.shell.execute( f"mkdir -p {self.__target_dir}" )
-      pfw.shell.execute( f"mkdir -p {self.__product_dir}" )
-      pfw.shell.execute( f"mkdir -p {self.__deploy_dir}" )
+      result = pfw.shell.execute( f"mkdir -p {self.__target_dir}" )
+      if 0 != result["code"]:
+         return False
+
+      result = pfw.shell.execute( f"mkdir -p {self.__product_dir}" )
+      if 0 != result["code"]:
+         return False
+
+      result = pfw.shell.execute( f"mkdir -p {self.__deploy_dir}" )
+      if 0 != result["code"]:
+         return False
+
+      return True
    # def prepare
 
    def config( self, **kwargs ):
-      pass
+      return True
    # def config
 
    def build( self, **kwargs ):
-      pass
+      return True
    # def build
 
    def clean( self, **kwargs ):
-      pass
+      return True
    # def clean
 
    def deploy( self, **kwargs ):
-      pass
+      return True
    # def deploy
 
    def test( self, **kwargs ):

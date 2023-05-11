@@ -198,6 +198,10 @@ class ConfigurationContainer:
       return self.__list
    # def get_data_list
 
+   def get_names( self ):
+      return [ i.get_name( ) for i in self.__list ]
+   # def get_names
+
    def test( self, name: str ):
       return None != self.get_data( name )
    # def test
@@ -347,6 +351,10 @@ config: ConfigurationContainer = ConfigurationContainer(
    )
 
 
+
+def names( ):
+   return config.get_names( )
+# def names
 
 def values( name: str ):
    return config.get_values( name )

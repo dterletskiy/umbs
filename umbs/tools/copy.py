@@ -2,6 +2,7 @@ import os
 
 import pfw.console
 import pfw.shell
+import pfw.linux.file
 
 import umbs.base
 import umbs.tools.base
@@ -10,13 +11,26 @@ import umbs.tools.base
 
 def get_instance( config, **kwargs ):
    return Tool( config, **kwargs )
+# def get_instance
 
 def do_exec( tool ):
-   tool.exec( )
-   tool.test( )
+   if not tool.exec( ):
+      pfw.console.debug.error( "exec error" )
+      return False
+   if not tool.test( ):
+      pfw.console.debug.error( "test error" )
+      return False
+
+   return True
+# def do_exec
 
 def do_clean( tool ):
-   tool.clean( )
+   if not tool.clean( ):
+      pfw.console.debug.error( "clean error" )
+      return False
+
+   return True
+# def do_clean
 
 
 
@@ -32,27 +46,30 @@ class Tool( umbs.tools.base.Tool ):
       self.__content = self.__config[ "content" ]
    # def __init__
 
-   def __del__( self ):
-      pass
-   # def __del__
-
-   def __str__( self ):
-      attr_list = [ i for i in self.__class__.__dict__.keys( ) if i[:2] != pfw.base.struct.ignore_field ]
-      vector = [ f"{str( attr )} = {str( self.__dict__.get( attr ) )}" for attr in attr_list ]
-      return self.__class__.__name__ + " { " + ", ".join( vector ) + " }"
-   # def __str__
-
    def clean( self, **kwargs ):
+      result = True
       for item in self.__content:
-         pfw.shell.execute( f"rm {os.path.join( self.__target_dir, item['to'] )}", output = pfw.shell.eOutput.PTY, cwd = self.__target_dir )
+         op_result = pfw.shell.execute(
+               f"rm {os.path.join( self.__target_dir, item['to'] )}",
+               output = pfw.shell.eOutput.PTY,
+               cwd = self.__target_dir
+            )
+         if 0 != op_result["code"]:
+            result = False
+
+      return result
    # def clean
 
    def exec( self, **kwargs ):
+      result = True
       for item in self.__content:
-         pfw.linux.file.copy(
+         op_result = pfw.linux.file.copy(
                os.path.join( self.__root_dir, item["from"] ),
                os.path.join( self.__target_dir, item["to"] ),
                force = True
             )
+         result = result and op_result
+
+      return result
    # def exec
 # class Tool

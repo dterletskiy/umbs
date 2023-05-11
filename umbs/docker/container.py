@@ -13,6 +13,7 @@ def create( **kwargs ):
    kw_image_tag = kwargs.get( "image_tag", None )
    kw_volume_mapping = kwargs.get( "volume_mapping", { } )
    kw_port_mapping = kwargs.get( "port_mapping", { } )
+   kw_disposable = kwargs.get( "disposable", True )
 
    container: pfw.linux.docker.Container = pfw.linux.docker.Container(
          name = kw_container_name,
@@ -21,7 +22,7 @@ def create( **kwargs ):
          volume_mapping = kw_volume_mapping,
          port_mapping = kw_port_mapping
       )
-   container.create( disposable = True )
+   container.create( disposable = kw_disposable )
 # def create
 
 def remove( **kwargs ):
@@ -58,6 +59,7 @@ def run( **kwargs ):
    kw_image_tag = kwargs.get( "image_tag", None )
    kw_volume_mapping = kwargs.get( "volume_mapping", { } )
    kw_port_mapping = kwargs.get( "port_mapping", { } )
+   kw_disposable = kwargs.get( "disposable", True )
 
    container: pfw.linux.docker.Container = pfw.linux.docker.Container(
          name = kw_container_name,
@@ -66,7 +68,7 @@ def run( **kwargs ):
          volume_mapping = kw_volume_mapping,
          port_mapping = kw_port_mapping
       )
-   container.run( disposable = True )
+   container.run( disposable = kw_disposable )
 # def run
 
 def exec( **kwargs ):

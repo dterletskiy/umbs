@@ -11,9 +11,23 @@ import umbs.fetchers.base
 
 def get_instance( config, **kwargs ):
    return Fetcher( config, **kwargs )
+# def get_instance
 
-def do_fetch( repo ):
-   repo.fetch( )
+def do_fetch( fetcher ):
+   if not fetcher.fetch( ):
+      pfw.console.debug.error( "fetch error" )
+      return False
+
+   return True
+# def do_fetch
+
+def do_remove( fetcher ):
+   if not fetcher.remove( ):
+      pfw.console.debug.error( "remove error" )
+      return False
+
+   return True
+# def do_fetch
 
 
 
@@ -29,21 +43,11 @@ class Fetcher( umbs.fetchers.base.Fetcher ):
          )
    # def __init__
 
-   def __del__( self ):
-      pass
-   # def __del__
-
-   def __str__( self ):
-      attr_list = [ i for i in self.__class__.__dict__.keys( ) if i[:2] != pfw.base.struct.ignore_field ]
-      vector = [ f"{str( attr )} = {str( self.__dict__.get( attr ) )}" for attr in attr_list ]
-      return self.__class__.__name__ + " { " + ", ".join( vector ) + " }"
-   # def __str__
-
    def fetch( self, **kwargs ):
-      self.__repo.clone( )
+      return self.__repo.clone( )
    # def sync
 
    def remove( self ):
-      self.__repo.remove( )
+      return self.__repo.remove( )
    # def remove
 # class Fetcher

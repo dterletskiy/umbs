@@ -10,15 +10,32 @@ import umbs.builders.base
 
 def get_instance( config, **kwargs ):
    return Builder( config, **kwargs )
+# def get_instance
 
 def do_build( builder ):
-   builder.prepare( )
-   builder.config( )
-   builder.build( )
-   builder.test( )
+   if not builder.prepare( ):
+      pfw.console.debug.error( "prepare error" )
+      return False
+   if not builder.config( ):
+      pfw.console.debug.error( "config error" )
+      return False
+   if not builder.build( ):
+      pfw.console.debug.error( "build error" )
+      return False
+   if not builder.test( ):
+      pfw.console.debug.error( "test error" )
+      return False
+
+   return True
+# def do_build
 
 def do_clean( builder ):
-   builder.clean( )
+   if not builder.clean( ):
+      pfw.console.debug.error( "clean error" )
+      return False
+
+   return True
+# def do_clean
 
 
 
@@ -29,31 +46,30 @@ class Builder( umbs.builders.base.Builder ):
       self.__target = self.__config['config']
    # def __init__
 
-   def __del__( self ):
-      pass
-   # def __del__
-
-   def __str__( self ):
-      attr_list = [ i for i in self.__class__.__dict__.keys( ) if i[:2] != pfw.base.struct.ignore_field ]
-      vector = [ f"{str( attr )} = {str( self.__dict__.get( attr ) )}" for attr in attr_list ]
-      return self.__class__.__name__ + " { " + ", ".join( vector ) + " }"
-   # def __str__
-
    def config( self, **kwargs ):
       command = f""
+      result = pfw.shell.execute( command, cwd = self.__target_dir, print = False, collect = False )
+      if 0 != result["code"]:
+         return False
 
-      pfw.shell.execute( command, cwd = self.__target_dir, print = False, collect = False )
+      return True
    # def config
 
    def build( self, **kwargs ):
       command = f"tools/bazel run --sandbox_debug {self.__target}_dist -- --dist_dir={self.__deploy_dir}"
+      result = pfw.shell.execute( command, output = pfw.shell.eOutput.PTY, cwd = self.__target_dir )
+      if 0 != result["code"]:
+         return False
 
-      pfw.shell.execute( command, output = pfw.shell.eOutput.PTY, cwd = self.__target_dir )
+      return True
    # def build
 
    def clean( self, **kwargs ):
       command = f"tools/bazel clean --expunge"
+      result = pfw.shell.execute( command, output = pfw.shell.eOutput.PTY, cwd = self.__target_dir )
+      if 0 != result["code"]:
+         return False
 
-      pfw.shell.execute( command, output = pfw.shell.eOutput.PTY, cwd = self.__target_dir )
+      return True
    # def clean
 # class Builder

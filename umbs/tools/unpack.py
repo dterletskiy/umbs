@@ -11,13 +11,26 @@ import umbs.tools.base
 
 def get_instance( config, **kwargs ):
    return Tool( config, **kwargs )
+# def get_instance
 
 def do_exec( tool ):
-   tool.exec( )
-   tool.test( )
+   if not tool.exec( ):
+      pfw.console.debug.error( "exec error" )
+      return False
+   if not tool.test( ):
+      pfw.console.debug.error( "test error" )
+      return False
+
+   return True
+# def do_exec
 
 def do_clean( tool ):
-   tool.clean( )
+   if not tool.clean( ):
+      pfw.console.debug.error( "clean error" )
+      return False
+
+   return True
+# def do_clean
 
 
 
@@ -33,21 +46,12 @@ class Tool( umbs.tools.base.Tool ):
       self.__file = os.path.join( self.__project_dir, self.__config[ "file" ] )
    # def __init__
 
-   def __del__( self ):
-      pass
-   # def __del__
-
-   def __str__( self ):
-      attr_list = [ i for i in self.__class__.__dict__.keys( ) if i[:2] != pfw.base.struct.ignore_field ]
-      vector = [ f"{str( attr )} = {str( self.__dict__.get( attr ) )}" for attr in attr_list ]
-      return self.__class__.__name__ + " { " + ", ".join( vector ) + " }"
-   # def __str__
-
    def clean( self, **kwargs ):
-      pass
+      return True
    # def clean
 
    def exec( self, **kwargs ):
-      pfw.archive.extract( self.__file, None, self.__target_dir )
+      result = pfw.archive.extract( self.__file, None, self.__target_dir )
+      return 0 == result["code"]
    # def exec
 # class Tool

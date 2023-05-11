@@ -28,9 +28,9 @@ class ConfigurationFormatError( Exception ):
 class Config:
    def __init__( self, file: str, **kwargs ):
       root_dir = kwargs.get( "root_dir", None )
+      container_root_dir = kwargs.get( "container_root_dir", None )
 
       def read_file( file ):
-         pfw.console.debug.error( f"processing file: {file}" )
          pattern: str = r"^\s*include:\s*\"(.*)\"\s*$"
 
          lines: str = ""
@@ -39,7 +39,6 @@ class Config:
          yaml_fd = open( file, "r" )
 
          for line in yaml_fd:
-            pfw.console.debug.warning( f"processing line: {file}" )
             match = re.match( pattern, line )
             if match:
                import_file_name = match.group( 1 )
@@ -61,6 +60,9 @@ class Config:
       if root_dir:
          # Override yaml variable "DIRECTORIES.ROOT" by the value obtained from configuration file or command line parameter. 
          self.set_variable( "DIRECTORIES.ROOT", root_dir )
+      if container_root_dir:
+         # Override yaml variable "DIRECTORIES.CONTAINER.ROOT" by the value obtained from configuration file or command line parameter. 
+         self.set_variable( "DIRECTORIES.CONTAINER.ROOT", container_root_dir )
       # Substitute valiables' values
       self.__process_yaml_data( self.__variables )
       # Test critical variables

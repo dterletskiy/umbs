@@ -10,14 +10,32 @@ import umbs.builders.base
 
 def get_instance( config, **kwargs ):
    return Builder( config, **kwargs )
+# def get_instance
 
 def do_build( builder ):
-   builder.config( )
-   builder.build( )
-   builder.test( )
+   if not builder.prepare( ):
+      pfw.console.debug.error( "prepare error" )
+      return False
+   if not builder.config( ):
+      pfw.console.debug.error( "config error" )
+      return False
+   if not builder.build( ):
+      pfw.console.debug.error( "build error" )
+      return False
+   if not builder.test( ):
+      pfw.console.debug.error( "test error" )
+      return False
+
+   return True
+# def do_build
 
 def do_clean( builder ):
-   builder.clean( )
+   if not builder.clean( ):
+      pfw.console.debug.error( "clean error" )
+      return False
+
+   return True
+# def do_clean
 
 
 
@@ -76,33 +94,27 @@ class Builder( umbs.builders.base.Builder ):
          self.__build_args.append( f"ARG_PACKAGES='{packages}'" )
    # def __init__
 
-   def __del__( self ):
-      pass
-   # def __del__
-
-   def __str__( self ):
-      attr_list = [ i for i in self.__class__.__dict__.keys( ) if i[:2] != pfw.base.struct.ignore_field ]
-      vector = [ f"{str( attr )} = {str( self.__dict__.get( attr ) )}" for attr in attr_list ]
-      return self.__class__.__name__ + " { " + ", ".join( vector ) + " }"
-   # def __str__
-
    def config( self, **kwargs ):
-      pass
+      return True
    # def config
 
    def build( self, **kwargs ):
-      pfw.linux.docker.build(
+      result = pfw.linux.docker.build(
             dokerfile = self.__dockerfile,
             image_name = self.__image_name,
             image_tag = self.__image_tag,
             build_args = self.__build_args
          )
+
+      return 0 == result["code"]
    # def build
 
    def clean( self, **kwargs ):
-      pfw.linux.docker.rmi(
+      result = pfw.linux.docker.rmi(
             image_name = self.__image_name,
             image_tag = self.__image_tag
          )
+
+      return 0 == result["code"]
    # def clean
 # class Builder

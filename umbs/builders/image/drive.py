@@ -16,14 +16,32 @@ import umbs.builders.base
 
 def get_instance( config, **kwargs ):
    return Builder( config, **kwargs )
+# def get_instance
 
 def do_build( builder ):
-   builder.config( )
-   builder.build( )
-   builder.test( )
+   if not builder.prepare( ):
+      pfw.console.debug.error( "prepare error" )
+      return False
+   if not builder.config( ):
+      pfw.console.debug.error( "config error" )
+      return False
+   if not builder.build( ):
+      pfw.console.debug.error( "build error" )
+      return False
+   if not builder.test( ):
+      pfw.console.debug.error( "test error" )
+      return False
+
+   return True
+# def do_build
 
 def do_clean( builder ):
-   builder.clean( )
+   if not builder.clean( ):
+      pfw.console.debug.error( "clean error" )
+      return False
+
+   return True
+# def do_clean
 
 
 
@@ -61,6 +79,8 @@ class Builder( umbs.builders.base.Builder ):
    def build( self, **kwargs ):
       self.do_build( **kwargs )
       self.deploy( )
+
+      return True
    # def build
 
    def do_build( self, **kwargs ):
@@ -111,10 +131,18 @@ class Builder( umbs.builders.base.Builder ):
    # def do_build
 
    def deploy( self, **kwargs ):
-      pfw.shell.execute( f"mv {self.__file} {self.__deploy_dir}", output = pfw.shell.eOutput.PTY )
+      result = pfw.shell.execute( f"mv {self.__file} {self.__deploy_dir}", output = pfw.shell.eOutput.PTY )
+      if 0 != result["code"]:
+         return False
+
+      return True
    # def deploy
 
    def clean( self, **kwargs ):
-      pfw.shell.execute( f"rm -rf {' '.join( self.__artifacts )}", output = pfw.shell.eOutput.PTY )
+      result = pfw.shell.execute( f"rm -rf {' '.join( self.__artifacts )}", output = pfw.shell.eOutput.PTY )
+      if 0 != result["code"]:
+         return False
+
+      return True
    # def clean
 # class Builder

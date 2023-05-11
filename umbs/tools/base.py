@@ -33,21 +33,13 @@ class Tool:
       pfw.console.debug.info( f"{kw_msg} (type {self.__class__.__name__}):", tabs = ( kw_tabs + 0 ) )
    # def info
 
-   def config( self, **kwargs ):
-      pass
-   # def config
-
    def exec( self, **kwargs ):
-      pass
+      return True
    # def exec
 
    def clean( self, **kwargs ):
-      pass
+      return True
    # def clean
-
-   def deploy( self, **kwargs ):
-      pass
-   # def deploy
 
    def test( self, **kwargs ):
       result: bool = True

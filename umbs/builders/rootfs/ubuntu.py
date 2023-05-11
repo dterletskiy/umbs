@@ -12,14 +12,32 @@ import umbs.builders.image.partition
 
 def get_instance( config, **kwargs ):
    return Builder( config, **kwargs )
+# def get_instance
 
 def do_build( builder ):
-   builder.config( )
-   builder.build( )
-   builder.test( )
+   if not builder.prepare( ):
+      pfw.console.debug.error( "prepare error" )
+      return False
+   if not builder.config( ):
+      pfw.console.debug.error( "config error" )
+      return False
+   if not builder.build( ):
+      pfw.console.debug.error( "build error" )
+      return False
+   if not builder.test( ):
+      pfw.console.debug.error( "test error" )
+      return False
+
+   return True
+# def do_build
 
 def do_clean( builder ):
-   builder.clean( )
+   if not builder.clean( ):
+      pfw.console.debug.error( "clean error" )
+      return False
+
+   return True
+# def do_clean
 
 
 
@@ -36,10 +54,6 @@ def signal_handler( signum, frame, *args, **kwargs ):
 class Builder( umbs.builders.base.Builder ):
    def __init__( self, config, **kwargs ):
       super( ).__init__( config, **kwargs )
-
-      for key in [ "image" ]:
-         if key not in self.__config:
-            raise umbs.base.YamlFormatError( f"Filed '{key}' must be defined in builder" )
 
       self.__user_name = None
       self.__user_password = None
@@ -79,6 +93,7 @@ class Builder( umbs.builders.base.Builder ):
 
          self.__packages = process_packages( self.__config["packages"] ).split( ' ' )
 
+      self.__image_builder = None
       if "image" in self.__config:
          self.__image_builder = umbs.builders.image.partition.Builder(
                self.__config["image"],
@@ -87,25 +102,15 @@ class Builder( umbs.builders.base.Builder ):
             )
    # def __init__
 
-   def __del__( self ):
-      pass
-   # def __del__
-
-   def __str__( self ):
-      attr_list = [ i for i in self.__class__.__dict__.keys( ) if i[:2] != pfw.base.struct.ignore_field ]
-      vector = [ f"{str( attr )} = {str( self.__dict__.get( attr ) )}" for attr in attr_list ]
-      return self.__class__.__name__ + " { " + ", ".join( vector ) + " }"
-   # def __str__
-
    def config( self, **kwargs ):
-      pass
+      return True
    # def config
 
    def build( self, **kwargs ):
-      self.__image_builder.pre_build( )
-      self.__image_builder.do_build( )
-
-      self.__target_dir = self.__image_builder.mount_point( )
+      if self.__image_builder:
+         self.__image_builder.pre_build( )
+         self.__image_builder.do_build( )
+         self.__target_dir = self.__image_builder.mount_point( )
 
       self.init( )
 
@@ -116,7 +121,10 @@ class Builder( umbs.builders.base.Builder ):
 
       self.deinit( )
 
-      self.__image_builder.post_build( )
+      if self.__image_builder:
+         self.__image_builder.post_build( )
+
+      return True
    # def build
 
    def pre_install( self, **kwargs ):
@@ -222,7 +230,7 @@ class Builder( umbs.builders.base.Builder ):
    # def create_user
 
    def clean( self, **kwargs ):
-      pass
+      return True
    # def clean
 
    def init( self, **kwargs ):
@@ -253,9 +261,12 @@ class Builder( umbs.builders.base.Builder ):
       kw_bash = kwargs.get( "bash", True )
       kw_method = kwargs.get( "method","subprocess" )
 
+      result = None
       if kw_bash:
-         pfw.shell.execute( command, chroot_bash = self.__target_dir, method = kw_method, output = pfw.shell.eOutput.PTY )
+         result = pfw.shell.execute( command, chroot_bash = self.__target_dir, method = kw_method, output = pfw.shell.eOutput.PTY )
       else:
-         pfw.shell.execute( command, chroot = self.__target_dir, method = kw_method, output = pfw.shell.eOutput.PTY )
+         result = pfw.shell.execute( command, chroot = self.__target_dir, method = kw_method, output = pfw.shell.eOutput.PTY )
+
+      return 0 == result["code"]
    # def execute
 # class Builder

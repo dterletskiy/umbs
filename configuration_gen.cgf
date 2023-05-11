@@ -1,0 +1,7 @@
+yaml_config:         configuration/development.yaml
+root_dir:         /mnt/host/
+include:         /mnt/dev/repos/github.com/dterletskiy/python_fw/
+pfw:         /mnt/dev/repos/github.com/dterletskiy/python_fw/
+project:         xen
+action:         *
+container_root_dir:         /mnt/host/

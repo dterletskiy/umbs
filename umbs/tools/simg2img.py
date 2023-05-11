@@ -11,13 +11,26 @@ import umbs.tools.base
 
 def get_instance( config, **kwargs ):
    return Tool( config, **kwargs )
+# def get_instance
 
 def do_exec( tool ):
-   tool.exec( )
-   tool.test( )
+   if not tool.exec( ):
+      pfw.console.debug.error( "exec error" )
+      return False
+   if not tool.test( ):
+      pfw.console.debug.error( "test error" )
+      return False
+
+   return True
+# def do_exec
 
 def do_clean( tool ):
-   tool.clean( )
+   if not tool.clean( ):
+      pfw.console.debug.error( "clean error" )
+      return False
+
+   return True
+# def do_clean
 
 
 
@@ -40,21 +53,13 @@ class Tool( umbs.tools.base.Tool ):
       self.__out = __out
    # def __init__
 
-   def __del__( self ):
-      pass
-   # def __del__
-
-   def __str__( self ):
-      attr_list = [ i for i in self.__class__.__dict__.keys( ) if i[:2] != pfw.base.struct.ignore_field ]
-      vector = [ f"{str( attr )} = {str( self.__dict__.get( attr ) )}" for attr in attr_list ]
-      return self.__class__.__name__ + " { " + ", ".join( vector ) + " }"
-   # def __str__
-
    def exec( self, **kwargs ):
-      pfw.shell.execute( self.__command, output = pfw.shell.eOutput.PTY, cwd = self.__target_dir )
+      result = pfw.shell.execute( self.__command, output = pfw.shell.eOutput.PTY, cwd = self.__target_dir )
+      return 0 == result["code"]
    # def exec
 
    def clean( self, **kwargs ):
-      pfw.shell.execute( f"rm {self.__out}", output = pfw.shell.eOutput.PTY, cwd = self.__target_dir )
+      result = pfw.shell.execute( f"rm {self.__out}", output = pfw.shell.eOutput.PTY, cwd = self.__target_dir )
+      return 0 == result["code"]
    # def clean
 # class Tool

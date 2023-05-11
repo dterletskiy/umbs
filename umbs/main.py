@@ -37,24 +37,26 @@ def run( project, action, umbs_projects ):
 
 def run_in_container( ):
    cfg = open( "configuration_gen.cgf", "w" )
-   for config in umbs.configuration.config.get_data_list( ):
-      skip = False
-      for key in [ "container", "config" ]:
-         if key == config.get_name( ):
-            skip = True
-            break
-      if skip:
+   for name in umbs.configuration.names( ):
+      if name in [ "container", "config" ]:
          continue
 
-      for value in config.get_values( ):
-         cfg.write( f"{config.get_name( )}:         {value}\n" )
+      for value in umbs.configuration.values( name ):
+         if "root_dir" == name:
+            value = umbs.configuration.value( 'container_root_dir' )
+
+         cfg.write( f"{name}:         {value}\n" )
    cfg.close( )
 # def run_in_container
 
 
 
 def main( ):
-   yaml_config: umbs.base.Config = umbs.base.Config( umbs.configuration.value( "yaml_config" ), root_dir = umbs.configuration.value( "root_dir" ) )
+   yaml_config: umbs.base.Config = umbs.base.Config(
+         umbs.configuration.value( "yaml_config" ),
+         root_dir = umbs.configuration.value( "root_dir" ),
+         container_root_dir = umbs.configuration.value( "container_root_dir" ),
+      )
    yaml_config.info( )
    umbs_projects: dict = init_projects( yaml_config )
 

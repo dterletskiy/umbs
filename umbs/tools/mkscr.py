@@ -11,13 +11,26 @@ import umbs.tools.base
 
 def get_instance( config, **kwargs ):
    return Tool( config, **kwargs )
+# def get_instance
 
 def do_exec( tool ):
-   tool.exec( )
-   tool.test( )
+   if not tool.exec( ):
+      pfw.console.debug.error( "exec error" )
+      return False
+   if not tool.test( ):
+      pfw.console.debug.error( "test error" )
+      return False
+
+   return True
+# def do_exec
 
 def do_clean( tool ):
-   tool.clean( )
+   if not tool.clean( ):
+      pfw.console.debug.error( "clean error" )
+      return False
+
+   return True
+# def do_clean
 
 
 
@@ -34,22 +47,13 @@ class Tool( umbs.tools.base.Tool ):
       self.__out = os.path.join( self.__target_dir, self.__config["out"] )
    # def __init__
 
-   def __del__( self ):
-      pass
-   # def __del__
-
-   def __str__( self ):
-      attr_list = [ i for i in self.__class__.__dict__.keys( ) if i[:2] != pfw.base.struct.ignore_field ]
-      vector = [ f"{str( attr )} = {str( self.__dict__.get( attr ) )}" for attr in attr_list ]
-      return self.__class__.__name__ + " { " + ", ".join( vector ) + " }"
-   # def __str__
-
    def exec( self, **kwargs ):
-      self.__build_uboot_script( self.__source, self.__out )
+      return self.__build_uboot_script( self.__source, self.__out )
    # def exec
 
    def clean( self, **kwargs ):
-      pfw.shell.execute( f"rm {self.__out}", output = pfw.shell.eOutput.PTY, cwd = self.__target_dir )
+      result = pfw.shell.execute( f"rm {self.__out}", output = pfw.shell.eOutput.PTY, cwd = self.__target_dir )
+      return 0 == result["code"]
    # def clean
 
    # Function for building u-boot script from different u-boot scripts.
@@ -62,7 +66,12 @@ class Tool( umbs.tools.base.Tool ):
 
       script_file_dir = os.path.dirname( script_file_path )
 
-      script_file_h = open( script_file_path, "r" )
+      try:
+         script_file_h = open( script_file_path, "r" )
+      except OSError:
+         pfw.console.debug.error(  f"Could not open/read file: {script_file_path}" )
+         return None
+
       code: str = f"\n######################### Begin file '{script_file_path} #########################\n\n\n"
       for script_in_file_line in script_file_h:
          match = re.match( pattern, script_in_file_line )
@@ -79,11 +88,28 @@ class Tool( umbs.tools.base.Tool ):
    # def __build_uboot_script_lines
 
    def __build_uboot_script( self, script_in_file: str, script_out_file: str ):
-      pfw.shell.execute( f"mkdir -p {os.path.dirname( script_out_file )}", output = pfw.shell.eOutput.PTY, cwd = self.__target_dir )
+      result = pfw.shell.execute( f"mkdir -p {os.path.dirname( script_out_file )}", output = pfw.shell.eOutput.PTY, cwd = self.__target_dir )
+      if 0 != result["code"]:
+         return False
 
       code = self.__build_uboot_script_lines( script_in_file )
-      script_out_file_h = open( script_out_file, "w+" )
-      script_out_file_h.write( code )
+      if None == code:
+         return False
+
+      try:
+         script_out_file_h = open( script_out_file, "w+" )
+      except OSError:
+         pfw.console.debug.error(  f"Could not open/read file: {script_out_file}" )
+         return False
+
+      try:
+         script_out_file_h.write( code )
+      except OSError:
+         pfw.console.debug.error(  f"Could not write file: {script_out_file}" )
+         return False
+
       script_out_file_h.close( )
+
+      return True
    # def __build_uboot_script
 # class Tool
