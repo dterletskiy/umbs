@@ -55,14 +55,24 @@ class Builder( umbs.builders.base.Builder ):
       # In cae if "reuse" flag is set to "false", new image file will be created always.
       self.__reuse = self.__config.get( "reuse", False )
 
-      strict_fields = [ "file" ] if self.__reuse else [ "file", "size", "fs" ]
+      strict_fields = [ "file" ]
+      for key in strict_fields:
+         if key not in self.__config:
+            raise umbs.base.YamlFormatError( f"Filed '{key}' must be defined in builder" )
 
+      self.__file = os.path.join( self.__target_dir, self.__config["file"] )
+
+      if self.__reuse and not os.path.exists( self.__file ):
+         pfw.console.debug.warning( f"'reuse' flag is set to 'true' for not existing file '{file}'" )
+         self.__reuse = False
+
+      strict_fields = [ ] if self.__reuse else [ "size", "fs" ]
       for key in strict_fields:
          if key not in self.__config:
             raise umbs.base.YamlFormatError( f"Filed '{key}' must be defined in builder" )
 
 
-      if False == self.__reuse:
+      if not self.__reuse:
          if match := re.match( r'(\d+[.]?\d*)\s*(\w+)', self.__config["size"] ):
             if not pfw.size.text_to_size( match.group( 2 ) ):
                raise umbs.base.YamlFormatError( f"image size dimention error" )
@@ -74,7 +84,7 @@ class Builder( umbs.builders.base.Builder ):
          if not self.__fs:
             raise umbs.base.YamlFormatError( f"image fs format error" )
 
-      self.__file = os.path.join( self.__target_dir, self.__config["file"] )
+
       self.__label = self.__config.get( "label", "NoLabel" )
       self.__content = self.__config.get( "content", [ ] )
    # def __init__

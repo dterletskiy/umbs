@@ -4,4 +4,4 @@ umbs_min_version: "0.1"
 
 include: "variables.yaml"
 include: "environment.yaml"
-include: "projects/lfs.yaml"
+include: "projects/experimental.yaml"

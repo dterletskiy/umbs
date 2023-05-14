@@ -36,7 +36,7 @@ def run( project, action, umbs_projects ):
 
 
 def run_in_container( ):
-   cfg = open( "configuration_gen.cgf", "w" )
+   cfg = open( os.path.join( "umbs_gen.cfg" ), "w" )
    for name in umbs.configuration.names( ):
       if name in [ "container", "config" ]:
          continue
@@ -47,6 +47,52 @@ def run_in_container( ):
 
          cfg.write( f"{name}:         {value}\n" )
    cfg.close( )
+
+
+
+   container_root_dir = umbs.configuration.value( 'container_root_dir' )
+   container_umbs_dir = os.path.join( container_root_dir, "umbs" )
+   container_pfw_dir = os.path.join( container_root_dir, "pfw" )
+
+   container_name = umbs.configuration.value( 'container_name' )
+   user_name = umbs.configuration.value( 'container_user_name' )
+   image_name = umbs.configuration.value( 'image_name' )
+   image_tag = umbs.configuration.value( 'image_tag' )
+   volume_mapping = [
+         pfw.linux.docker.Container.Mapping( host =  umbs.configuration.value( 'root_dir' ), guest =  container_root_dir ),
+         pfw.linux.docker.Container.Mapping( host =  umbs.configuration.value( 'umbs' ), guest =  f"{container_umbs_dir}" ),
+         pfw.linux.docker.Container.Mapping( host =  umbs.configuration.value( 'pfw' ), guest =  f"{container_pfw_dir}" ),
+         pfw.linux.docker.Container.Mapping( host = f"~/.ssh", guest = f"/home/{user_name}/.ssh" ),
+         pfw.linux.docker.Container.Mapping( host = f"~/.gitconfig", guest = f"/home/{user_name}/.gitconfig" ),
+      ]
+   port_mapping = [
+         pfw.linux.docker.Container.Mapping( host = "5000", guest = "5000" ),
+      ]
+   workdir = container_umbs_dir
+
+   container_project = umbs.configuration.value( 'project' )
+   container_action = umbs.configuration.value( 'action' )
+
+   command = f"python3 {container_umbs_dir}/umbs.py"
+   command += f" --config={container_umbs_dir}/umbs_gen.cfg"
+   command += f" --pfw={container_pfw_dir}"
+   command += f" --project={container_project}"
+   command += f" --action={container_action}"
+   # command = ""
+
+   container = pfw.linux.docker.Container(
+         name = container_name,
+         image = f"{image_name}:{image_tag}",
+         volume_mapping = volume_mapping,
+         port_mapping = port_mapping,
+         workdir = workdir,
+      )
+   container.run( command = "pwd", disposable = True )
+   container.run( command = "ls -la", disposable = True )
+   container.run(
+         command = command,
+         disposable = True
+      )
 # def run_in_container
 
 
@@ -57,7 +103,7 @@ def main( ):
          root_dir = umbs.configuration.value( "root_dir" ),
          container_root_dir = umbs.configuration.value( "container_root_dir" ),
       )
-   yaml_config.info( )
+   # yaml_config.info( ) # @TDA: debug
    umbs_projects: dict = init_projects( yaml_config )
 
    pfw.console.debug.ok( "------------------------- BEGIN -------------------------" )

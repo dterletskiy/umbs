@@ -138,7 +138,7 @@ class Config:
    # class AV
 
    def __replace( self, value ):
-      pfw.console.debug.trace( f"processing value: '{value}'" )
+      # pfw.console.debug.trace( f"processing value: '{value}'" ) # @TDA: debug
 
       if not isinstance( value, str ):
          pfw.console.debug.warning( f"ERROR: '{value}' is not a string" )
@@ -148,7 +148,7 @@ class Config:
       if findall := re.findall( r'\$\{(.+?)\}', value ):
          for item in findall:
             variable = self.get_variable( item )
-            pfw.console.debug.trace( f"{item} -> {variable} ({type(variable)})" )
+            # pfw.console.debug.trace( f"{item} -> {variable} ({type(variable)})" ) # @TDA: debug
             if isinstance( variable, str ) or isinstance( variable, int ) or isinstance( variable, float ):
                value = value.replace( "${" + item + "}", str(variable) )
             elif isinstance( variable, list ) or isinstance( variable, tuple ) or isinstance( variable, dict ):
@@ -165,7 +165,7 @@ class Config:
    # def __replace
 
    def __walk( self, iterable, address: list, value_processor = None ):
-      # pfw.console.debug.info( f"-> address = {address}" )
+      # pfw.console.debug.info( f"-> address = {address}" ) # @TDA: debug
 
       for_adaptation: list = [ ]
       if isinstance( iterable, dict ):
@@ -184,12 +184,12 @@ class Config:
       else:
          ( replaced, new_value ) = value_processor( iterable )
          if replaced:
-            # print( f"address = {address}" )
-            # print( f"old_value = {iterable}" )
-            # print( f"new_value = {new_value}" )
+            # print( f"address = {address}" ) # @TDA: debug
+            # print( f"old_value = {iterable}" ) # @TDA: debug
+            # print( f"new_value = {new_value}" ) # @TDA: debug
             for_adaptation.append( Config.AV( address, new_value ) )
 
-      # pfw.console.debug.info( f"<- address = {address}" )
+      # pfw.console.debug.info( f"<- address = {address}" ) # @TDA: debug
 
       return for_adaptation
    # def __walk

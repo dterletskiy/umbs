@@ -333,6 +333,8 @@ def process_configuration( app_data, argv ):
 
    for path in reversed( app_data.get_values( "include" ) ):
       sys.path.insert( 0, path )
+
+   add_config( app_data, "umbs", os.path.dirname( os.path.realpath( sys.argv[0] ) ) )
 # def process_configuration
 
 

@@ -37,7 +37,7 @@ def init( ):
       sys.exit( 255 )
 
    umbs.configuration.configure( sys.argv[1:] )
-   umbs.configuration.info( )
+   umbs.configuration.info( ) # @TDA: debug
 # def init
 
 init( )
