@@ -30,13 +30,14 @@ projects:
         compiler: "aarch64-linux-gnu-"
         jobs: 4
         targets:
+          # - "dist"
           - "dist-xen"
+          # - "dist-tools"
+          # - "dist-docs"
         env:
           - ""
         artifacts:
           - "dist/install/boot/xen"
-        deps:
-          - ""
 
   u-boot:
     active: true
@@ -70,8 +71,6 @@ projects:
           - "out/build/tools/mkenvimage"
           - "out/build/tools/mkimage"
           - "out/build/tools/img2srec"
-        deps:
-          - ""
 
   busybox:
     active: true
@@ -98,8 +97,6 @@ projects:
           - ""
         artifacts:
           - "_install"
-        deps:
-          - ""
 
   buildroot:
     active: true
@@ -127,8 +124,6 @@ projects:
         artifacts:
           - "output/images/rootfs.cpio"
           - "output/images/rootfs.ext2"
-        deps:
-          - ""
 
   kernel:
     active: true
@@ -156,49 +151,61 @@ projects:
         artifacts:
           - "out/deploy/vmlinuz-6.2.0"
           - "out/deploy/lib"
-        deps:
-          - ""
 
 
 
 
-
-  rootfs:
+  rootfs-create:
     active: true
     project_subdir: rootfs/ubuntu/aarch64
     sources:
       - type: download
         url: ${UBUNTU.ROOTFS.SOURCE.ARM64}
-        subdir: download
-    patches:
-      - type: unpack
-        file: download/${UBUNTU.ROOTFS.NAME.ARM64}.tar.gz
-        subdir: rootfs
+    builders:
+      - type: image.partition
+        file: rootfs.img
+        reuse: false
+        fs: ext4
+        size: 4096 MB
+        content:
+          - action: extract
+            format: tar.gz
+            from: rootfs/ubuntu/aarch64/${UBUNTU.ROOTFS.NAME.ARM64}.tar.gz
+            to: "."
+          - action: copy
+            from: linux/kernel/out/deploy/lib/.
+            to: lib
+        artifacts:
+          - rootfs.img
+        deps:
+          - linux/kernel/out/deploy/lib
+
+  rootfs-setup:
+    active: true
+    project_subdir: rootfs/ubuntu/aarch64
     builders:
       - type: rootfs.ubuntu
-        subdir: rootfs
+        source: rootfs.img
         user: *UBUNTU_USER_ALIAS
         packages: *PACKAGES_ALIAS
-        image:
-          file: rootfs.img
-          fs: ext4
-          size: 4096 MB
-          content:
-            - action: extract
-              from: rootfs/ubuntu/aarch64/download/${UBUNTU.ROOTFS.NAME.ARM64}.tar.gz
-              to: "."
-            - action: copy
-              from: linux/kernel/out/deploy/lib/.
-              to: lib
+        artifacts:
+          - rootfs.img
+        deps:
+          - rootfs/ubuntu/aarch64/rootfs.img
 
   rootfs-update:
     active: true
     project_subdir: rootfs/ubuntu/aarch64
     builders:
       - type: image.partition
-        file: "rootfs.img"
+        file: rootfs.img
         reuse: true
         content:
           - action: copy
             from: linux/kernel/out/deploy/lib/.
             to: lib
+        artifacts:
+          - rootfs.img
+        deps:
+          - rootfs/ubuntu/aarch64/rootfs.img
+          - linux/kernel/out/deploy/lib

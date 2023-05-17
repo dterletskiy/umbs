@@ -1,0 +1,17 @@
+projects:
+  x86-64:
+    active: true
+    project_subdir: None
+    version: ${UBUNTU.VERSION}
+    builders:
+      - type: docker.image
+        dockerfile: ${UBUNTU.DOCKER.DOCKERFILE}
+        from:
+          name: ubuntu
+          tag: ${UBUNTU.VERSION}
+        image:
+          name: builder/x86-64/ubuntu
+          tag: ${UBUNTU.VERSION}
+        user: *UBUNTU_USER_ALIAS
+        packages: *PACKAGES_ALIAS
+        container_name: builder_x86_64_ubuntu_${UBUNTU.VERSION}

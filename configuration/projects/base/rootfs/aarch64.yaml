@@ -1,0 +1,55 @@
+projects:
+  aarch64-create:
+    active: true
+    project_subdir: rootfs/ubuntu/aarch64
+    sources:
+      - type: download
+        url: ${UBUNTU.ROOTFS.SOURCE.ARM64}
+    builders:
+      - type: image.partition
+        file: rootfs.img
+        reuse: false
+        fs: ext4
+        size: 4096 MB
+        content:
+          - action: extract
+            format: tar.gz
+            from: rootfs/ubuntu/aarch64/${UBUNTU.ROOTFS.NAME.ARM64}.tar.gz
+            to: "."
+          - action: copy
+            from: linux/kernel/out/deploy/lib/.
+            to: lib
+        artifacts:
+          - rootfs.img
+        deps:
+          - linux/kernel/out/deploy/lib
+
+  aarch64-setup:
+    active: true
+    project_subdir: rootfs/ubuntu/aarch64
+    builders:
+      - type: rootfs.ubuntu
+        source: rootfs.img
+        user: *UBUNTU_USER_ALIAS
+        packages: *PACKAGES_ALIAS
+        artifacts:
+          - rootfs.img
+        deps:
+          - rootfs/ubuntu/aarch64/rootfs.img
+
+  aarch64-update:
+    active: true
+    project_subdir: rootfs/ubuntu/aarch64
+    builders:
+      - type: image.partition
+        file: rootfs.img
+        reuse: true
+        content:
+          - action: copy
+            from: linux/kernel/out/deploy/lib/.
+            to: lib
+        artifacts:
+          - rootfs.img
+        deps:
+          - rootfs/ubuntu/aarch64/rootfs.img
+          - linux/kernel/out/deploy/lib
