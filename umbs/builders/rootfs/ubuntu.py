@@ -55,6 +55,14 @@ class Builder( umbs.builders.base.Builder ):
    def __init__( self, config, **kwargs ):
       super( ).__init__( config, **kwargs )
 
+      strict_fields = [ "source" ]
+      for key in strict_fields:
+         if key not in self.__config:
+            raise umbs.base.YamlFormatError( f"Filed '{key}' must be defined in builder" )
+
+
+      self.__source = os.path.join( self.__target_dir, self.__config["source"] )
+
       self.__user_name = None
       self.__user_password = None
       self.__user_uid = None
@@ -107,10 +115,14 @@ class Builder( umbs.builders.base.Builder ):
    # def config
 
    def build( self, **kwargs ):
-      if self.__image_builder:
-         self.__image_builder.pre_build( )
-         self.__image_builder.do_build( )
-         self.__target_dir = self.__image_builder.mount_point( )
+      if not os.path.exists( self.__source ):
+         pfw.console.debug.error( f"source image or directory for building roots does not exist: {self.__source}" )
+         return False
+
+      if os.path.isfile( self.__source ):
+         self.__target_dir = pfw.linux.image.mount( self.__source )
+         if not self.__target_dir:
+            return False
 
       self.init( )
 
@@ -121,8 +133,8 @@ class Builder( umbs.builders.base.Builder ):
 
       self.deinit( )
 
-      if self.__image_builder:
-         self.__image_builder.post_build( )
+      if os.path.isfile( self.__source ):
+         self.__target_dir = pfw.linux.image.umount( self.__source )
 
       return True
    # def build

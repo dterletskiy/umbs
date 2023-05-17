@@ -39,8 +39,7 @@ class Fetcher( umbs.fetchers.base.Fetcher ):
    # def __init__
 
    def fetch( self, **kwargs ):
-      result = pfw.base.net.download( self.__url, self.__target_dir )
-      return 0 == result["code"]
+      return pfw.base.net.download( self.__url, self.__target_dir )
    # def sync
 
    def remove( self ):

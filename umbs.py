@@ -59,3 +59,16 @@ def main( ):
 
 if __name__ == "__main__":
    main( )
+
+
+
+# import pfw.linux.archive
+
+# source_original = "/mnt/dev/tmp/archive/data/"
+# source_unpacked = "/mnt/dev/tmp/archive/000/"
+# archive = "/mnt/dev/tmp/archive/archive.tar.gz"
+# format = "tar.gz"
+
+# pfw.linux.archive.pack( archive, format, "./data/", directory = "/mnt/dev/tmp/archive/" )
+# pfw.linux.archive.unpack( archive, source_unpacked, format )
+# # pfw.linux.archive.detect_type( archive )

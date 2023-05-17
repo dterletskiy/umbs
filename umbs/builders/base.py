@@ -16,6 +16,16 @@ class Builder:
       self.__deploy_dir = os.path.join( self.__project_dir, self.__config.get( "deploy_subdir", "" ) )
 
       self.__artifacts = [ os.path.join( self.__project_dir, artifact ) for artifact in self.__config.get( "artifacts", [ ] ) ]
+
+      self.__dependencies = [ os.path.join( self.__project_dir, dependency ) for dependency in self.__config.get( "deps", [ ] ) ]
+
+      # self.__dependencies = [ ]
+      # for dependency in self.__config.get( "deps", [ ] ):
+      #    if isinstance( dependency, str ):
+      #       self.__dependencies.append( os.path.join( self.__root_dir, dependency ) )
+      #    elif isinstance( dependency, dict ):
+      #       # self.__dependencies.append( os.path.join( dependency[key].project_dir( ), dependency[value] ) )
+      #       pass
    # def __init__
 
    def __del__( self ):
@@ -85,4 +95,30 @@ class Builder:
    def __get_config( self, keys ):
       return pfw.base.dict.get_value( self.__config, keys )
    # def __get_config
+
+
+
+   def project_dir( self ):
+      return self.__project_dir
+   # def project_dir
+
+   def target_dir( self ):
+      return self.__target_dir
+   # def target_dir
+
+   def product_dir( self ):
+      return self.__product_dir
+   # def product_dir
+
+   def deploy_dir( self ):
+      return self.__deploy_dir
+   # def deploy_dir
+
+   def artifacts( self ):
+      return self.__artifacts
+   # def artifacts
+
+   def dependencies( self ):
+      return self.__dependencies
+   # def dependencies
 # class Builder

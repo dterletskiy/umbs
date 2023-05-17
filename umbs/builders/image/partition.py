@@ -9,6 +9,7 @@ import pfw.archive
 import pfw.linux.image
 import pfw.linux.fs
 import pfw.linux.file
+import pfw.linux.archive
 
 import umbs.base
 import umbs.builders.base
@@ -63,7 +64,7 @@ class Builder( umbs.builders.base.Builder ):
       self.__file = os.path.join( self.__target_dir, self.__config["file"] )
 
       if self.__reuse and not os.path.exists( self.__file ):
-         pfw.console.debug.warning( f"'reuse' flag is set to 'true' for not existing file '{file}'" )
+         pfw.console.debug.warning( f"'reuse' flag is set to 'true' for not existing file '{self.__file}'" )
          self.__reuse = False
 
       strict_fields = [ ] if self.__reuse else [ "size", "fs" ]
@@ -90,21 +91,21 @@ class Builder( umbs.builders.base.Builder ):
    # def __init__
 
    def build( self, **kwargs ):
-      self.pre_build( **kwargs )
+      self.create( **kwargs )
+      self.mount( **kwargs )
       self.do_build( **kwargs )
-      self.post_build( **kwargs )
+      self.umount( **kwargs )
+      self.finalize( **kwargs )
       self.deploy( )
 
       return True
    # def build
 
-   def pre_build( self, **kwargs ):
+   def create( self, **kwargs ):
       if False == self.__reuse:
          pfw.linux.image.create( self.__file, self.__size, force = not self.__reuse )
          pfw.linux.image.format( self.__file, self.__fs, label = self.__label )
-      self.__mount_point = pfw.linux.image.mount( self.__file )
-      # pfw.shell.execute( f"chown -R {os.geteuid( )}:{os.getegid( )} {self.__mount_point}", sudo = True, output = pfw.shell.eOutput.PTY )
-   # def pre_build
+   # def create
 
    def do_build( self, **kwargs ):
       for item in self.__content:
@@ -116,19 +117,15 @@ class Builder( umbs.builders.base.Builder ):
                   force = True
                )
          elif "extract" == item["action"]:
-            pfw.archive.extract(
+            pfw.linux.archive.unpack(
                   os.path.join( self.__root_dir, item["from"] ),
-                  None,
-                  os.path.join( self.__mount_point, item["to"] )
+                  os.path.join( self.__mount_point, item["to"] ),
+                  item["format"],
+                  sudo = True
                )
    # def do_build
 
-   def post_build( self, **kwargs ):
-      pfw.linux.image.umount( self.__file )
-      # e2fsck -p -f linuxroot.img
-      # resize2fs  -M linuxroot.img
-
-
+   def finalize( self, **kwargs ):
       def processor( **kwargs ):
          kw_mount_point = kwargs.get( "mount_point", None )
 
@@ -137,9 +134,12 @@ class Builder( umbs.builders.base.Builder ):
             pfw.console.debug.promt( )
       # def processor
       pfw.linux.image.map( self.__file, processor = processor )
-   # def post_build
+   # def finalize
 
    def deploy( self, **kwargs ):
+      if self.__target_dir == self.__deploy_dir:
+         return True
+
       result = pfw.shell.execute( f"mv {self.__file} {self.__deploy_dir}", output = pfw.shell.eOutput.PTY )
       if 0 != result["code"]:
          return False
@@ -160,4 +160,13 @@ class Builder( umbs.builders.base.Builder ):
    def mount_point( self ):
       return self.__mount_point
    # def mount_point
+
+   def mount( self, **kwargs ):
+      self.__mount_point = pfw.linux.image.mount( self.__file )
+      # pfw.shell.execute( f"chown -R {os.geteuid( )}:{os.getegid( )} {self.__mount_point}", sudo = True, output = pfw.shell.eOutput.PTY )
+   # def mount
+
+   def umount( self, **kwargs ):
+      pfw.linux.image.umount( self.__file )
+   # def umount
 # class Builder
