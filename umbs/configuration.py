@@ -267,8 +267,8 @@ def add_config( app_data, name, value ):
 
 
 def process_cmdline( app_data, argv ):
-   print( "Number of arguments:", len(sys.argv) )
-   print( "Argument List:", str(sys.argv) )
+   print( "Number of arguments:", len(argv) )
+   print( "Argument List:", str(argv) )
 
    parser = argparse.ArgumentParser( description = 'App description' )
 
@@ -327,7 +327,7 @@ def process_config_file( app_data ):
 def process_configuration( app_data, argv ):
    process_cmdline( app_data, argv )
    process_config_file( app_data )
-   # app_data.info( )
+
    if False == app_data.is_complete( ):
       sys.exit( 1 )
 
@@ -354,23 +354,32 @@ config: ConfigurationContainer = ConfigurationContainer(
 
 
 
+# Returns list on parameters names
 def names( ):
    return config.get_names( )
 # def names
 
+# Returns all values what were set for parameter with mentioned name
 def values( name: str ):
    return config.get_values( name )
 # def values
 
+# Returns value with mentione index what was set for parameter with mentioned name
 def value( name: str, index: int = 0 ):
    return config.get_value( name, index )
 # def value
 
 
 
-def configure( argv ):
+def init( argv = sys.argv[1:] ):
+   MIN_PYTHON = (3, 8)
+   if sys.version_info < MIN_PYTHON:
+      print( "Python minimal required version is %s.%s" % MIN_PYTHON )
+      print( "Current version is %s.%s" % ( sys.version_info.major, sys.version_info.minor ) )
+      sys.exit( 255 )
+
    process_configuration( config, sys.argv[1:] )
-# def configure
+# def init
 
 def info( ):
    config.info( )

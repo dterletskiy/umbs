@@ -34,11 +34,13 @@ class Tool:
    # def __str__
 
    def do_exec( self ):
-      self.__module.do_exec( self.__instance )
+      # self.__module.do_exec( self.__instance )
+      self.__instance.do_exec( )
    # def do_exec
 
    def do_clean( self ):
-      self.__module.do_clean( self.__instance )
+      # self.__module.do_clean( self.__instance )
+      self.__instance.do_clean( )
    # def do_clean
 
 

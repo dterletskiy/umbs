@@ -13,25 +13,6 @@ def get_instance( config, **kwargs ):
    return Tool( config, **kwargs )
 # def get_instance
 
-def do_exec( tool ):
-   if not tool.exec( ):
-      pfw.console.debug.error( "exec error" )
-      return False
-   if not tool.test( ):
-      pfw.console.debug.error( "test error" )
-      return False
-
-   return True
-# def do_exec
-
-def do_clean( tool ):
-   if not tool.clean( ):
-      pfw.console.debug.error( "clean error" )
-      return False
-
-   return True
-# def do_clean
-
 
 
 class Tool( umbs.tools.base.Tool ):

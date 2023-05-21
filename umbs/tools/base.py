@@ -33,6 +33,25 @@ class Tool:
       pfw.console.debug.info( f"{kw_msg} (type {self.__class__.__name__}):", tabs = ( kw_tabs + 0 ) )
    # def info
 
+   def do_exec( self, **kwargs ):
+      if not self.exec( ):
+         pfw.console.debug.error( "exec error" )
+         return False
+      if not self.test( ):
+         pfw.console.debug.error( "test error" )
+         return False
+
+      return True
+   # def do_exec
+
+   def do_clean( self, **kwargs ):
+      if not self.clean( ):
+         pfw.console.debug.error( "clean error" )
+         return False
+
+      return True
+   # def do_clean
+
    def exec( self, **kwargs ):
       return True
    # def exec

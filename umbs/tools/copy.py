@@ -13,25 +13,6 @@ def get_instance( config, **kwargs ):
    return Tool( config, **kwargs )
 # def get_instance
 
-def do_exec( tool ):
-   if not tool.exec( ):
-      pfw.console.debug.error( "exec error" )
-      return False
-   if not tool.test( ):
-      pfw.console.debug.error( "test error" )
-      return False
-
-   return True
-# def do_exec
-
-def do_clean( tool ):
-   if not tool.clean( ):
-      pfw.console.debug.error( "clean error" )
-      return False
-
-   return True
-# def do_clean
-
 
 
 class Tool( umbs.tools.base.Tool ):
@@ -46,6 +27,19 @@ class Tool( umbs.tools.base.Tool ):
       self.__content = self.__config[ "content" ]
    # def __init__
 
+   def exec( self, **kwargs ):
+      result = True
+      for item in self.__content:
+         op_result = pfw.linux.file.copy(
+               os.path.join( self.__root_dir, item["from"] ),
+               os.path.join( self.__target_dir, item["to"] ),
+               force = True
+            )
+         result = result and op_result
+
+      return result
+   # def exec
+
    def clean( self, **kwargs ):
       result = True
       for item in self.__content:
@@ -59,17 +53,4 @@ class Tool( umbs.tools.base.Tool ):
 
       return result
    # def clean
-
-   def exec( self, **kwargs ):
-      result = True
-      for item in self.__content:
-         op_result = pfw.linux.file.copy(
-               os.path.join( self.__root_dir, item["from"] ),
-               os.path.join( self.__target_dir, item["to"] ),
-               force = True
-            )
-         result = result and op_result
-
-      return result
-   # def exec
 # class Tool

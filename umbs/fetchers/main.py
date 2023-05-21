@@ -34,8 +34,14 @@ class Fetcher:
    # def __str__
 
    def do_fetch( self ):
-      self.__module.do_fetch( self.__instance )
+      # self.__module.do_fetch( self.__instance )
+      self.__instance.do_fetch( )
    # def do_fetch
+
+   def do_remove( self ):
+      # self.__module.do_remove( self.__instance )
+      self.__instance.do_remove( )
+   # def do_remove
 
 
 

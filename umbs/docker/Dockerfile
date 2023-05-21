@@ -20,6 +20,10 @@ RUN for PACKAGE in ${ARG_PACKAGES}; do \
    done
 
 
+# Cleaning
+RUN apt autoremove -y && apt clean all
+
+
 # Define user credentials and data
 ARG ARG_USER_NAME=guest
 ARG ARG_USER_PASSWORD=

@@ -17,7 +17,7 @@ class Builder:
 
       self.__artifacts = [ os.path.join( self.__project_dir, artifact ) for artifact in self.__config.get( "artifacts", [ ] ) ]
 
-      self.__dependencies = [ os.path.join( self.__project_dir, dependency ) for dependency in self.__config.get( "deps", [ ] ) ]
+      self.__dependencies = [ os.path.join( self.__root_dir, dependency ) for dependency in self.__config.get( "deps", [ ] ) ]
 
       # self.__dependencies = [ ]
       # for dependency in self.__config.get( "deps", [ ] ):
@@ -44,6 +44,34 @@ class Builder:
       pfw.console.debug.info( f"{kw_msg} (type {self.__class__.__name__}):", tabs = ( kw_tabs + 0 ) )
    # def info
 
+   def do_build( self, **kwargs ):
+      if not self.prepare( ):
+         pfw.console.debug.error( "prepare error" )
+         return False
+      if not self.config( ):
+         pfw.console.debug.error( "config error" )
+         return False
+      if not self.build( ):
+         pfw.console.debug.error( "build error" )
+         return False
+      if not self.deploy( ):
+         pfw.console.debug.error( "deploy error" )
+         return False
+      if not self.test( ):
+         pfw.console.debug.error( "test error" )
+         return False
+
+      return True
+   # def do_build
+
+   def do_clean( self, **kwargs ):
+      if not self.clean( ):
+         pfw.console.debug.error( "clean error" )
+         return False
+
+      return True
+   # def do_clean
+
    def prepare( self, **kwargs ):
       result = pfw.shell.execute( f"mkdir -p {self.__target_dir}" )
       if 0 != result["code"]:
@@ -56,6 +84,11 @@ class Builder:
       result = pfw.shell.execute( f"mkdir -p {self.__deploy_dir}" )
       if 0 != result["code"]:
          return False
+
+      for dependency in self.__dependencies:
+         if not os.path.exists( dependency ):
+            pfw.console.debug.error( f"dependency does not exist: '{dependency}'" )
+            return False
 
       return True
    # def prepare

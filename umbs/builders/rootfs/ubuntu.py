@@ -14,31 +14,6 @@ def get_instance( config, **kwargs ):
    return Builder( config, **kwargs )
 # def get_instance
 
-def do_build( builder ):
-   if not builder.prepare( ):
-      pfw.console.debug.error( "prepare error" )
-      return False
-   if not builder.config( ):
-      pfw.console.debug.error( "config error" )
-      return False
-   if not builder.build( ):
-      pfw.console.debug.error( "build error" )
-      return False
-   if not builder.test( ):
-      pfw.console.debug.error( "test error" )
-      return False
-
-   return True
-# def do_build
-
-def do_clean( builder ):
-   if not builder.clean( ):
-      pfw.console.debug.error( "clean error" )
-      return False
-
-   return True
-# def do_clean
-
 
 
 def signal_handler( signum, frame, *args, **kwargs ):
@@ -126,10 +101,10 @@ class Builder( umbs.builders.base.Builder ):
 
       self.init( )
 
-      self.pre_install( )
-      self.install( )
-      self.post_install( )
-      self.create_user( )
+      self.__pre_install( )
+      self.__install( )
+      self.__post_install( )
+      self.__create_user( )
 
       self.deinit( )
 
@@ -139,7 +114,7 @@ class Builder( umbs.builders.base.Builder ):
       return True
    # def build
 
-   def pre_install( self, **kwargs ):
+   def __pre_install( self, **kwargs ):
       # Setup /etc/hostname
       command = f"echo '{self.__hostname}' > /etc/hostname"
       self.execute( command )
@@ -195,14 +170,12 @@ class Builder( umbs.builders.base.Builder ):
       # self.execute( command )
       # command = f"ln -s /bin/true /sbin/initctl"
       # self.execute( command )
-   # def pre_install
+   # def __pre_install
 
-   def install( self, **kwargs ):
+   def __install( self, **kwargs ):
       # Update and upgrade packages
       self.execute( f"apt update" )
       self.execute( f"apt -y upgrade" )
-      self.execute( f"apt autoremove -y" )
-      self.execute( f"apt clean all" )
 
       # Install required packages
       for package in self.__packages:
@@ -210,9 +183,9 @@ class Builder( umbs.builders.base.Builder ):
 
       self.execute( f"apt autoremove -y" )
       self.execute( f"apt clean all" )
-   # def install
+   # def __install
 
-   def post_install( self, **kwargs ):
+   def __post_install( self, **kwargs ):
       # Configure machine-id
       command = f"dbus-uuidgen > /etc/machine-id"
       self.execute( command )
@@ -224,9 +197,9 @@ class Builder( umbs.builders.base.Builder ):
       # self.execute( command )
       # command = f"dpkg-divert --rename --remove /sbin/initctl"
       # self.execute( command )
-   # def post_install
+   # def __post_install
 
-   def create_user( self ):
+   def __create_user( self ):
       # Create user
       if self.__user_name:
          if self.__user_uid and self.__user_gid:
@@ -239,7 +212,7 @@ class Builder( umbs.builders.base.Builder ):
             command += f" --gid {self.__user_gid}"
          command += f" {self.__user_name}"
          self.execute( command, bash = False )
-   # def create_user
+   # def __create_user
 
    def clean( self, **kwargs ):
       return True

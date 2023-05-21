@@ -20,31 +20,6 @@ def get_instance( config, **kwargs ):
    return Builder( config, **kwargs )
 # def get_instance
 
-def do_build( builder ):
-   if not builder.prepare( ):
-      pfw.console.debug.error( "prepare error" )
-      return False
-   if not builder.config( ):
-      pfw.console.debug.error( "config error" )
-      return False
-   if not builder.build( ):
-      pfw.console.debug.error( "build error" )
-      return False
-   if not builder.test( ):
-      pfw.console.debug.error( "test error" )
-      return False
-
-   return True
-# def do_build
-
-def do_clean( builder ):
-   if not builder.clean( ):
-      pfw.console.debug.error( "clean error" )
-      return False
-
-   return True
-# def do_clean
-
 
 
 class Builder( umbs.builders.base.Builder ):
@@ -91,23 +66,22 @@ class Builder( umbs.builders.base.Builder ):
    # def __init__
 
    def build( self, **kwargs ):
-      self.create( **kwargs )
-      self.mount( **kwargs )
-      self.do_build( **kwargs )
-      self.umount( **kwargs )
-      self.finalize( **kwargs )
-      self.deploy( )
+      self.__create( **kwargs )
+      self.__mount( **kwargs )
+      self.__build( **kwargs )
+      self.__umount( **kwargs )
+      self.__finalize( **kwargs )
 
       return True
    # def build
 
-   def create( self, **kwargs ):
+   def __create( self, **kwargs ):
       if False == self.__reuse:
          pfw.linux.image.create( self.__file, self.__size, force = not self.__reuse )
          pfw.linux.image.format( self.__file, self.__fs, label = self.__label )
-   # def create
+   # def __create
 
-   def do_build( self, **kwargs ):
+   def __build( self, **kwargs ):
       for item in self.__content:
          if "copy" == item["action"]:
             pfw.linux.file.copy(
@@ -123,9 +97,9 @@ class Builder( umbs.builders.base.Builder ):
                   item["format"],
                   sudo = True
                )
-   # def do_build
+   # def __build
 
-   def finalize( self, **kwargs ):
+   def __finalize( self, **kwargs ):
       def processor( **kwargs ):
          kw_mount_point = kwargs.get( "mount_point", None )
 
@@ -134,7 +108,7 @@ class Builder( umbs.builders.base.Builder ):
             pfw.console.debug.promt( )
       # def processor
       pfw.linux.image.map( self.__file, processor = processor )
-   # def finalize
+   # def __finalize
 
    def deploy( self, **kwargs ):
       if self.__target_dir == self.__deploy_dir:
@@ -161,12 +135,12 @@ class Builder( umbs.builders.base.Builder ):
       return self.__mount_point
    # def mount_point
 
-   def mount( self, **kwargs ):
+   def __mount( self, **kwargs ):
       self.__mount_point = pfw.linux.image.mount( self.__file )
       # pfw.shell.execute( f"chown -R {os.geteuid( )}:{os.getegid( )} {self.__mount_point}", sudo = True, output = pfw.shell.eOutput.PTY )
-   # def mount
+   # def __mount
 
-   def umount( self, **kwargs ):
+   def __umount( self, **kwargs ):
       pfw.linux.image.umount( self.__file )
-   # def umount
+   # def __umount
 # class Builder

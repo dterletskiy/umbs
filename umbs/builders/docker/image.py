@@ -12,31 +12,6 @@ def get_instance( config, **kwargs ):
    return Builder( config, **kwargs )
 # def get_instance
 
-def do_build( builder ):
-   if not builder.prepare( ):
-      pfw.console.debug.error( "prepare error" )
-      return False
-   if not builder.config( ):
-      pfw.console.debug.error( "config error" )
-      return False
-   if not builder.build( ):
-      pfw.console.debug.error( "build error" )
-      return False
-   if not builder.test( ):
-      pfw.console.debug.error( "test error" )
-      return False
-
-   return True
-# def do_build
-
-def do_clean( builder ):
-   if not builder.clean( ):
-      pfw.console.debug.error( "clean error" )
-      return False
-
-   return True
-# def do_clean
-
 
 
 class Builder( umbs.builders.base.Builder ):

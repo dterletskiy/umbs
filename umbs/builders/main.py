@@ -34,11 +34,13 @@ class Builder:
    # def __str__
 
    def do_build( self ):
-      self.__module.do_build( self.__instance )
+      # self.__module.do_build( self.__instance )
+      self.__instance.do_build( )
    # def do_build
 
    def do_clean( self ):
-      self.__module.do_clean( self.__instance )
+      # self.__module.do_clean( self.__instance )
+      self.__instance.do_clean( )
    # def do_clean
 
 

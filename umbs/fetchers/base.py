@@ -33,6 +33,25 @@ class Fetcher:
       pfw.console.debug.info( f"{kw_msg} (type {self.__class__.__name__}):", tabs = ( kw_tabs + 0 ) )
    # def info
 
+   def do_fetch( self, **kwargs ):
+      if not self.fetch( ):
+         pfw.console.debug.error( "fetch error" )
+         return False
+      if not self.test( ):
+         pfw.console.debug.error( "test error" )
+         return False
+
+      return True
+   # def do_fetch
+
+   def do_remove( self, **kwargs ):
+      if not self.remove( ):
+         pfw.console.debug.error( "remove error" )
+         return False
+
+      return True
+   # def do_fetch
+
    def fetch( self, **kwargs ):
       pass
    # def fetch

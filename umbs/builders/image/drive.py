@@ -18,31 +18,6 @@ def get_instance( config, **kwargs ):
    return Builder( config, **kwargs )
 # def get_instance
 
-def do_build( builder ):
-   if not builder.prepare( ):
-      pfw.console.debug.error( "prepare error" )
-      return False
-   if not builder.config( ):
-      pfw.console.debug.error( "config error" )
-      return False
-   if not builder.build( ):
-      pfw.console.debug.error( "build error" )
-      return False
-   if not builder.test( ):
-      pfw.console.debug.error( "test error" )
-      return False
-
-   return True
-# def do_build
-
-def do_clean( builder ):
-   if not builder.clean( ):
-      pfw.console.debug.error( "clean error" )
-      return False
-
-   return True
-# def do_clean
-
 
 
 class Builder( umbs.builders.base.Builder ):
@@ -77,13 +52,12 @@ class Builder( umbs.builders.base.Builder ):
    # def __str__
 
    def build( self, **kwargs ):
-      self.do_build( **kwargs )
-      self.deploy( )
+      self.__build( **kwargs )
 
       return True
    # def build
 
-   def do_build( self, **kwargs ):
+   def __build( self, **kwargs ):
       partitions = [ ]
       for partition in self.__partitions:
          if "file" in partition:
@@ -128,7 +102,7 @@ class Builder( umbs.builders.base.Builder ):
             pfw.console.debug.promt( )
       # def processor
       pfw.linux.image.map( self.__file, processor = processor )
-   # def do_build
+   # def __build
 
    def deploy( self, **kwargs ):
       result = pfw.shell.execute( f"mv {self.__file} {self.__deploy_dir}", output = pfw.shell.eOutput.PTY )

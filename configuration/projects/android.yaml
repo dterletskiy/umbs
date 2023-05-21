@@ -1,5 +1,5 @@
 projects:
-  android-u-boot:
+  u-boot:
     active: true
     project_subdir: android/u-boot
     sources:
@@ -18,7 +18,7 @@ projects:
         deps:
           - ""
 
-  android-kernel:
+  kernel:
     active: true
     project_subdir: android/kernel
     sources:

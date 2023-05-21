@@ -13,22 +13,6 @@ def get_instance( config, **kwargs ):
    return Fetcher( config, **kwargs )
 # def get_instance
 
-def do_fetch( fetcher ):
-   if not fetcher.fetch( ):
-      pfw.console.debug.error( "fetch error" )
-      return False
-
-   return True
-# def do_fetch
-
-def do_remove( fetcher ):
-   if not fetcher.remove( ):
-      pfw.console.debug.error( "remove error" )
-      return False
-
-   return True
-# def do_fetch
-
 
 
 class Fetcher( umbs.fetchers.base.Fetcher ):
