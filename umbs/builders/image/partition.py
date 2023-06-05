@@ -31,22 +31,12 @@ class Builder( umbs.builders.base.Builder ):
       # In cae if "reuse" flag is set to "false", new image file will be created always.
       self.__reuse = self.__config.get( "reuse", False )
 
-      strict_fields = [ "file" ]
+      strict_fields = [ "file" ] if self.__reuse else [ "file", "size", "fs" ]
       for key in strict_fields:
          if key not in self.__config:
             raise umbs.base.YamlFormatError( f"Filed '{key}' must be defined in builder" )
 
       self.__file = os.path.join( self.__target_dir, self.__config["file"] )
-
-      if self.__reuse and not os.path.exists( self.__file ):
-         pfw.console.debug.warning( f"'reuse' flag is set to 'true' for not existing file '{self.__file}'" )
-         self.__reuse = False
-
-      strict_fields = [ ] if self.__reuse else [ "size", "fs" ]
-      for key in strict_fields:
-         if key not in self.__config:
-            raise umbs.base.YamlFormatError( f"Filed '{key}' must be defined in builder" )
-
 
       if not self.__reuse:
          if match := re.match( r'(\d+[.]?\d*)\s*(\w+)', self.__config["size"] ):
@@ -59,6 +49,9 @@ class Builder( umbs.builders.base.Builder ):
          self.__fs = pfw.linux.fs.builder( self.__config["fs"] )
          if not self.__fs:
             raise umbs.base.YamlFormatError( f"image fs format error" )
+      else:
+         if not os.path.exists( self.__file ):
+            pfw.console.debug.warning( f"'reuse' flag is set to 'true' for not existing file '{self.__file}'" )
 
 
       self.__label = self.__config.get( "label", "NoLabel" )

@@ -1,0 +1,27 @@
+  linux-xen:
+    active: true
+    project_subdir: xen
+    sources:
+      - type: git
+        url: ${XEN.SOURCE.GITHUB.URL}
+        branch: ${XEN.SOURCE.GITHUB.BRANCH}
+    builders:
+      - type: make.xen
+        subdir: "."
+        product_subdir: "out/build"
+        deploy_subdir: "out/deploy"
+        defconfig: ${XEN.CONFIG.ARM64}
+        arch: "arm64"
+        compiler: "aarch64-linux-gnu-"
+        jobs: 4
+        targets:
+          # - "dist"
+          - "dist-xen"
+          # - "dist-tools"
+          # - "dist-docs"
+        env:
+          - ""
+        artifacts:
+          - "dist/install/boot/xen"
+        deps:
+          - ""

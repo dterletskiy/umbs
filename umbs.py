@@ -20,6 +20,7 @@
 import umbs.configuration
 
 umbs.configuration.init( )
+# umbs.configuration.info( ) # @TDA: debug
 
 
 

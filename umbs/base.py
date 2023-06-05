@@ -9,27 +9,32 @@ import pfw.console
 import pfw.base.str
 import pfw.base.dict
 
+import umbs.configuration
+
 
 
 class YamlFormatError( Exception ):
    def __init__( self, message ):
       self.message = message
       super( ).__init__( self.message )
+
+   def __str__( self ):
+      pfw.console.debug.error( f"{self.__class__}: {self.message}" )
 # class YamlFormatError
 
 class ConfigurationFormatError( Exception ):
    def __init__( self, message ):
       self.message = message
       super( ).__init__( self.message )
+
+   def __str__( self ):
+      pfw.console.debug.error( f"{self.__class__}: {self.message}" )
 # class ConfigurationFormatError
 
 
 
 class Config:
    def __init__( self, file: str, **kwargs ):
-      root_dir = kwargs.get( "root_dir", None )
-      container_root_dir = kwargs.get( "container_root_dir", None )
-
       def read_file( file ):
          pattern: str = r"^\s*include:\s*\"(.*)\"\s*$"
 
@@ -56,24 +61,30 @@ class Config:
 
       # Read "variables" section from yaml file
       self.__variables = yaml_data.get( "variables", { } )
-      # Override some field according to "config" file or command line
-      if root_dir:
-         # Override yaml variable "DIRECTORIES.ROOT" by the value obtained from configuration file or command line parameter. 
-         self.set_variable( "DIRECTORIES.ROOT", root_dir )
-      if container_root_dir:
-         # Override yaml variable "DIRECTORIES.CONTAINER.ROOT" by the value obtained from configuration file or command line parameter. 
-         self.set_variable( "DIRECTORIES.CONTAINER.ROOT", container_root_dir )
+
+      # Override some fields according to "config" file or command line
+      for name in umbs.configuration.names( ):
+         if not name.startswith( "YAML." ):
+            continue
+
+         replace_name = name.removeprefix( "YAML." )
+         replace_value = umbs.configuration.value( name )
+         self.set_variable( replace_name, replace_value )
+
       # Substitute valiables' values
       self.__process_yaml_data( self.__variables )
+
       # Test critical variables
       if None == self.get_variable( "DIRECTORIES.ROOT" ):
          raise ConfigurationFormatError(
-               "Root directory must be defined in command line or confiruration file as 'root_dit', or in yaml file as 'DIRECTORIES.ROOT'"
+               "Root directory must be defined in command line, confiruration file or in yaml file as 'DIRECTORIES.ROOT'"
             )
 
+      # Read "projects" section from yaml file
       self.__projects = yaml_data.get( "projects", { } )
       self.__process_yaml_data( self.__projects )
 
+      # Read "tools" section from yaml file
       self.__tools = yaml_data.get( "tools", { } )
       self.__process_yaml_data( self.__tools )
    # def __init__
@@ -93,8 +104,8 @@ class Config:
 
 
 
-   def get_variable( self, variable ):
-      return pfw.base.dict.get_value( self.__variables, variable )
+   def get_variable( self, variable, default_value = None ):
+      return pfw.base.dict.get_value( self.__variables, variable, default_value )
    # def get_variable
 
    def get_variables( self ):
@@ -138,7 +149,7 @@ class Config:
    # class AV
 
    def __replace( self, value ):
-      # pfw.console.debug.trace( f"processing value: '{value}'" ) # @TDA: debug
+      pfw.console.debug.trace( f"processing value: '{value}'" ) # @TDA: debug
 
       if not isinstance( value, str ):
          pfw.console.debug.warning( f"ERROR: '{value}' is not a string" )
@@ -146,9 +157,10 @@ class Config:
 
       replaced: bool = False
       if findall := re.findall( r'\$\{(.+?)\}', value ):
+         pfw.console.debug.trace( f"findall: '{findall}'" )
          for item in findall:
             variable = self.get_variable( item )
-            # pfw.console.debug.trace( f"{item} -> {variable} ({type(variable)})" ) # @TDA: debug
+            pfw.console.debug.trace( f"{item} -> {variable} ({type(variable)})" ) # @TDA: debug
             if isinstance( variable, str ) or isinstance( variable, int ) or isinstance( variable, float ):
                value = value.replace( "${" + item + "}", str(variable) )
             elif isinstance( variable, list ) or isinstance( variable, tuple ) or isinstance( variable, dict ):
@@ -165,7 +177,7 @@ class Config:
    # def __replace
 
    def __walk( self, iterable, address: list, value_processor = None ):
-      # pfw.console.debug.info( f"-> address = {address}" ) # @TDA: debug
+      pfw.console.debug.info( f"-> address = {address}" ) # @TDA: debug
 
       for_adaptation: list = [ ]
       if isinstance( iterable, dict ):

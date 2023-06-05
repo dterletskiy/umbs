@@ -1,0 +1,21 @@
+  docker-container-x64:
+    active: true
+    project_subdir: None
+    builders:
+      - type: docker.container
+        name: builder_x64_ubuntu_${UBUNTU.VERSION}
+        disposable: true
+        image:
+          name: builder/x64/ubuntu
+          tag: ${UBUNTU.VERSION}
+        mapping:
+          volume:
+            - host: ${DIRECTORIES.ROOT}
+              guest: ${DIRECTORIES.CONTAINER.ROOT}
+            - host: ~/.ssh
+              guest: /home/${UBUNTU.USER.name}/.ssh
+            - host: ~/.gitconfig
+              guest: /home/${UBUNTU.USER.name}/.gitconfig
+          port:
+            - host: 5000
+              guest: 5000

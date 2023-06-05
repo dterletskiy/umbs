@@ -1,0 +1,34 @@
+  linux-u-boot:
+    active: true
+    project_subdir: loader/u-boot
+    sources:
+      - type: git
+        url: ${UBOOT.SOURCE.GITHUB.URL}
+        branch: ${UBOOT.SOURCE.GITHUB.BRANCH}
+    patches:
+      - type: copy
+        content:
+          - from: "tda/lfs/configuration/config/u-boot/v2022.07/qemu_arm64_defconfig/exp/defconfig"
+            to: "configs/${UBOOT.CONFIG.ARM64}"
+    builders:
+      - type: make.uboot
+        subdir: "."
+        product_subdir: "out/build"
+        deploy_subdir: "out/deploy"
+        defconfig: ${UBOOT.CONFIG.ARM64}
+        arch: "arm64"
+        compiler: "aarch64-linux-gnu-"
+        jobs: 4
+        env:
+          - ""
+        artifacts:
+          - "out/build/u-boot"
+          - "out/build/u-boot.bin"
+          - "out/build/scripts/dtc/dtc"
+          - "out/build/tools/dumpimage"
+          - "out/build/tools/fit_info"
+          - "out/build/tools/mkenvimage"
+          - "out/build/tools/mkimage"
+          - "out/build/tools/img2srec"
+        deps:
+          - ""

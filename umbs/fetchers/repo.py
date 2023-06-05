@@ -19,27 +19,29 @@ class Fetcher( umbs.fetchers.base.Fetcher ):
    def __init__( self, config, **kwargs ):
       super( ).__init__( config, **kwargs )
 
+
+      for key in [ "manifest" ]:
+         if key not in self.__config:
+            raise umbs.base.YamlFormatError( f"Filed '{key}' must be defined in fetcher" )
+
       self.__repo = pfw.linux.repo.Repo(
             destination = kwargs.get( "project_dir", None ),
-            manifest_url = self.__config.get( "manifest-url", None ),
-            manifest_name = self.__config.get( "manifest-name", None ),
-            manifest_branch = self.__config.get( "manifest-branch", None ),
-            manifest_depth = self.__config.get( "manifest-depth", None ),
+            manifest_url = self.__config["manifest"].get( "url", None ),
+            manifest_name = self.__config["manifest"].get( "name", None ),
+            manifest_branch = self.__config["manifest"].get( "branch", None ),
+            manifest_depth = self.__config["manifest"].get( "depth", None ),
             depth = self.__config.get( "depth", 1 )
          )
    # def __init__
 
    def fetch( self, **kwargs ):
-      result = self.__repo.install( )
-      if 0 != result["code"]:
+      if False == self.__repo.install( ):
          return False
 
-      result = self.__repo.init( )
-      if 0 != result["code"]:
+      if False == self.__repo.init( ):
          return False
 
-      result = self.__repo.sync( )
-      if 0 != result["code"]:
+      if False == self.__repo.sync( ):
          return False
 
       return True

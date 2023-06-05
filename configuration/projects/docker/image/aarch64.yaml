@@ -1,17 +1,15 @@
-projects:
-  x86-64:
+  docker-image-aarch64:
     active: true
     project_subdir: None
-    version: ${UBUNTU.VERSION}
     builders:
       - type: docker.image
         dockerfile: ${UBUNTU.DOCKER.DOCKERFILE}
         from:
-          name: ubuntu
+          name: arm64v8/ubuntu
           tag: ${UBUNTU.VERSION}
         image:
-          name: builder/x86-64/ubuntu
+          name: builder/arm64v8/ubuntu
           tag: ${UBUNTU.VERSION}
         user: *UBUNTU_USER_ALIAS
         packages: *PACKAGES_ALIAS
-        container_name: builder_x86_64_ubuntu_${UBUNTU.VERSION}
+        container_name: builder_arm64v8_ubuntu_${UBUNTU.VERSION}

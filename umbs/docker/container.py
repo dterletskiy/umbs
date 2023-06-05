@@ -2,7 +2,7 @@
 
 import pfw.console
 import pfw.shell
-import pfw.linux.docker
+import pfw.linux.docker2
 
 
 
@@ -15,7 +15,7 @@ def create( **kwargs ):
    kw_port_mapping = kwargs.get( "port_mapping", { } )
    kw_disposable = kwargs.get( "disposable", True )
 
-   container: pfw.linux.docker.Container = pfw.linux.docker.Container(
+   container: pfw.linux.docker2.Container = pfw.linux.docker2.Container(
          name = kw_container_name,
          hostname = kw_hostname,
          image = f"{kw_image_name}:{kw_image_tag}",
@@ -28,7 +28,7 @@ def create( **kwargs ):
 def remove( **kwargs ):
    kw_container_name = kwargs.get( "container_name", None )
 
-   container: pfw.linux.docker.Container = pfw.linux.docker.Container(
+   container: pfw.linux.docker2.Container = pfw.linux.docker2.Container(
          name = kw_container_name,
       )
    container.remove( )
@@ -37,7 +37,7 @@ def remove( **kwargs ):
 def start( **kwargs ):
    kw_container_name = kwargs.get( "container_name", None )
 
-   container: pfw.linux.docker.Container = pfw.linux.docker.Container(
+   container: pfw.linux.docker2.Container = pfw.linux.docker2.Container(
          name = kw_container_name,
       )
    container.start( )
@@ -46,7 +46,7 @@ def start( **kwargs ):
 def stop( **kwargs ):
    kw_container_name = kwargs.get( "container_name", None )
 
-   container: pfw.linux.docker.Container = pfw.linux.docker.Container(
+   container: pfw.linux.docker2.Container = pfw.linux.docker2.Container(
          name = kw_container_name,
       )
    container.stop( )
@@ -61,7 +61,7 @@ def run( **kwargs ):
    kw_port_mapping = kwargs.get( "port_mapping", { } )
    kw_disposable = kwargs.get( "disposable", True )
 
-   container: pfw.linux.docker.Container = pfw.linux.docker.Container(
+   container: pfw.linux.docker2.Container = pfw.linux.docker2.Container(
          name = kw_container_name,
          hostname = kw_hostname,
          image = f"{kw_image_name}:{kw_image_tag}",
@@ -74,7 +74,7 @@ def run( **kwargs ):
 def exec( **kwargs ):
    kw_container_name = kwargs.get( "container_name", None )
 
-   container: pfw.linux.docker.Container = pfw.linux.docker.Container(
+   container: pfw.linux.docker2.Container = pfw.linux.docker2.Container(
          name = kw_container_name,
       )
    container.exec( "bash" )

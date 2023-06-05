@@ -1,0 +1,32 @@
+  rootfs-x64:
+    active: true
+    project_subdir: rootfs/ubuntu/x64
+    sources:
+      - type: download
+        url: ${UBUNTU.ROOTFS.SOURCE.X64}
+    builders:
+      - type: image.partition
+        file: rootfs.img
+        reuse: false
+        fs: ext4
+        size: 4096 MB
+        content:
+          - action: extract
+            format: ${UBUNTU.ROOTFS.NAME.EXT}
+            from: rootfs/ubuntu/x64/${UBUNTU.ROOTFS.NAME.X64}.${UBUNTU.ROOTFS.NAME.EXT}
+            to: "."
+          - action: copy
+            from: linux/kernel/out/deploy/lib/.
+            to: lib
+        artifacts:
+          - rootfs.img
+        deps:
+          - linux/kernel/out/deploy/lib
+      - type: rootfs.ubuntu
+        source: rootfs.img
+        user: *UBUNTU_USER_ALIAS
+        packages: *PACKAGES_ALIAS
+        artifacts:
+          - rootfs.img
+        deps:
+          - rootfs/ubuntu/x64/rootfs.img

@@ -19,7 +19,6 @@ RUN for PACKAGE in ${ARG_PACKAGES}; do \
       apt update && apt install -y ${PACKAGE} || true; \
    done
 
-
 # Cleaning
 RUN apt autoremove -y && apt clean all
 
@@ -29,7 +28,7 @@ ARG ARG_USER_NAME=guest
 ARG ARG_USER_PASSWORD=
 ARG ARG_USER_HASHED_PASSWORD=
 ARG ARG_USER_PASSWORD_SALT="guest"
-ARG ARG_USER_ID=1000
+ARG ARG_USER_UID=1000
 ARG ARG_USER_GID=1000
 ARG ARG_USER_WORKDIR="workspace"
 
@@ -55,7 +54,7 @@ RUN if [ -z ${ARG_USER_PASSWORD+x} ] || [ -z ${ARG_USER_PASSWORD} ]; then \
    \
    groupadd --gid ${ARG_USER_GID} ${ARG_USER_NAME} && \
    useradd \
-      --uid ${ARG_USER_ID} \
+      --uid ${ARG_USER_UID} \
       --gid ${ARG_USER_GID} \
       --create-home \
       --shell /bin/bash \

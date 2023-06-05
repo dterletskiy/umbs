@@ -44,13 +44,13 @@ def do_action( action ):
       ]
 
    volume_mapping = [
-         pfw.linux.docker.Container.Mapping( host = f"/mnt/docker/{container_name}", guest = f"/mnt/host" ),
-         pfw.linux.docker.Container.Mapping( host = f"~/.ssh", guest = f"/home/{user_name}/.ssh" ),
-         pfw.linux.docker.Container.Mapping( host = f"~/.gitconfig", guest = f"/home/{user_name}/.gitconfig" ),
+         pfw.linux.docker2.Container.Mapping( host = f"/mnt/docker/{container_name}", guest = f"/mnt/host" ),
+         pfw.linux.docker2.Container.Mapping( host = f"~/.ssh", guest = f"/home/{user_name}/.ssh" ),
+         pfw.linux.docker2.Container.Mapping( host = f"~/.gitconfig", guest = f"/home/{user_name}/.gitconfig" ),
       ]
 
    port_mapping = [
-         pfw.linux.docker.Container.Mapping( host = "5000", guest = "5000" ),
+         pfw.linux.docker2.Container.Mapping( host = "5000", guest = "5000" ),
       ]
 
 

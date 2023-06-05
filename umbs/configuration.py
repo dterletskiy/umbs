@@ -372,7 +372,7 @@ def value( name: str, index: int = 0 ):
 
 
 def init( argv = sys.argv[1:] ):
-   MIN_PYTHON = (3, 8)
+   MIN_PYTHON = (3, 9)
    if sys.version_info < MIN_PYTHON:
       print( "Python minimal required version is %s.%s" % MIN_PYTHON )
       print( "Current version is %s.%s" % ( sys.version_info.major, sys.version_info.minor ) )

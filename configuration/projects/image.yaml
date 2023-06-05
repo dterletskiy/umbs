@@ -1,4 +1,3 @@
-projects:
   image-boot:
     active: true
     project_subdir: images/boot

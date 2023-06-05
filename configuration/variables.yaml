@@ -1,4 +1,5 @@
-variables:
+# variables:
+
   DIRECTORIES:
     # Current variable (DIRECTORIES.ROOT) could be changed during runtime initializetion in case if 'root_dir' parameter
     # defined in configuration file or command line parameter
@@ -73,6 +74,17 @@ variables:
           BRANCH: "kernel/manifest/common-android14-6.1-dev"
       CONFIG:
         ARM64: "//common-modules/virtual-device:virtual_device_aarch64"
+    AOSP:
+      SOURCE:
+        GITHUB:
+          URL: "https://github.com/dterletskiy/aosp_manifest.git"
+          BRANCH: "platform/manifest/android-12.1.0_r8-dev"
+      CONFIG:
+        PRODUCT:
+          ARM64:
+            NAME: "aosp_trout_arm64"
+            DEVICE: "trout_arm64"
+            VARIANT: "userdebug"
   UBUNTU:
     VERSION: 22.04
     DOCKER:
@@ -81,11 +93,12 @@ variables:
       NAME:
         COMMON: ubuntu-base-${UBUNTU.VERSION}.2-base
         ARM64: ${UBUNTU.ROOTFS.NAME.COMMON}-arm64
-        X86_64: ${UBUNTU.ROOTFS.NAME.COMMON}-amd64
+        X64: ${UBUNTU.ROOTFS.NAME.COMMON}-amd64
+        EXT: tar.gz
       SOURCE:
         COMMON: http://cdimage.ubuntu.com/ubuntu-base/releases/
-        ARM64: ${UBUNTU.ROOTFS.SOURCE.COMMON}/${UBUNTU.VERSION}/release/${UBUNTU.ROOTFS.NAME.ARM64}.tar.gz
-        X86_64: ${UBUNTU.ROOTFS.SOURCE.COMMON}/${UBUNTU.VERSION}/release/${UBUNTU.ROOTFS.NAME.X86_64}.tar.gz
+        ARM64: ${UBUNTU.ROOTFS.SOURCE.COMMON}/${UBUNTU.VERSION}/release/${UBUNTU.ROOTFS.NAME.ARM64}.${UBUNTU.ROOTFS.NAME.EXT}
+        X64: ${UBUNTU.ROOTFS.SOURCE.COMMON}/${UBUNTU.VERSION}/release/${UBUNTU.ROOTFS.NAME.X64}.${UBUNTU.ROOTFS.NAME.EXT}
     USER: &UBUNTU_USER_ALIAS
       uid: 1000
       gid: 1000
@@ -179,6 +192,7 @@ variables:
         - ssh
         - openssh-server
         - socat
+        - sshpass
       DEV: &PACKAGES_DEV_ALIAS
         BASE: &PACKAGES_BASE_ALIAS
           - build-essential
@@ -226,6 +240,7 @@ variables:
           - python3-coloredlogs
           - python3-antlr
           - python3-antlr3
+          - python3-antlr4
         PERL: &PACKAGES_DEV_PERL_ALIAS
           - perl
           - perl-doc
@@ -259,6 +274,9 @@ variables:
 
           - libsdl2-dev
           - libsdl2-doc
+
+          - libasound2-dev
+          - libasound2-doc
       TOOLS: &PACKAGES_TOOLS_ALIAS
         - mc
         - nano
@@ -274,6 +292,7 @@ variables:
         - unzip
         - rar
         - unrar
+        - lz4
         - rarcrack
         - xz-utils
         - cpio

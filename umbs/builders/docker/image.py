@@ -2,7 +2,7 @@ import os
 
 import pfw.console
 import pfw.shell
-import pfw.linux.docker
+import pfw.linux.docker.image
 
 import umbs.builders.base
 
@@ -74,22 +74,18 @@ class Builder( umbs.builders.base.Builder ):
    # def config
 
    def build( self, **kwargs ):
-      result = pfw.linux.docker.build(
+      return pfw.linux.docker.image.build(
             dokerfile = self.__dockerfile,
             image_name = self.__image_name,
             image_tag = self.__image_tag,
             build_args = self.__build_args
          )
-
-      return 0 == result["code"]
    # def build
 
    def clean( self, **kwargs ):
-      result = pfw.linux.docker.rmi(
+      return pfw.linux.docker.image.rmi(
             image_name = self.__image_name,
             image_tag = self.__image_tag
          )
-
-      return 0 == result["code"]
    # def clean
 # class Builder

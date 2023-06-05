@@ -2,6 +2,26 @@ author: "dterletskiy"
 version: "1.1.0"
 umbs_min_version: "0.1"
 
-include: "variables.yaml"
-include: "environment.yaml"
-include: "projects/experimental.yaml"
+variables:
+  include: "variables.yaml"
+
+projects:
+  include: "projects/base/tda.yaml"
+
+  include: "projects/linux/xen.yaml"
+  include: "projects/linux/u-boot.yaml"
+  include: "projects/linux/busybox.yaml"
+  include: "projects/linux/buildroot.yaml"
+
+  include: "projects/docker/image/aarch64.yaml"
+  include: "projects/docker/image/x64.yaml"
+
+  include: "projects/docker/container/aarch64.yaml"
+  include: "projects/docker/container/x64.yaml"
+
+  include: "projects/linux/rootfs/aarch64.yaml"
+  include: "projects/linux/rootfs/x64.yaml"
+
+  include: "projects/android/u-boot.yaml"
+  include: "projects/android/kernel.yaml"
+  include: "projects/android/aosp.yaml"

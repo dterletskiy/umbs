@@ -1,0 +1,13 @@
+  tda:
+    active: true
+    project_subdir: tda
+    sources:
+      - type: git
+        url: "git@github.com:dterletskiy/linux_from_scratch.git"
+        subdir: lfs
+      - type: git
+        url: "git@github.com:dterletskiy/umbs.git"
+        subdir: umbs
+      - type: git
+        url: "git@github.com:dterletskiy/python_fw.git"
+        subdir: pfw

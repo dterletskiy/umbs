@@ -1,0 +1,28 @@
+  linux-kernel:
+    active: true
+    project_subdir: linux/kernel
+    sources:
+      - type: git
+        url: ${KERNEL.SOURCE.GITHUB.URL}
+        branch: ${KERNEL.SOURCE.GITHUB.BRANCH}
+    patches:
+      - type: copy
+        content:
+          - from: "tda/lfs/configuration/config/kernel/6.2/arm64/exp/defconfig"
+            to: "arch/arm64/configs/${KERNEL.CONFIG.ARM64}"
+    builders:
+      - type: make.kernel
+        subdir: "."
+        product_subdir: "out/build"
+        deploy_subdir: "out/deploy"
+        defconfig: ${KERNEL.CONFIG.ARM64}
+        arch: "arm64"
+        compiler: "aarch64-linux-gnu-"
+        jobs: 4
+        env:
+          - ""
+        artifacts:
+          - "out/deploy/vmlinuz-6.2.0"
+          - "out/deploy/lib"
+        deps:
+          - ""
