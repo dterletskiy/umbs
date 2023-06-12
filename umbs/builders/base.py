@@ -11,8 +11,11 @@ class Builder:
       self.__config = config
       self.__root_dir = kwargs.get( "root_dir", None )
       self.__project_dir = kwargs.get( "project_dir", None )
+      # target_dir <=> source code dir
       self.__target_dir = os.path.join( self.__project_dir, self.__config.get( "subdir", "" ) )
+      # product_subdir <=> build code dir
       self.__product_dir = os.path.join( self.__project_dir, self.__config.get( "product_subdir", "" ) )
+      # deploy_subdir <=> deploy code dir
       self.__deploy_dir = os.path.join( self.__project_dir, self.__config.get( "deploy_subdir", "" ) )
 
       self.__artifacts = [ os.path.join( self.__project_dir, artifact ) for artifact in self.__config.get( "artifacts", [ ] ) ]

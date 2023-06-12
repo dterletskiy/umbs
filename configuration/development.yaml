@@ -6,7 +6,8 @@ variables:
   include: "variables.yaml"
 
 projects:
-  include: "projects/base/tda.yaml"
+  include: "projects/tda/common.yaml"
+  include: "projects/tda/carpc.yaml"
 
   include: "projects/linux/xen.yaml"
   include: "projects/linux/u-boot.yaml"
