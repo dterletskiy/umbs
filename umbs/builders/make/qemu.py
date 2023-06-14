@@ -27,7 +27,7 @@ class Builder( umbs.builders.base.Builder ):
       # parameters = "--prefix="
       parameters = ""
 
-      result = pfw.shell.execute( command, parameters, cwd = self.__target_dir, print = False, collect = False )
+      result = self.execute( command, parameters, print = False, collect = False )
       if 0 != result["code"]:
          return False
 
@@ -35,7 +35,7 @@ class Builder( umbs.builders.base.Builder ):
    # def config
 
    def build( self, **kwargs ):
-      result = pfw.shell.execute( self.build_command( ), self.__targets, output = pfw.shell.eOutput.PTY, cwd = self.__target_dir )
+      result = self.execute( self.build_command( ), self.__targets )
       if 0 != result["code"]:
          return False
 
@@ -43,7 +43,7 @@ class Builder( umbs.builders.base.Builder ):
    # def build
 
    def clean( self, **kwargs ):
-      result = pfw.shell.execute( self.build_command( ), "clean distclean mrproper", output = pfw.shell.eOutput.PTY, cwd = self.__target_dir )
+      result = self.execute( self.build_command( ), "clean distclean mrproper" )
       if 0 != result["code"]:
          return False
 

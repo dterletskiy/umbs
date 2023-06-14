@@ -58,6 +58,7 @@ class Project:
          "patch": [ self.do_patch ],
          "build": [ self.do_build ],
          "clean": [ self.do_clean ],
+         "clean_build": [ self.do_clean, self.do_build ],
          "*": [ self.do_fetch, self.do_patch, self.do_build ],
       }
    # def __init__
@@ -111,7 +112,10 @@ class Project:
    # def do_clean
 
    def do_action( self, action: str ):
-      processors = self.__action_map.get( action, [ lambda: pfw.console.debug.error( f"undefined action '{action}'" ) ] )
+      processors = self.__action_map.get(
+            action,
+            [ lambda: pfw.console.debug.error( f"undefined action '{action}'" ) ]
+         )
       for processor in processors:
          processor( )
    # def do_action

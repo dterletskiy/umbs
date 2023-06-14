@@ -222,22 +222,22 @@ class Builder( umbs.builders.base.Builder ):
       pfw.os.signal.add_handler( signal.SIGINT, signal_handler, object = self )
 
       # Mounting required host stuff
-      pfw.shell.execute( f"sudo -S mount -o bind /proc {self.__target_dir}/proc", output = pfw.shell.eOutput.PTY )
-      pfw.shell.execute( f"sudo -S mount -o bind /dev {self.__target_dir}/dev", output = pfw.shell.eOutput.PTY )
-      pfw.shell.execute( f"sudo -S mount -o bind /dev/pts {self.__target_dir}/dev/pts", output = pfw.shell.eOutput.PTY )
-      pfw.shell.execute( f"sudo -S mount -o bind /sys {self.__target_dir}/sys", output = pfw.shell.eOutput.PTY )
-      pfw.shell.execute( f"sudo -S mount -o bind /tmp {self.__target_dir}/tmp", output = pfw.shell.eOutput.PTY )
+      self.execute( f"sudo -S mount -o bind /proc {self.__target_dir}/proc" )
+      self.execute( f"sudo -S mount -o bind /dev {self.__target_dir}/dev" )
+      self.execute( f"sudo -S mount -o bind /dev/pts {self.__target_dir}/dev/pts" )
+      self.execute( f"sudo -S mount -o bind /sys {self.__target_dir}/sys" )
+      self.execute( f"sudo -S mount -o bind /tmp {self.__target_dir}/tmp" )
 
       return True
    # def init
 
    def deinit( self, **kwargs ):
       # Unmounting required host stuff
-      pfw.shell.execute( f"sudo -S umount {self.__target_dir}/tmp", output = pfw.shell.eOutput.PTY )
-      pfw.shell.execute( f"sudo -S umount {self.__target_dir}/sys", output = pfw.shell.eOutput.PTY )
-      pfw.shell.execute( f"sudo -S umount {self.__target_dir}/dev/pts", output = pfw.shell.eOutput.PTY )
-      pfw.shell.execute( f"sudo -S umount {self.__target_dir}/dev", output = pfw.shell.eOutput.PTY )
-      pfw.shell.execute( f"sudo -S umount {self.__target_dir}/proc", output = pfw.shell.eOutput.PTY )
+      self.execute( f"sudo -S umount {self.__target_dir}/tmp" )
+      self.execute( f"sudo -S umount {self.__target_dir}/sys" )
+      self.execute( f"sudo -S umount {self.__target_dir}/dev/pts" )
+      self.execute( f"sudo -S umount {self.__target_dir}/dev" )
+      self.execute( f"sudo -S umount {self.__target_dir}/proc" )
 
       pfw.os.signal.remove_handler( signal.SIGINT, signal_handler )
    # def deinit
@@ -248,9 +248,9 @@ class Builder( umbs.builders.base.Builder ):
 
       result = None
       if kw_bash:
-         result = pfw.shell.execute( command, chroot_bash = self.__target_dir, method = kw_method, output = pfw.shell.eOutput.PTY )
+         result = self.execute( command, chroot_bash = self.__target_dir, method = kw_method )
       else:
-         result = pfw.shell.execute( command, chroot = self.__target_dir, method = kw_method, output = pfw.shell.eOutput.PTY )
+         result = self.execute( command, chroot = self.__target_dir, method = kw_method )
 
       return 0 == result["code"]
    # def execute

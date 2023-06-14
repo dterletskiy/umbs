@@ -3,6 +3,7 @@ import os
 import pfw.console
 import pfw.shell
 import pfw.base.dict
+import pfw.os.environment
 
 
 
@@ -18,9 +19,21 @@ class Builder:
       # deploy_subdir <=> deploy code dir
       self.__deploy_dir = os.path.join( self.__project_dir, self.__config.get( "deploy_subdir", "" ) )
 
-      self.__artifacts = [ os.path.join( self.__project_dir, artifact ) for artifact in self.__config.get( "artifacts", [ ] ) ]
+      self.__artifacts = [
+            os.path.join( self.__project_dir, artifact ) for artifact in self.__config.get( "artifacts", [ ] )
+         ]
 
-      self.__dependencies = [ os.path.join( self.__root_dir, dependency ) for dependency in self.__config.get( "deps", [ ] ) ]
+      self.__dependencies = [
+            os.path.join( self.__root_dir, dependency ) for dependency in self.__config.get( "deps", [ ] )
+         ]
+
+      environment: dict = { }
+      for env in self.__config.get( "env", [ ] ):
+         env_list = env.split( "=" )
+         if len( env_list ) not in [1, 2]:
+            continue
+         environment[ env_list[0] ] = env_list[1] if 2 == len( env_list ) else ""
+      self.__environment = pfw.os.environment.build( env_add = environment )
 
       # self.__dependencies = [ ]
       # for dependency in self.__config.get( "deps", [ ] ):
@@ -76,15 +89,15 @@ class Builder:
    # def do_clean
 
    def prepare( self, **kwargs ):
-      result = pfw.shell.execute( f"mkdir -p {self.__target_dir}" )
+      result = self.execute( f"mkdir -p {self.__target_dir}" )
       if 0 != result["code"]:
          return False
 
-      result = pfw.shell.execute( f"mkdir -p {self.__product_dir}" )
+      result = self.execute( f"mkdir -p {self.__product_dir}" )
       if 0 != result["code"]:
          return False
 
-      result = pfw.shell.execute( f"mkdir -p {self.__deploy_dir}" )
+      result = self.execute( f"mkdir -p {self.__deploy_dir}" )
       if 0 != result["code"]:
          return False
 
@@ -118,7 +131,7 @@ class Builder:
       for artifact in self.__artifacts:
          if os.path.exists( artifact ):
             pfw.console.debug.ok( f"artifact '{artifact}' exists" )
-            pfw.shell.execute( f"file {artifact}", output = pfw.shell.eOutput.PTY )
+            self.execute( f"file {artifact}", output = pfw.shell.eOutput.PTY )
          else:
             pfw.console.debug.error( f"artifact '{artifact}' does not exist" )
             result = False
@@ -157,4 +170,12 @@ class Builder:
    def dependencies( self ):
       return self.__dependencies
    # def dependencies
+
+   def execute( self, command, *argv, **kwargs ):
+      kwargs["output"] = kwargs.get( "output", pfw.shell.eOutput.PTY )
+      kwargs["cwd"] = kwargs.get( "cwd", self.__target_dir )
+      kwargs["env"] = kwargs.get( "env", self.__environment )
+
+      return pfw.shell.execute( command, *argv, **kwargs )
+   # def execute
 # class Builder

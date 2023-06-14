@@ -22,23 +22,23 @@ class Builder( umbs.builders.base.Builder ):
    # def __init__
 
    def config( self, **kwargs ):
-      result = pfw.shell.execute( self.build_command( ), self.__defconfig, cwd = self.__target_dir, print = False, collect = False )
+      result = self.execute( self.build_command( ), self.__defconfig, print = False, collect = False )
       if 0 != result["code"]:
          return False
-      # pfw.shell.execute( self.build_command( ), "menuconfig", cwd = self.__target_dir, print = False, collect = False )
-      # pfw.shell.execute( self.build_command( ), "savedefconfig", cwd = self.__target_dir, print = False, collect = False )
+      # self.execute( self.build_command( ), "menuconfig", print = False, collect = False )
+      # self.execute( self.build_command( ), "savedefconfig", print = False, collect = False )
 
       return True
    # def config
 
    def build( self, **kwargs ):
-      result = pfw.shell.execute( self.build_command( ), self.__targets, output = pfw.shell.eOutput.PTY, cwd = self.__target_dir )
+      result = self.execute( self.build_command( ), self.__targets )
       if 0 != result["code"]:
          return False
-      result = pfw.shell.execute( self.build_command( ), "install", output = pfw.shell.eOutput.PTY, cwd = self.__target_dir )
+      result = self.execute( self.build_command( ), "install" )
       if 0 != result["code"]:
          return False
-      result = pfw.shell.execute( self.build_command( ), "modules_install", output = pfw.shell.eOutput.PTY, cwd = self.__target_dir )
+      result = self.execute( self.build_command( ), "modules_install" )
       if 0 != result["code"]:
          return False
 
@@ -46,7 +46,7 @@ class Builder( umbs.builders.base.Builder ):
    # def build
 
    def clean( self, **kwargs ):
-      result = pfw.shell.execute( self.build_command( ), "clean distclean mrproper", output = pfw.shell.eOutput.PTY, cwd = self.__target_dir )
+      result = self.execute( self.build_command( ), "clean distclean mrproper" )
       if 0 != result["code"]:
          return False
 

@@ -23,7 +23,7 @@ class Builder( umbs.builders.base.Builder ):
 
    def config( self, **kwargs ):
       command = f""
-      result = pfw.shell.execute( command, cwd = self.__target_dir, print = False, collect = False )
+      result = self.execute( command, print = False, collect = False )
       if 0 != result["code"]:
          return False
 
@@ -32,7 +32,7 @@ class Builder( umbs.builders.base.Builder ):
 
    def build( self, **kwargs ):
       command = f"tools/bazel run --sandbox_debug {self.__target}_dist -- --dist_dir={self.__deploy_dir}"
-      result = pfw.shell.execute( command, output = pfw.shell.eOutput.PTY, cwd = self.__target_dir )
+      result = self.execute( command )
       if 0 != result["code"]:
          return False
 
@@ -41,7 +41,7 @@ class Builder( umbs.builders.base.Builder ):
 
    def clean( self, **kwargs ):
       command = f"tools/bazel clean --expunge"
-      result = pfw.shell.execute( command, output = pfw.shell.eOutput.PTY, cwd = self.__target_dir )
+      result = self.execute( command )
       if 0 != result["code"]:
          return False
 

@@ -107,7 +107,7 @@ class Builder( umbs.builders.base.Builder ):
       if self.__target_dir == self.__deploy_dir:
          return True
 
-      result = pfw.shell.execute( f"mv {self.__file} {self.__deploy_dir}", output = pfw.shell.eOutput.PTY )
+      result = self.execute( f"mv {self.__file} {self.__deploy_dir}" )
       if 0 != result["code"]:
          return False
 
@@ -115,7 +115,7 @@ class Builder( umbs.builders.base.Builder ):
    # def deploy
 
    def clean( self, **kwargs ):
-      result = pfw.shell.execute( f"rm -rf {' '.join( self.__artifacts )}", output = pfw.shell.eOutput.PTY )
+      result = self.execute( f"rm -rf {' '.join( self.__artifacts )}" )
       if 0 != result["code"]:
          return False
 
@@ -130,7 +130,7 @@ class Builder( umbs.builders.base.Builder ):
 
    def __mount( self, **kwargs ):
       self.__mount_point = pfw.linux.image.mount( self.__file )
-      # pfw.shell.execute( f"chown -R {os.geteuid( )}:{os.getegid( )} {self.__mount_point}", sudo = True, output = pfw.shell.eOutput.PTY )
+      # self.execute( f"chown -R {os.geteuid( )}:{os.getegid( )} {self.__mount_point}", sudo = True )
    # def __mount
 
    def __umount( self, **kwargs ):

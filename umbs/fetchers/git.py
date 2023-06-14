@@ -23,7 +23,7 @@ class Fetcher( umbs.fetchers.base.Fetcher ):
             url = self.__config["url"],
             branch = self.__config.get( "branch", None ),
             directory = self.__target_dir,
-            depth = self.__config.get( "depth", 1 )
+            depth = self.__config.get( "depth", 1 ),
          )
    # def __init__
 

@@ -1,4 +1,4 @@
-  tda:
+  tda-common:
     active: true
     project_subdir: tda
     sources:

@@ -1,6 +1,9 @@
 #!/usr/bin/python
 
 import importlib
+import datetime
+
+import pfw.console
 
 
 
@@ -15,32 +18,24 @@ class Fetcher:
       self.__instance = self.__module.get_instance( yaml_data, **kwargs )
    # def __init__
 
-   def __del__( self ):
-      pass
-   # def __del__
-
-   def __setattr__( self, attr, value ):
-      attr_list = [ i for i in self.__class__.__dict__.keys( ) ]
-      if attr in attr_list:
-         self.__dict__[ attr ] = value
-         return
-      raise AttributeError
-   # def __setattr__
-
-   def __str__( self ):
-      attr_list = [ i for i in self.__class__.__dict__.keys( ) ]
-      vector = [ f"{str( attr )} = {str( self.__dict__.get( attr ) )}" for attr in attr_list ]
-      return self.__class__.__name__ + " { " + ", ".join( vector ) + " }"
-   # def __str__
-
    def do_fetch( self ):
+      begin = datetime.datetime.now( )
+
       # self.__module.do_fetch( self.__instance )
       self.__instance.do_fetch( )
+
+      end = datetime.datetime.now( )
+      pfw.console.debug.info( f"fetcher '{self.__module}': fetch time {end - begin}" )
    # def do_fetch
 
    def do_remove( self ):
+      begin = datetime.datetime.now( )
+
       # self.__module.do_remove( self.__instance )
       self.__instance.do_remove( )
+
+      end = datetime.datetime.now( )
+      pfw.console.debug.info( f"fetcher '{self.__module}': remove time {end - begin}" )
    # def do_remove
 
 

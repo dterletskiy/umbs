@@ -1,17 +1,22 @@
-  linux-u-boot:
+  tda-carpc:
     active: true
     project_subdir: tda/carpc
     sources:
       - type: git
         url: "git@github.com:dterletskiy/carpc.git"
-        modules: true
+        submodules: true
     builders:
       - type: cmake.common
         subdir: "."
         product_subdir: "out/build"
         deploy_subdir: "out/deploy"
+        graphviz: "out/doc/graph/carpc"
+        jobs: 8
+        variables:
+          - "TARGET_OS:STRING=linux"
         env:
-          - ""
+          - "CC=/usr/bin/cc"
+          - "CXX=/usr/bin/c++"
         artifacts:
           - ""
         deps:

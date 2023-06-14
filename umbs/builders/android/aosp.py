@@ -46,7 +46,7 @@ class Builder( umbs.builders.base.Builder ):
    def __execute( self, command: str = "", **kwargs ):
       kw_output = kwargs.get( "output", pfw.shell.eOutput.PTY )
 
-      result = pfw.shell.execute( f"{self.__config_cmd_line} {command}", cwd = self.__target_dir, output = kw_output )
+      result = self.execute( f"{self.__config_cmd_line} {command}", output = kw_output )
       return 0 == result["code"]
    # def __execute
 # class Builder

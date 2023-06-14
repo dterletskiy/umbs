@@ -105,7 +105,7 @@ class Builder( umbs.builders.base.Builder ):
    # def __build
 
    def deploy( self, **kwargs ):
-      result = pfw.shell.execute( f"mv {self.__file} {self.__deploy_dir}", output = pfw.shell.eOutput.PTY )
+      result = self.execute( f"mv {self.__file} {self.__deploy_dir}" )
       if 0 != result["code"]:
          return False
 
@@ -113,7 +113,7 @@ class Builder( umbs.builders.base.Builder ):
    # def deploy
 
    def clean( self, **kwargs ):
-      result = pfw.shell.execute( f"rm -rf {' '.join( self.__artifacts )}", output = pfw.shell.eOutput.PTY )
+      result = self.execute( f"rm -rf {' '.join( self.__artifacts )}" )
       if 0 != result["code"]:
          return False
 
