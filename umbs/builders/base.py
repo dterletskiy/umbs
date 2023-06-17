@@ -35,6 +35,10 @@ class Builder:
          environment[ env_list[0] ] = env_list[1] if 2 == len( env_list ) else ""
       self.__environment = pfw.os.environment.build( env_add = environment )
 
+      self.__command = ""
+      for env in self.__config.get( "env", [ ] ):
+         self.__command += f" export {env};"
+
       # self.__dependencies = [ ]
       # for dependency in self.__config.get( "deps", [ ] ):
       #    if isinstance( dependency, str ):
@@ -174,8 +178,8 @@ class Builder:
    def execute( self, command, *argv, **kwargs ):
       kwargs["output"] = kwargs.get( "output", pfw.shell.eOutput.PTY )
       kwargs["cwd"] = kwargs.get( "cwd", self.__target_dir )
-      kwargs["env"] = kwargs.get( "env", self.__environment )
+      kwargs["env"] = None # kwargs.get( "env", self.__environment )
 
-      return pfw.shell.execute( command, *argv, **kwargs )
+      return pfw.shell.execute( f"{self.__command} {command}", *argv, **kwargs )
    # def execute
 # class Builder

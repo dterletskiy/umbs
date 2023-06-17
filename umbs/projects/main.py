@@ -37,21 +37,24 @@ class Project:
          for yaml_source in yaml_project["sources"]:
             self.__fetchers.append( umbs.fetchers.main.Fetcher( yaml_source, root_dir = root_dir, project_dir = self.__project_dir ) )
       else:
-         pfw.console.debug.warning( f"Filed 'sources' is not defined in the project '{name}'" )
+         # pfw.console.debug.warning( f"Fieled 'sources' is not defined in the project '{name}'" ) # @TDA: debug
+         pass
 
       self.__builders = [ ]
       if "builders" in yaml_project:
          for yaml_builder in yaml_project["builders"]:
             self.__builders.append( umbs.builders.main.Builder( yaml_builder, root_dir = root_dir, project_dir = self.__project_dir ) )
       else:
-         pfw.console.debug.warning( f"Filed 'builder' is not defined in the project '{name}'" )
+         # pfw.console.debug.warning( f"Fieled 'builder' is not defined in the project '{name}'" ) # @TDA: debug
+         pass
 
       self.__tools = [ ]
       if "patches" in yaml_project:
          for yaml_tool in yaml_project["patches"]:
             self.__tools.append( umbs.tools.main.Tool( yaml_tool, root_dir = root_dir, project_dir = self.__project_dir ) )
       else:
-         pfw.console.debug.warning( f"Filed 'patches' is not defined in the project '{name}'" )
+         # pfw.console.debug.warning( f"Fieled 'patches' is not defined in the project '{name}'" ) # @TDA: debug
+         pass
 
       self.__action_map = {
          "fetch": [ self.do_fetch ],

@@ -66,6 +66,16 @@ class Builder( umbs.builders.base.Builder ):
       if 0 != result["code"]:
          return False
 
+      command = f"rm -rf"
+      command += f" {self.__product_dir}/CMakeFiles"
+      command += f" {self.__product_dir}/CMakeCache.txt"
+      command += f" {self.__product_dir}/Makefile"
+      command += f" {self.__product_dir}/install_manifest.txt"
+      command += f" {self.__product_dir}/cmake_install.cmake"
+      result = self.execute( command )
+      if 0 != result["code"]:
+         return False
+
       return True
    # def clean
 # class Builder

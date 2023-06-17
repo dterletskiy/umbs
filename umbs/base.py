@@ -149,7 +149,7 @@ class Config:
    # class AV
 
    def __replace( self, value ):
-      pfw.console.debug.trace( f"processing value: '{value}'" ) # @TDA: debug
+      # pfw.console.debug.trace( f"processing value: '{value}'" ) # @TDA: debug
 
       if not isinstance( value, str ):
          pfw.console.debug.warning( f"ERROR: '{value}' is not a string" )
@@ -157,10 +157,10 @@ class Config:
 
       replaced: bool = False
       if findall := re.findall( r'\$\{(.+?)\}', value ):
-         pfw.console.debug.trace( f"findall: '{findall}'" )
+         # pfw.console.debug.trace( f"findall: '{findall}'" ) # @TDA: debug
          for item in findall:
             variable = self.get_variable( item )
-            pfw.console.debug.trace( f"{item} -> {variable} ({type(variable)})" ) # @TDA: debug
+            # pfw.console.debug.trace( f"{item} -> {variable} ({type(variable)})" ) # @TDA: debug
             if isinstance( variable, str ) or isinstance( variable, int ) or isinstance( variable, float ):
                value = value.replace( "${" + item + "}", str(variable) )
             elif isinstance( variable, list ) or isinstance( variable, tuple ) or isinstance( variable, dict ):
@@ -177,7 +177,7 @@ class Config:
    # def __replace
 
    def __walk( self, iterable, address: list, value_processor = None ):
-      pfw.console.debug.info( f"-> address = {address}" ) # @TDA: debug
+      # pfw.console.debug.info( f"-> address = {address}" ) # @TDA: debug
 
       for_adaptation: list = [ ]
       if isinstance( iterable, dict ):
