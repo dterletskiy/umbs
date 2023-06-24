@@ -26,3 +26,4 @@ projects:
   include: "projects/android/u-boot.yaml"
   include: "projects/android/kernel.yaml"
   include: "projects/android/aosp.yaml"
+  include: "projects/android/ndk.yaml"

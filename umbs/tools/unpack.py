@@ -2,7 +2,7 @@ import os
 
 import pfw.console
 import pfw.shell
-import pfw.archive
+import pfw.linux.archive
 
 import umbs.base
 import umbs.tools.base
@@ -25,11 +25,12 @@ class Tool( umbs.tools.base.Tool ):
 
 
       self.__file = os.path.join( self.__project_dir, self.__config[ "file" ] )
+      self.__format = self.__config.get( "format", None )
    # def __init__
 
    def exec( self, **kwargs ):
-      result = pfw.archive.extract( self.__file, None, self.__target_dir )
-      return 0 == result["code"]
+      result = pfw.linux.archive.unpack( self.__file, self.__target_dir, self.__format )
+      return 0 == result
    # def exec
 
    def clean( self, **kwargs ):

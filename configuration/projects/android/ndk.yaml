@@ -1,0 +1,10 @@
+  android-ndk:
+    active: true
+    project_subdir: android/ndk
+    sources:
+      - type: download
+        url: "https://dl.google.com/android/repository/android-ndk-r25c-linux.zip"
+    patches:
+      - type: unpack
+        file: "android-ndk-r25c-linux.zip"
+        format: zip
