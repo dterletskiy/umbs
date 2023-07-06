@@ -2,6 +2,7 @@ import os
 
 import pfw.console
 import pfw.shell
+import pfw.os.environment
 import pfw.linux.docker.container
 
 import umbs.builders.base
@@ -39,6 +40,11 @@ class Builder( umbs.builders.base.Builder ):
                self.__port_mapping.append(
                      pfw.linux.docker.container.Mapping( host = f"{item['host']}", guest = f"{item['guest']}" )
                   )
+
+      self.__environment = [ ]
+      if "environment" in self.__config:
+         for environment in self.__config["environment"]:
+            self.__environment.append( pfw.os.environment.Environment( environment ) )
    # def __init__
 
    def config( self, **kwargs ):
@@ -52,6 +58,7 @@ class Builder( umbs.builders.base.Builder ):
             image_tag = self.__image_tag,
             volume_mapping = self.__volume_mapping,
             port_mapping = self.__port_mapping,
+            env = self.__environment
          )
    # def build
 

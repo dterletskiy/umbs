@@ -276,7 +276,7 @@ def process_cmdline( app_data, argv ):
 
    parser.add_argument( "--config", dest = "config", type = str, action = "append", required = False, help = app_data.get_description( "config" ) )
    parser.add_argument( "--yaml_config", dest = "yaml_config", type = str, action = "store", required = False, help = app_data.get_description( "yaml_config" ) )
-   parser.add_argument( "--root_dir", dest = "root_dir", type = str, action = "store", required = False, help = app_data.get_description( "root_dir" ) )
+   parser.add_argument( "--root_dir", dest = "", type = str, action = "store", required = False, help = app_data.get_description( "root_dir" ) )
 
    parser.add_argument( "--include", dest = "include", type = str, action = "append", required = False, help = app_data.get_description( "include" ) )
    parser.add_argument( "--pfw", dest = "pfw", type = str, action = "append", required = False, help = app_data.get_description( "pfw" ) )
