@@ -36,7 +36,8 @@ def run( project, action, umbs_projects ):
 
 
 def run_in_container( ):
-   cfg = open( os.path.join( "umbs_gen.cfg" ), "w" )
+   cfg_file = "./.gen/umbs_gen.cfg"
+   cfg = open( os.path.join( cfg_file ), "w" )
    for name in umbs.configuration.names( ):
       if name in [ "container", "config" ]:
          continue
@@ -74,7 +75,7 @@ def run_in_container( ):
    container_action = umbs.configuration.value( 'action' )
 
    command = f"python3 {container_umbs_dir}/umbs.py"
-   command += f" --config={container_umbs_dir}/umbs_gen.cfg"
+   command += f" --config={container_umbs_dir}/{cfg_file}"
    command += f" --pfw={container_pfw_dir}"
    command += f" --project={container_project}"
    command += f" --action={container_action}"

@@ -23,3 +23,5 @@
               guest: 5000
         environment:
           - "DISPLAY=:1"
+        env:
+          - ""
