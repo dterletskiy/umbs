@@ -3,19 +3,22 @@
     project_subdir: loader/u-boot
     sources:
       - type: git
-        url: ${UBOOT.SOURCE.GITHUB.URL}
-        branch: ${UBOOT.SOURCE.GITHUB.BRANCH}
+        url: ${LINUX.UBOOT.SOURCE.GITHUB.URL}
+        branch: ${LINUX.UBOOT.SOURCE.GITHUB.BRANCH}
+        depth: 1
+        subdir: "."
     patches:
       - type: copy
         content:
           - from: "tda/lfs/configuration/config/u-boot/v2022.07/qemu_arm64_defconfig/exp/defconfig"
-            to: "configs/${UBOOT.CONFIG.ARM64}"
+            to: "configs/${LINUX.UBOOT.CONFIG.ARM64}"
     builders:
       - type: make.uboot
-        subdir: "."
-        product_subdir: "out/build"
-        deploy_subdir: "out/deploy"
-        defconfig: ${UBOOT.CONFIG.ARM64}
+        subdirs:
+          target: "."
+          product: "out/build"
+          deploy: "out/deploy"
+        defconfig: ${LINUX.UBOOT.CONFIG.ARM64}
         arch: "arm64"
         compiler: "aarch64-linux-gnu-"
         jobs: 4

@@ -4,14 +4,16 @@
     sources:
       - type: git
         url: "git@github.com:dterletskiy/carpc.git"
-        submodules: true
+        depth: 1
+        subdir: "."
     builders:
       - type: cmake.common
-        subdir: "."
-        product_subdir: "out/build"
-        deploy_subdir: "out/deploy"
+        subdirs:
+          target: "."
+          product: "out/build"
+          deploy: "out/deploy"
         graphviz: "out/doc/graph/project"
-        jobs: 8
+        jobs: 1
         variables:
           - "ROOT_GEN_DIR:STRING=${DIRECTORIES.ROOT}/tda/carpc/out/gen"
           - "TARGET_OS:STRING=linux"
@@ -39,12 +41,14 @@
     sources:
       - type: git
         url: "git@github.com:dterletskiy/carpc-tutorial.git"
-        submodules: true
+        depth: 1
+        subdir: "."
     builders:
       - type: cmake.common
-        subdir: "."
-        product_subdir: "out/build"
-        deploy_subdir: "out/deploy"
+        subdirs:
+          target: "."
+          product: "out/build"
+          deploy: "out/deploy"
         graphviz: "out/doc/graph/project"
         jobs: 8
         variables:
@@ -75,12 +79,14 @@
     sources:
       - type: git
         url: "git@github.com:dterletskiy/carpc-examples.git"
-        submodules: true
+        depth: 1
+        subdir: "."
     builders:
       - type: cmake.common
-        subdir: "."
-        product_subdir: "out/build"
-        deploy_subdir: "out/deploy"
+        subdirs:
+          target: "."
+          product: "out/build"
+          deploy: "out/deploy"
         graphviz: "out/doc/graph/project"
         jobs: 8
         variables:

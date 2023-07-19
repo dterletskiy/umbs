@@ -65,8 +65,19 @@ class Builder( umbs.builders.base.Builder ):
             return pkg
          # def process_packages
 
-         packages = process_packages( self.__config["packages"] )
-         self.__build_args.append( f"ARG_PACKAGES='{packages}'" )
+         packages = self.__config["packages"]
+
+         if "apt" in packages:
+            apt_packages = process_packages( packages["apt"] )
+            self.__build_args.append( f"ARG_PACKAGES='{apt_packages}'" )
+
+         if "pip2" in self.__config["packages"]:
+            pip2_packages = process_packages( packages["pip2"] )
+            self.__build_args.append( f"ARG_PIP2_PACKAGES='{pip2_packages}'" )
+
+         if "pip3" in self.__config["packages"]:
+            pip3_packages = process_packages( packages["pip3"] )
+            self.__build_args.append( f"ARG_PIP3_PACKAGES='{pip3_packages}'" )
    # def __init__
 
    def config( self, **kwargs ):

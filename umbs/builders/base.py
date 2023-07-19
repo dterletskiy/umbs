@@ -13,11 +13,20 @@ class Builder:
       self.__root_dir = kwargs.get( "root_dir", None )
       self.__project_dir = kwargs.get( "project_dir", None )
       # target_dir <=> source code dir
-      self.__target_dir = os.path.join( self.__project_dir, self.__config.get( "subdir", "" ) )
+      self.__target_dir = os.path.join(
+            self.__project_dir,
+            pfw.base.dict.get_value( self.__config, ["subdirs", "target"], "" )
+         )
       # product_subdir <=> build code dir
-      self.__product_dir = os.path.join( self.__project_dir, self.__config.get( "product_subdir", "" ) )
+      self.__product_dir = os.path.join(
+            self.__project_dir,
+            pfw.base.dict.get_value( self.__config, ["subdirs", "product"], "" )
+         )
       # deploy_subdir <=> deploy code dir
-      self.__deploy_dir = os.path.join( self.__project_dir, self.__config.get( "deploy_subdir", "" ) )
+      self.__deploy_dir = os.path.join(
+            self.__project_dir,
+            pfw.base.dict.get_value( self.__config, ["subdirs", "deploy"], "" )
+         )
 
       self.__artifacts = [
             os.path.join( self.__project_dir, artifact ) for artifact in self.__config.get( "artifacts", [ ] )
@@ -37,6 +46,9 @@ class Builder:
 
       self.__command = ""
       for env in self.__config.get( "env", [ ] ):
+         if 0 == len( env ):
+            continue
+
          self.__command += f" export {env};"
 
       # self.__dependencies = [ ]

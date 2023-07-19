@@ -11,6 +11,8 @@
         image:
           name: builder/x64/ubuntu
           tag: ${UBUNTU.VERSION}
-        user: *UBUNTU_USER_ALIAS
-        packages: *PACKAGES_ALIAS
+        user: ${UBUNTU.USER}
+        packages:
+          apt: ${UBUNTU.PACKAGES.APT}
+          pip3: ${UBUNTU.PACKAGES.PIP3}
         container_name: builder_x64_ubuntu_${UBUNTU.VERSION}

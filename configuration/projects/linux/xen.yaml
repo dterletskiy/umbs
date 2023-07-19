@@ -3,14 +3,17 @@
     project_subdir: xen
     sources:
       - type: git
-        url: ${XEN.SOURCE.GITHUB.URL}
-        branch: ${XEN.SOURCE.GITHUB.BRANCH}
+        url: ${LINUX.XEN.SOURCE.GITHUB.URL}
+        branch: ${LINUX.XEN.SOURCE.GITHUB.BRANCH}
+        depth: 1
+        subdir: "."
     builders:
       - type: make.xen
-        subdir: "."
-        product_subdir: "out/build"
-        deploy_subdir: "out/deploy"
-        defconfig: ${XEN.CONFIG.ARM64}
+        subdirs:
+          target: "."
+          product: "out/build"
+          deploy: "out/deploy"
+        defconfig: ${LINUX.XEN.CONFIG.ARM64}
         arch: "arm64"
         compiler: "aarch64-linux-gnu-"
         jobs: 4

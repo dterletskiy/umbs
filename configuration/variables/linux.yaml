@@ -1,0 +1,51 @@
+  LINUX:
+    XEN:
+      SOURCE:
+        GITHUB:
+          URL: "https://github.com/xen-project/xen.git"
+          BRANCH: "RELEASE-4.16.2"
+      CONFIG:
+        ARM: defconfig
+        ARM64: defconfig
+        X86: qemu-defconfig
+        X86_64: qemu-defconfig
+    UBOOT:
+      SOURCE:
+        GITHUB:
+          URL: "https://github.com/u-boot/u-boot.git"
+          BRANCH: "v2022.07"
+      CONFIG:
+        ARM: umbs_qemu_arm_defconfig
+        ARM64: umbs_qemu_arm64_defconfig
+        X86: umbs_qemu-x86_defconfig
+        X86_64: umbs_qemu-x86_64_defconfig
+    BUSYBOX:
+      SOURCE:
+        GITHUB:
+          URL: "https://github.com/mirror/busybox.git"
+          BRANCH: "1_36_0"
+      CONFIG:
+        ARM: umbs_defconfig
+        ARM64: umbs_defconfig
+        X86: umbs_defconfig
+        X86_64: umbs_defconfig
+    BUILDROOT:
+      SOURCE:
+        GITHUB:
+          URL: "https://github.com/buildroot/buildroot.git"
+          BRANCH: "2023.02"
+      CONFIG:
+        ARM: umbs_qemu_arm_vexpress_defconfig
+        ARM64: umbs_qemu_aarch64_virt_defconfig
+        X86: umbs_qemu_x86_defconfig
+        X86_64: umbs_qemu_x86_64_defconfig
+    KERNEL:
+      SOURCE:
+        GITHUB:
+          URL: "https://github.com/torvalds/linux.git"
+          BRANCH: "v6.2"
+      CONFIG:
+        ARM: vexpress_defconfig
+        ARM64: umbs_defconfig
+        X86: x86_64_defconfig
+        X86_64: x86_64_defconfig

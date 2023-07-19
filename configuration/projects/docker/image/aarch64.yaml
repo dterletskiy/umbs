@@ -10,6 +10,8 @@
         image:
           name: builder/arm64v8/ubuntu
           tag: ${UBUNTU.VERSION}
-        user: *UBUNTU_USER_ALIAS
-        packages: *PACKAGES_ALIAS
+        user: ${UBUNTU.USER}
+        packages:
+          apt: ${UBUNTU.PACKAGES.APT}
+          pip3: ${UBUNTU.PACKAGES.PIP3}
         container_name: builder_arm64v8_ubuntu_${UBUNTU.VERSION}

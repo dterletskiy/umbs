@@ -56,6 +56,9 @@ class Builder( umbs.builders.base.Builder ):
 
       self.__hostname = self.__config.get( "hostname", "HOSTNAME" )
 
+      self.__packages_apt = [ ]
+      self.__packages_pip2 = [ ]
+      self.__packages_pip3 = [ ]
       if "packages" in self.__config:
          def process_packages( data ):
             pkg = ""
@@ -74,7 +77,16 @@ class Builder( umbs.builders.base.Builder ):
             return pkg
          # def process_packages
 
-         self.__packages = process_packages( self.__config["packages"] ).split( ' ' )
+         packages = self.__config["packages"]
+
+         if "apt" in packages:
+            self.__packages_apt = process_packages( packages["apt"] ).split( ' ' )
+
+         if "pip2" in packages:
+            self.__packages_pip2 = process_packages( packages["pip2"] ).split( ' ' )
+
+         if "pip3" in packages:
+            self.__packages_pip3 = process_packages( packages["pip3"] ).split( ' ' )
 
       self.__image_builder = None
       if "image" in self.__config:
@@ -177,9 +189,17 @@ class Builder( umbs.builders.base.Builder ):
       self.execute( f"apt update" )
       self.execute( f"apt -y upgrade" )
 
-      # Install required packages
-      for package in self.__packages:
+      # Install required apt packages
+      for package in self.__packages_apt:
          self.execute( f"apt install -y {package}", method = "system" )
+
+      # Install required pip2 packages
+      for package in self.__packages_pip2:
+         self.execute( f"pip2  install {package}", method = "system" )
+
+      # Install required pip3 packages
+      for package in self.__packages_pip3:
+         self.execute( f"pip3 install {package}", method = "system" )
 
       self.execute( f"apt autoremove -y" )
       self.execute( f"apt clean all" )

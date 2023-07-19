@@ -9,14 +9,28 @@ ARG ARG_MESSAGE_HEADER="----- "
 ENV TZ=UTC
 RUN ln -snf /usr/share/zoneinfo/${TZ} /etc/localtime && echo ${TZ} > /etc/timezone
 
-ARG ARG_PACKAGES=" \
-   nano vi whois \
-"
 
 # Install necessary for build packages
+ARG ARG_PACKAGES=""
 RUN for PACKAGE in ${ARG_PACKAGES}; do \
       echo ${ARG_MESSAGE_HEADER} "Installing package: ${PACKAGE}" && \
       apt update && apt install -y ${PACKAGE} || true; \
+   done
+
+
+# Install necessary for build packages
+ARG ARG_PIP2_PACKAGES=""
+RUN for PACKAGE in ${ARG_PIP2_PACKAGES}; do \
+      echo ${ARG_MESSAGE_HEADER} "Installing pip2 package: ${PACKAGE}" && \
+      pip2 install ${PACKAGE} || true; \
+   done
+
+
+# Install necessary for build packages
+ARG ARG_PIP3_PACKAGES=""
+RUN for PACKAGE in ${ARG_PIP3_PACKAGES}; do \
+      echo ${ARG_MESSAGE_HEADER} "Installing pip3 package: ${PACKAGE}" && \
+      pip3 install ${PACKAGE} || true; \
    done
 
 
@@ -30,7 +44,8 @@ ARG ARG_USER_GID=1000
 ARG ARG_USER_WORKDIR="workspace"
 
 # Creating the user
-RUN if [ -z ${ARG_USER_PASSWORD+x} ] || [ -z ${ARG_USER_PASSWORD} ]; then \
+RUN echo ${ARG_MESSAGE_HEADER} "Defining user password"; \
+   if [ -z ${ARG_USER_PASSWORD+x} ] || [ -z ${ARG_USER_PASSWORD} ]; then \
       echo ${ARG_MESSAGE_HEADER} "User password is unset or empty"; \
       echo ${ARG_MESSAGE_HEADER} "User password will be used as user name"; \
       ARG_USER_PASSWORD=${ARG_USER_NAME}; \
@@ -64,7 +79,8 @@ USER ${ARG_USER_NAME}
 ENV USER_NAME=${ARG_USER_NAME}
 
 # Create workdir for docker and define it as WORKDIR
-RUN mkdir -p /home/${ARG_USER_NAME}/${ARG_USER_WORKDIR} && chown ${ARG_USER_NAME}:${ARG_USER_NAME} /home/${ARG_USER_NAME}/${ARG_USER_WORKDIR}
+RUN mkdir -p /home/${ARG_USER_NAME}/${ARG_USER_WORKDIR} && \
+   chown ${ARG_USER_NAME}:${ARG_USER_NAME} /home/${ARG_USER_NAME}/${ARG_USER_WORKDIR}
 ENV BUILD_DIR /home/${ARG_USER_NAME}/${ARG_USER_WORKDIR}
 WORKDIR ${BUILD_DIR}
 ENV PATH ~/.local/bin:${PATH}

@@ -9,6 +9,7 @@
           name: "default.xml"
           depth: 1
         depth: 1
+        subdir: "."
     builders:
       - type: android.uboot
         config: ${ANDROID.UBOOT.CONFIG.ARM64}

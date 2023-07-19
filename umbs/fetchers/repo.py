@@ -25,7 +25,7 @@ class Fetcher( umbs.fetchers.base.Fetcher ):
             raise umbs.base.YamlFormatError( f"Filed '{key}' must be defined in fetcher" )
 
       self.__repo = pfw.linux.repo.Repo(
-            destination = kwargs.get( "project_dir", None ),
+            destination = self.__target_dir,
             manifest_url = self.__config["manifest"].get( "url", None ),
             manifest_name = self.__config["manifest"].get( "name", None ),
             manifest_branch = self.__config["manifest"].get( "branch", None ),

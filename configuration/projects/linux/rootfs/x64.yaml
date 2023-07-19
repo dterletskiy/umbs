@@ -4,6 +4,7 @@
     sources:
       - type: download
         url: ${UBUNTU.ROOTFS.SOURCE.X64}
+        subdir: "."
     builders:
       - type: image.partition
         file: rootfs.img
@@ -24,8 +25,10 @@
           - linux/kernel/out/deploy/lib
       - type: rootfs.ubuntu
         source: rootfs.img
-        user: *UBUNTU_USER_ALIAS
-        packages: *PACKAGES_ALIAS
+        user: ${UBUNTU.USER}
+        packages:
+          apt: *PACKAGES_APT_ALIAS
+          pip3: *PACKAGES_PIP3_ALIAS
         artifacts:
           - rootfs.img
         deps:

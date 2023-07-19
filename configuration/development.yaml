@@ -3,7 +3,10 @@ version: "1.1.0"
 umbs_min_version: "0.1"
 
 variables:
-  include: "variables.yaml"
+  include: "variables/directories.yaml"
+  include: "variables/linux.yaml"
+  include: "variables/android.yaml"
+  include: "variables/ubuntu.yaml"
 
 projects:
   include: "projects/tda/common.yaml"
@@ -27,3 +30,5 @@ projects:
   include: "projects/android/kernel.yaml"
   include: "projects/android/aosp.yaml"
   include: "projects/android/ndk.yaml"
+
+  include: "projects/yocto/poky.yaml"

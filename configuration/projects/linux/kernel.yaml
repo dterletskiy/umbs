@@ -3,19 +3,22 @@
     project_subdir: linux/kernel
     sources:
       - type: git
-        url: ${KERNEL.SOURCE.GITHUB.URL}
-        branch: ${KERNEL.SOURCE.GITHUB.BRANCH}
+        url: ${LINUX.KERNEL.SOURCE.GITHUB.URL}
+        branch: ${LINUX.KERNEL.SOURCE.GITHUB.BRANCH}
+        depth: 1
+        subdir: "."
     patches:
       - type: copy
         content:
           - from: "tda/lfs/configuration/config/kernel/6.2/arm64/exp/defconfig"
-            to: "arch/arm64/configs/${KERNEL.CONFIG.ARM64}"
+            to: "arch/arm64/configs/${LINUX.KERNEL.CONFIG.ARM64}"
     builders:
       - type: make.kernel
-        subdir: "."
-        product_subdir: "out/build"
-        deploy_subdir: "out/deploy"
-        defconfig: ${KERNEL.CONFIG.ARM64}
+        subdirs:
+          target: "."
+          product: "out/build"
+          deploy: "out/deploy"
+        defconfig: ${LINUX.KERNEL.CONFIG.ARM64}
         arch: "arm64"
         compiler: "aarch64-linux-gnu-"
         jobs: 4
