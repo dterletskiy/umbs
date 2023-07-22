@@ -13,7 +13,7 @@
           product: "out/build"
           deploy: "out/deploy"
         graphviz: "out/doc/graph/project"
-        jobs: 1
+        jobs: 8
         variables:
           - "ROOT_GEN_DIR:STRING=${DIRECTORIES.ROOT}/tda/carpc/out/gen"
           - "TARGET_OS:STRING=linux"
