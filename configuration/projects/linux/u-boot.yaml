@@ -1,6 +1,6 @@
   linux-u-boot:
     active: true
-    project_subdir: loader/u-boot
+    project_subdir: linux/u-boot
     sources:
       - type: git
         url: ${LINUX.UBOOT.SOURCE.GITHUB.URL}

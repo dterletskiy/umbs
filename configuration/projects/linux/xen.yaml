@@ -1,6 +1,6 @@
   linux-xen:
     active: true
-    project_subdir: xen
+    project_subdir: linux/xen
     sources:
       - type: git
         url: ${LINUX.XEN.SOURCE.GITHUB.URL}
