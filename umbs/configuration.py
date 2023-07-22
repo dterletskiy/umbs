@@ -346,7 +346,7 @@ def process_config_file( app_data ):
 def process_configuration( app_data, argv ):
    umbs_dir = os.path.dirname( os.path.realpath( sys.argv[0] ) )
    app_data.set_value( "umbs", umbs_dir )
-   # app_data.set_value( "pfw", os.path.join( umbs_dir, "submodules/python_fw" ) )
+   app_data.set_value( "pfw", os.path.join( umbs_dir, "submodules/python_fw" ) )
 
    process_cmdline( app_data, argv )
    process_config_file( app_data )
@@ -368,7 +368,7 @@ config: ConfigurationContainer = ConfigurationContainer(
          ConfigurationData( "yaml_config"       , True  , "Path to yaml project configuration file" ),
          ConfigurationData( "root_dir"          , False , "Path to project root directory" ),
          ConfigurationData( "include"           , False , "Additional directory to search import packages" ),
-         ConfigurationData( "pfw"               , True  , "Python Framework directory location" ),
+         ConfigurationData( "pfw"               , False , "Python Framework directory location" ),
          ConfigurationData( "project"           , False , "Project name" ),
          ConfigurationData( "action"            , False , "Action name" ),
          ConfigurationData( "container"         , False , "Indicates is this script must be run in container" ),
