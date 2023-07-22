@@ -280,7 +280,7 @@ def process_cmdline( app_data, argv ):
    parser.add_argument( "--project", dest = "project", type = str, action = "store", required = False, default = "*", help = app_data.get_description( "project" ) )
    parser.add_argument( "--action", dest = "action", type = str, action = "store", required = False, default = "*", help = app_data.get_description( "action" ) )
 
-   parser.add_argument( "--container", dest = "container", type = str, action = "store", required = False, default = None, help = app_data.get_description( "container" ) )
+   parser.add_argument( "--container", dest = "container", action = "store_true", help = app_data.get_description( "container" ) )
 
    # parser.print_help( )
    try:
