@@ -81,6 +81,14 @@ def run_in_container( ):
    command += f" --action={container_action}"
    # command = ""
 
+   pfw.linux.docker.container.run( container_name, f"{image_name}:{image_tag}",
+         volume_mapping = volume_mapping,
+         port_mapping = port_mapping,
+         workdir = workdir,
+         disposable = True,
+         command = command
+      )
+
    pfw.linux.docker.container.run( container_name, command = command )
 # def run_in_container
 
@@ -96,10 +104,10 @@ def main( ):
    project = umbs.configuration.value( "project" )
    action = umbs.configuration.value( "action" )
 
-   if umbs.configuration.value( 'container' ):
-      run_in_container( )
-   else:
-      run( project, action, umbs_projects )
+   # if umbs.configuration.value( 'container' ):
+   #    run_in_container( )
+   # else:
+   #    run( project, action, umbs_projects )
 
    pfw.console.debug.ok( "-------------------------- END --------------------------" )
 # def main

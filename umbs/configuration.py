@@ -28,7 +28,7 @@ class ConfigurationData:
    # def __setattr__
 
    def __str__( self ):
-      attr_list = [ i for i in self.__class__.__dict__.keys( ) if i[:2] != pfw.base.struct.ignore_field ]
+      attr_list = [ i for i in self.__class__.__dict__.keys( ) if i[:2] != __ ]
       vector = [ f"{str( attr )} = {str( self.__dict__.get( attr ) )}" for attr in attr_list ]
       return self.__class__.__name__ + " { " + ", ".join( vector ) + " }"
    # def __str__
@@ -169,7 +169,7 @@ class ConfigurationContainer:
    # def __setattr__
 
    def __str__( self ):
-      attr_list = [ i for i in self.__class__.__dict__.keys( ) if i[:2] != pfw.base.struct.ignore_field ]
+      attr_list = [ i for i in self.__class__.__dict__.keys( ) if i[:2] != __ ]
       vector = [ f"{str( attr )} = {str( self.__dict__.get( attr ) )}" for attr in attr_list ]
       return self.__class__.__name__ + " { " + ", ".join( vector ) + " }"
    # def __str__
@@ -258,10 +258,6 @@ class ConfigurationContainer:
 
 def add_config( app_data, name, value ):
    app_data.set_value( name, value )
-
-   for key in [ "pfw" ]:
-      if key == name:
-         app_data.set_value( "include", value )
 # def add_config
 
 
@@ -298,9 +294,9 @@ def process_cmdline( app_data, argv ):
 
       if isinstance( value, list ) or isinstance( value, tuple ):
          for item in value:
-            add_config( app_data, key, item )
+            app_data.set_value( key, item )
       else:
-         add_config( app_data, key, value )
+         app_data.set_value( key, value )
 # def process_cmdline
 
 
@@ -340,7 +336,7 @@ def process_config_file( app_data ):
          if match := re.match( pattern_comment, line ):
             pass
          elif match := re.match( pattern_parameter, line ):
-            add_config( app_data, match.group( 1 ), match.group( 2 ) )
+            app_data.set_value( match.group( 1 ), match.group( 2 ) )
       print( f"Processed config file: '{config_file}'" )
    print( f"Processed config files: {config_files}" )
 # def process_config_file
@@ -348,6 +344,10 @@ def process_config_file( app_data ):
 
 
 def process_configuration( app_data, argv ):
+   umbs_dir = os.path.dirname( os.path.realpath( sys.argv[0] ) )
+   app_data.set_value( "umbs", umbs_dir )
+   # app_data.set_value( "pfw", os.path.join( umbs_dir, "submodules/python_fw" ) )
+
    process_cmdline( app_data, argv )
    process_config_file( app_data )
 
@@ -357,7 +357,7 @@ def process_configuration( app_data, argv ):
    for path in reversed( app_data.get_values( "include" ) ):
       sys.path.insert( 0, path )
 
-   add_config( app_data, "umbs", os.path.dirname( os.path.realpath( sys.argv[0] ) ) )
+   sys.path.insert( 0, app_data.get_value( "pfw" ) )
 # def process_configuration
 
 
