@@ -305,19 +305,42 @@ def process_cmdline( app_data, argv ):
 
 
 
+def preprocess_config_file( file ):
+   pattern_include: str = r"^%include:\s*\"(.*)\"\s*$"
+   pattern_comment: str = r"^\s*#.*$"
+
+   lines: list = [ ]
+   file_dir = os.path.dirname( file )
+
+   fd = open( file, "r" )
+
+   for line in fd:
+      if match := re.match( pattern_include, line ):
+         import_file_name = match.group( 1 )
+         import_file_path = os.path.join( file_dir, import_file_name )
+         lines.extend( preprocess_config_file( import_file_path ) )
+      elif match := re.match( pattern_comment, line ):
+         pass
+      else:
+         lines.append( line )
+
+   fd.close( )
+   return lines
+# def preprocess_config_file
+
 def process_config_file( app_data ):
-   pattern: str = r"^\s*(.*)\s*:\s*(.*)\s*$"
+   pattern_parameter: str = r"^\s*(.*)\s*:\s*(.*)\s*$"
+   pattern_comment: str = r"^\s*#.*$"
 
    config_files = app_data.get_values( "config" )
    print( f"Processing config files: {config_files}" )
    for config_file in config_files:
       print( f"Processing config file: '{config_file}'" )
-      config_file_h = open( config_file, "r" )
-      for line in config_file_h:
-         match = re.match( pattern, line )
-         if match:
+      for line in preprocess_config_file( config_file ):
+         if match := re.match( pattern_comment, line ):
+            pass
+         elif match := re.match( pattern_parameter, line ):
             add_config( app_data, match.group( 1 ), match.group( 2 ) )
-      config_file_h.close( )
       print( f"Processed config file: '{config_file}'" )
    print( f"Processed config files: {config_files}" )
 # def process_config_file

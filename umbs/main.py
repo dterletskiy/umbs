@@ -37,7 +37,7 @@ def run( project, action, umbs_projects ):
 
 def run_in_container( ):
    cfg_file = "./.gen/umbs_gen.cfg"
-   cfg = open( os.path.join( cfg_file ), "w" )
+   cfg_h = open( os.path.join( cfg_file ), "w" )
    for name in umbs.configuration.names( ):
       if name in [ "container", "config" ]:
          continue
@@ -46,8 +46,8 @@ def run_in_container( ):
          if "root_dir" == name:
             value = umbs.configuration.value( 'container_root_dir' )
 
-         cfg.write( f"{name}:         {value}\n" )
-   cfg.close( )
+         cfg_h.write( f"{name}:         {value}\n" )
+   cfg_h.close( )
 
 
 
@@ -81,13 +81,7 @@ def run_in_container( ):
    command += f" --action={container_action}"
    # command = ""
 
-   pfw.linux.docker.container.run( container_name, f"{image_name}:{image_tag}",
-         volume_mapping = volume_mapping,
-         port_mapping = port_mapping,
-         workdir = workdir,
-         disposable = True,
-         command = command
-      )
+   pfw.linux.docker.container.run( container_name, command = command )
 # def run_in_container
 
 
