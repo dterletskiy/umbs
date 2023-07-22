@@ -1,0 +1,3 @@
+[submodule "submodules/python_fw"]
+	path = submodules/python_fw
+	url = git@github.com:dterletskiy/python_fw.git
