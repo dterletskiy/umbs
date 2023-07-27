@@ -346,10 +346,12 @@ def process_configuration( app_data, argv ):
    process_cmdline( app_data, argv )
    process_config_file( app_data )
 
-   umbs_dir = os.path.dirname( os.path.realpath( sys.argv[0] ) )
-   app_data.set_value( "umbs", umbs_dir )
-   if False == app_data.test( "pfw" ):
-      app_data.set_value( "pfw", os.path.join( umbs_dir, "submodules/python_fw" ) )
+   app_data.set_value( "umbs", os.path.dirname( os.path.realpath( sys.argv[0] ) ) )
+   if None == app_data.get_value( "pfw" ):
+      app_data.set_value( "pfw", "submodules/python_fw" )
+      print( "Using internal 'pfw': ", app_data.get_value( "pfw" ) )
+   else:
+      print( "Using external 'pfw': ", app_data.get_value( "pfw" ) )
 
    if False == app_data.is_complete( ):
       sys.exit( 1 )

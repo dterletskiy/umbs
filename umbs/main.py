@@ -17,11 +17,18 @@ import umbs.components.main
 def init_components( yaml_config ):
    components_map: dict = { }
    for name in yaml_config.get_components( ):
+      if name in components_map:
+         raise umbs.base.ConfigurationFormatError( f"component '{name}' redefinition" )
       if component := umbs.components.main.Component( name, yaml_config.get_component( name ), yaml_config.get_variable( "DIRECTORIES.ROOT" ) ):
          components_map[ name ] = component
 
    return components_map
 # def init_components
+
+def print_components( components: dict ):
+   for name, component in components.items( ):
+      pfw.console.debug.info( f"{name}" )
+# def print_components
 
 
 
@@ -32,8 +39,6 @@ def run( component, action, umbs_components ):
    else:
       umbs_components[ component ].do_action( action )
 # def run
-
-
 
 def run_in_container( ):
    cfg_file = "./.gen/umbs.cfg"
@@ -74,6 +79,7 @@ def main( ):
    yaml_config: umbs.base.Config = umbs.base.Config( umbs.configuration.value( "yaml_config" ) )
    # yaml_config.info( ) # @TDA: debug
    umbs_components: dict = init_components( yaml_config )
+   print_components( umbs_components ) # @TDA: debug
 
    pfw.console.debug.ok( "------------------------- BEGIN -------------------------" )
 

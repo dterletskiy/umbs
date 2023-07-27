@@ -157,7 +157,7 @@ class Config:
       # pfw.console.debug.trace( f"processing value: '{value}'" ) # @TDA: debug
 
       if not isinstance( value, str ):
-         pfw.console.debug.warning( f"ERROR: '{value}' is not a string" )
+         pfw.console.debug.warning( f"ERROR: '{value}' is not a string, it is {type( value )}" )
          return ( False, value )
 
       replaced: bool = False
@@ -175,7 +175,9 @@ class Config:
                   pfw.console.debug.error( "can substitute only single variable without any other characters by list, tuple or map" )
                   raise YamlFormatError( f"Wrong yaml format error for substitutuion variable '{item}'" )
 
-         value = self.__replace( value )[1]
+         if isinstance( value, str ):
+            value = self.__replace( value )[1]
+
          replaced = True
 
       return ( replaced, value )
@@ -197,14 +199,15 @@ class Config:
             new_address.append( index )
             for_adaptation.extend( self.__walk( item, new_address, value_processor ) )
             del address[-1]
-      # elif isinstance( iterable, str ):
-      else:
+      elif isinstance( iterable, str ):
          ( replaced, new_value ) = value_processor( iterable )
          if replaced:
             # print( f"address = {address}" ) # @TDA: debug
             # print( f"old_value = {iterable}" ) # @TDA: debug
             # print( f"new_value = {new_value}" ) # @TDA: debug
             for_adaptation.append( Config.AV( address, new_value ) )
+      else:
+         pass
 
       # pfw.console.debug.info( f"<- address = {address}" ) # @TDA: debug
 
