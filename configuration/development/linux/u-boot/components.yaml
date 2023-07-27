@@ -7,7 +7,6 @@ linux-u-boot:
       branch: ${LINUX.UBOOT.SOURCE.GITHUB.BRANCH}
       depth: 1
       subdir: "."
-  patches:
     - type: copy
       content:
         - from: "tda/lfs/configuration/config/u-boot/v2022.07/qemu_arm64_defconfig/exp/defconfig"

@@ -7,7 +7,6 @@ linux-busybox:
       branch: ${LINUX.BUSYBOX.SOURCE.GITHUB.BRANCH}
       depth: 1
       subdir: "."
-  patches:
     - type: copy
       content:
         - from: "tda/lfs/configuration/config/busybox/1.35.0/arm64/exp/.config"

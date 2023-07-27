@@ -362,11 +362,15 @@ components:
     active: true
     subdir: linux/u-boot
     sources:
-      - type: git
-        url: ${LINUX.UBOOT.SOURCE.GITHUB.URL}
-        branch: ${LINUX.UBOOT.SOURCE.GITHUB.BRANCH}
-        depth: 1
-        subdir: "."
+      # - type: git
+      #   url: ${LINUX.UBOOT.SOURCE.GITHUB.URL}
+      #   branch: ${LINUX.UBOOT.SOURCE.GITHUB.BRANCH}
+      #   depth: 1
+      #   subdir: "."
+      - type: copy
+        content:
+          - from: "tda/lfs/configuration/config/u-boot/v2022.07/qemu_arm64_defconfig/exp/defconfig"
+            to: "configs/${LINUX.UBOOT.CONFIG.ARM64}"
     patches:
       - type: copy
         content:
@@ -824,7 +828,7 @@ components:
         artifacts:
           - ""
         deps:
-          - ""
+          - "tda-carpc"
   
   tda-carpc-examples:
     active: true
@@ -862,7 +866,7 @@ components:
         artifacts:
           - ""
         deps:
-          - ""
+          - "tda-carpc"
   
   tda-common:
     active: true

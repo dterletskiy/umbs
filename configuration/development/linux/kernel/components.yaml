@@ -7,7 +7,6 @@ linux-kernel:
       branch: ${LINUX.KERNEL.SOURCE.GITHUB.BRANCH}
       depth: 1
       subdir: "."
-  patches:
     - type: copy
       content:
         - from: "tda/lfs/configuration/config/kernel/6.2/arm64/exp/defconfig"

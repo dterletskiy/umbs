@@ -32,9 +32,7 @@ class Builder:
             os.path.join( self.__component_dir, artifact ) for artifact in self.__config.get( "artifacts", [ ] )
          ]
 
-      self.__dependencies = [
-            os.path.join( self.__root_dir, dependency ) for dependency in self.__config.get( "deps", [ ] )
-         ]
+      self.__dependencies = self.__config.get( "deps", [ ] )
 
       environment: dict = { }
       for env in self.__config.get( "env", [ ] ):
@@ -50,14 +48,6 @@ class Builder:
             continue
 
          self.__command += f" export {env};"
-
-      # self.__dependencies = [ ]
-      # for dependency in self.__config.get( "deps", [ ] ):
-      #    if isinstance( dependency, str ):
-      #       self.__dependencies.append( os.path.join( self.__root_dir, dependency ) )
-      #    elif isinstance( dependency, dict ):
-      #       # self.__dependencies.append( os.path.join( dependency[key].component_dir( ), dependency[value] ) )
-      #       pass
    # def __init__
 
    def __del__( self ):
@@ -116,11 +106,6 @@ class Builder:
       result = self.execute( f"mkdir -p {self.__deploy_dir}" )
       if 0 != result["code"]:
          return False
-
-      for dependency in self.__dependencies:
-         if not os.path.exists( dependency ):
-            pfw.console.debug.error( f"dependency does not exist: '{dependency}'" )
-            return False
 
       return True
    # def prepare

@@ -7,7 +7,6 @@ linux-buildroot:
       branch: ${LINUX.BUILDROOT.SOURCE.GITHUB.BRANCH}
       depth: 1
       subdir: "."
-  patches:
     - type: copy
       content:
         - from: "tda/lfs/configuration/config/buildroot/2022.05.2/qemu_aarch64_virt_defconfig/exp/defconfig"

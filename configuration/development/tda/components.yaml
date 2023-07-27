@@ -71,7 +71,7 @@ tda-carpc-tutorial:
       artifacts:
         - ""
       deps:
-        - ""
+        - "tda-carpc"
 
 tda-carpc-examples:
   active: true
@@ -109,7 +109,7 @@ tda-carpc-examples:
       artifacts:
         - ""
       deps:
-        - ""
+        - "tda-carpc"
 
 tda-common:
   active: true
