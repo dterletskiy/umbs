@@ -1,0 +1,11 @@
+android-ndk:
+  active: true
+  subdir: android/ndk
+  sources:
+    - type: download
+      url: ${ANDROID.NDK.SOURCE.URL}
+      subdir: "."
+  patches:
+    - type: unpack
+      file: "${ANDROID.NDK.FILE.NAME}.${ANDROID.NDK.FILE.EXT}"
+      format: ${ANDROID.NDK.FILE.EXT}

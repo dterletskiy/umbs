@@ -1,0 +1,6 @@
+NDK:
+  FILE:
+    NAME: "android-ndk-r25c-linux"
+    EXT: "zip"
+  SOURCE:
+    URL: "https://dl.google.com/android/repository/${ANDROID.NDK.FILE.NAME}.${ANDROID.NDK.FILE.EXT}"

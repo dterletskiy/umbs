@@ -1,0 +1,88 @@
+rootfs-x64:
+  active: true
+  subdir: rootfs/ubuntu/x64
+  sources:
+    - type: download
+      url: ${UBUNTU.ROOTFS.SOURCE.X64}
+      subdir: "."
+  builders:
+    - type: image.partition
+      file: rootfs.img
+      reuse: false
+      fs: ext4
+      size: 4096 MB
+      content:
+        - action: extract
+          format: ${UBUNTU.ROOTFS.NAME.EXT}
+          from: rootfs/ubuntu/x64/${UBUNTU.ROOTFS.NAME.X64}.${UBUNTU.ROOTFS.NAME.EXT}
+          to: "."
+        - action: copy
+          from: linux/kernel/out/deploy/lib/.
+          to: lib
+      artifacts:
+        - rootfs.img
+      deps:
+        - linux/kernel/out/deploy/lib
+    - type: rootfs.ubuntu
+      source: rootfs.img
+      user: ${UBUNTU.USER}
+      packages:
+        apt: *PACKAGES_APT_ALIAS
+        pip3: *PACKAGES_PIP3_ALIAS
+      artifacts:
+        - rootfs.img
+      deps:
+        - rootfs/ubuntu/x64/rootfs.img
+
+rootfs-aarch64:
+  active: true
+  subdir: rootfs/ubuntu/aarch64
+  sources:
+    - type: download
+      url: ${UBUNTU.ROOTFS.SOURCE.ARM64}
+      subdir: "."
+  builders:
+    - type: image.partition
+      file: rootfs.img
+      reuse: false
+      fs: ext4
+      size: 4096 MB
+      content:
+        - action: extract
+          format: ${UBUNTU.ROOTFS.NAME.EXT}
+          from: rootfs/ubuntu/aarch64/${UBUNTU.ROOTFS.NAME.ARM64}.${UBUNTU.ROOTFS.NAME.EXT}
+          to: "."
+        - action: copy
+          from: linux/kernel/out/deploy/lib/.
+          to: lib
+      artifacts:
+        - rootfs.img
+      deps:
+        - linux/kernel/out/deploy/lib
+    - type: rootfs.ubuntu
+      source: rootfs.img
+      user: ${UBUNTU.USER}
+      packages:
+        apt: *PACKAGES_APT_ALIAS
+        pip3: *PACKAGES_PIP3_ALIAS
+      artifacts:
+        - rootfs.img
+      deps:
+        - rootfs/ubuntu/aarch64/rootfs.img
+
+rootfs-aarch64-update:
+  active: true
+  subdir: rootfs/ubuntu/aarch64
+  builders:
+    - type: image.partition
+      file: rootfs.img
+      reuse: true
+      content:
+        - action: copy
+          from: linux/kernel/out/deploy/lib/.
+          to: lib
+      artifacts:
+        - rootfs.img
+      deps:
+        - rootfs/ubuntu/aarch64/rootfs.img
+        - linux/kernel/out/deploy/lib

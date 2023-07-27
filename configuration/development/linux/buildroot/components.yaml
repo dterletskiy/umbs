@@ -1,0 +1,31 @@
+linux-buildroot:
+  active: true
+  subdir: linux/buildroot
+  sources:
+    - type: git
+      url: ${LINUX.BUILDROOT.SOURCE.GITHUB.URL}
+      branch: ${LINUX.BUILDROOT.SOURCE.GITHUB.BRANCH}
+      depth: 1
+      subdir: "."
+  patches:
+    - type: copy
+      content:
+        - from: "tda/lfs/configuration/config/buildroot/2022.05.2/qemu_aarch64_virt_defconfig/exp/defconfig"
+          to: "configs/${LINUX.BUILDROOT.CONFIG.ARM64}"
+  builders:
+    - type: make.buildroot
+      subdirs:
+        target: "."
+        product: "out/build"
+        deploy: "out/deploy"
+      defconfig: ${LINUX.BUILDROOT.CONFIG.ARM64}
+      arch: "arm64"
+      compiler: "aarch64-linux-gnu-"
+      jobs: 4
+      env:
+        - ""
+      artifacts:
+        - "output/images/rootfs.cpio"
+        - "output/images/rootfs.ext2"
+      deps:
+        - ""

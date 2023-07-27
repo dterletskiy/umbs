@@ -1,0 +1,9 @@
+DIRECTORIES:
+  # Current variable (DIRECTORIES.ROOT) could be changed during runtime initializetion in case if 'root_dir' parameter
+  # defined in configuration file or command line parameter
+  ROOT: "/mnt/docker/builder/"
+  CONTAINER:
+    ROOT: "/mnt/host/"
+  SOURCE: ${DIRECTORIES.ROOT}/source/
+  BUILD: ${DIRECTORIES.ROOT}/build/
+  DEPLOY: ${DIRECTORIES.ROOT}/deploy/

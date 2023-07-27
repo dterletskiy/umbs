@@ -11,25 +11,25 @@ class Builder:
    def __init__( self, config, **kwargs ):
       self.__config = config
       self.__root_dir = kwargs.get( "root_dir", None )
-      self.__project_dir = kwargs.get( "project_dir", None )
+      self.__component_dir = kwargs.get( "component_dir", None )
       # target_dir <=> source code dir
       self.__target_dir = os.path.join(
-            self.__project_dir,
+            self.__component_dir,
             pfw.base.dict.get_value( self.__config, ["subdirs", "target"], "" )
          )
       # product_subdir <=> build code dir
       self.__product_dir = os.path.join(
-            self.__project_dir,
+            self.__component_dir,
             pfw.base.dict.get_value( self.__config, ["subdirs", "product"], "" )
          )
       # deploy_subdir <=> deploy code dir
       self.__deploy_dir = os.path.join(
-            self.__project_dir,
+            self.__component_dir,
             pfw.base.dict.get_value( self.__config, ["subdirs", "deploy"], "" )
          )
 
       self.__artifacts = [
-            os.path.join( self.__project_dir, artifact ) for artifact in self.__config.get( "artifacts", [ ] )
+            os.path.join( self.__component_dir, artifact ) for artifact in self.__config.get( "artifacts", [ ] )
          ]
 
       self.__dependencies = [
@@ -56,7 +56,7 @@ class Builder:
       #    if isinstance( dependency, str ):
       #       self.__dependencies.append( os.path.join( self.__root_dir, dependency ) )
       #    elif isinstance( dependency, dict ):
-      #       # self.__dependencies.append( os.path.join( dependency[key].project_dir( ), dependency[value] ) )
+      #       # self.__dependencies.append( os.path.join( dependency[key].component_dir( ), dependency[value] ) )
       #       pass
    # def __init__
 
@@ -163,9 +163,9 @@ class Builder:
 
 
 
-   def project_dir( self ):
-      return self.__project_dir
-   # def project_dir
+   def component_dir( self ):
+      return self.__component_dir
+   # def component_dir
 
    def target_dir( self ):
       return self.__target_dir

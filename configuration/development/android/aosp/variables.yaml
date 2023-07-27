@@ -1,0 +1,11 @@
+AOSP:
+  SOURCE:
+    GITHUB:
+      URL: "https://github.com/dterletskiy/aosp_manifest.git"
+      BRANCH: "platform/manifest/android-12.1.0_r8-dev"
+  CONFIG:
+    PRODUCT:
+      ARM64:
+        NAME: "aosp_trout_arm64"
+        DEVICE: "trout_arm64"
+        VARIANT: "userdebug"

@@ -10,11 +10,11 @@ class Fetcher:
    def __init__( self, config, **kwargs ):
       self.__config = config
       self.__root_dir = kwargs.get( "root_dir", None )
-      self.__project_dir = kwargs.get( "project_dir", None )
-      self.__target_dir = os.path.join( self.__project_dir, self.__config.get( "subdir", "" ) )
+      self.__component_dir = kwargs.get( "component_dir", None )
+      self.__target_dir = os.path.join( self.__component_dir, self.__config.get( "subdir", "" ) )
       pfw.shell.execute( f"mkdir -p {self.__target_dir}" )
 
-      self.__artifacts = [ os.path.join( self.__project_dir, artifact ) for artifact in self.__config.get( "artifacts", [ ] ) ]
+      self.__artifacts = [ os.path.join( self.__component_dir, artifact ) for artifact in self.__config.get( "artifacts", [ ] ) ]
    # def __init__
 
    def __del__( self ):

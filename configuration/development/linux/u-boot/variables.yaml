@@ -1,0 +1,10 @@
+UBOOT:
+  SOURCE:
+    GITHUB:
+      URL: "https://github.com/u-boot/u-boot.git"
+      BRANCH: "v2022.07"
+  CONFIG:
+    ARM: umbs_qemu_arm_defconfig
+    ARM64: umbs_qemu_arm64_defconfig
+    X86: umbs_qemu-x86_defconfig
+    X86_64: umbs_qemu-x86_64_defconfig

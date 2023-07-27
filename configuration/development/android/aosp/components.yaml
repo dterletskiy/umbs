@@ -1,0 +1,25 @@
+android-aosp:
+  active: true
+  subdir: android/aosp
+  sources:
+    - type: repo
+      manifest:
+        url: ${ANDROID.AOSP.SOURCE.GITHUB.URL}
+        branch: ${ANDROID.AOSP.SOURCE.GITHUB.BRANCH}
+        name: "default.xml"
+        depth: 1
+      depth: 1
+      subdir: "."
+  builders:
+    - type: android.aosp
+      subdirs:
+        target: "."
+        product: "out/target/product/${ANDROID.AOSP.CONFIG.PRODUCT.ARM64.DEVICE}/"
+        deploy: "out/target/product/${ANDROID.AOSP.CONFIG.PRODUCT.ARM64.DEVICE}/"
+      config: ${ANDROID.AOSP.CONFIG.PRODUCT.ARM64.NAME}.${ANDROID.AOSP.CONFIG.PRODUCT.ARM64.VARIANT}
+      env:
+        - ""
+      artifacts:
+        - ""
+      deps:
+        - ""

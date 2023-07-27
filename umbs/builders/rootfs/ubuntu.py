@@ -93,7 +93,7 @@ class Builder( umbs.builders.base.Builder ):
          self.__image_builder = umbs.builders.image.partition.Builder(
                self.__config["image"],
                root_dir = self.__root_dir,
-               project_dir = self.__product_dir
+               component_dir = self.__product_dir
             )
    # def __init__
 

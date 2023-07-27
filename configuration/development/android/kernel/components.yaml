@@ -1,0 +1,24 @@
+android-kernel:
+  active: true
+  subdir: android/kernel
+  sources:
+    - type: repo
+      manifest:
+        url: ${ANDROID.KERNEL.SOURCE.GITHUB.URL}
+        branch: ${ANDROID.KERNEL.SOURCE.GITHUB.BRANCH}
+        name: "default.xml"
+        depth: 1
+      depth: 1
+      subdir: "."
+  builders:
+    - type: android.kernel
+      config: ${ANDROID.KERNEL.CONFIG.ARM64}
+      env:
+        - ""
+      artifacts:
+        - "out/deploy/${ANDROID.KERNEL.CONFIG.ARM64}/boot.img"
+        - "out/deploy/${ANDROID.KERNEL.CONFIG.ARM64}/Image"
+        - "out/deploy/${ANDROID.KERNEL.CONFIG.ARM64}/initramfs.img"
+        - "out/deploy/${ANDROID.KERNEL.CONFIG.ARM64}/vmlinux"
+      deps:
+        - ""

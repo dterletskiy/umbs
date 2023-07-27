@@ -272,12 +272,11 @@ def process_cmdline( app_data, argv ):
 
    parser.add_argument( "--config", dest = "config", type = str, action = "append", required = False, help = app_data.get_description( "config" ) )
    parser.add_argument( "--yaml_config", dest = "yaml_config", type = str, action = "store", required = False, help = app_data.get_description( "yaml_config" ) )
-   parser.add_argument( "--root_dir", dest = "", type = str, action = "store", required = False, help = app_data.get_description( "root_dir" ) )
 
    parser.add_argument( "--include", dest = "include", type = str, action = "append", required = False, help = app_data.get_description( "include" ) )
    parser.add_argument( "--pfw", dest = "pfw", type = str, action = "append", required = False, help = app_data.get_description( "pfw" ) )
 
-   parser.add_argument( "--project", dest = "project", type = str, action = "store", required = False, default = "*", help = app_data.get_description( "project" ) )
+   parser.add_argument( "--component", dest = "component", type = str, action = "store", required = False, default = "*", help = app_data.get_description( "component" ) )
    parser.add_argument( "--action", dest = "action", type = str, action = "store", required = False, default = "*", help = app_data.get_description( "action" ) )
 
    parser.add_argument( "--container", dest = "container", action = "store_true", help = app_data.get_description( "container" ) )
@@ -367,10 +366,9 @@ config: ConfigurationContainer = ConfigurationContainer(
       [
          ConfigurationData( "config"            , True  , "Path to configuration file" ),
          ConfigurationData( "yaml_config"       , True  , "Path to yaml project configuration file" ),
-         ConfigurationData( "root_dir"          , False , "Path to project root directory" ),
          ConfigurationData( "include"           , False , "Additional directory to search import packages" ),
          ConfigurationData( "pfw"               , False , "Python Framework directory location" ),
-         ConfigurationData( "project"           , False , "Project name" ),
+         ConfigurationData( "component"         , False , "Component name" ),
          ConfigurationData( "action"            , False , "Action name" ),
          ConfigurationData( "container"         , False , "Indicates is this script must be run in container" ),
       ]

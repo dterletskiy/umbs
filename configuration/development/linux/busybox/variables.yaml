@@ -1,0 +1,10 @@
+BUSYBOX:
+  SOURCE:
+    GITHUB:
+      URL: "https://github.com/mirror/busybox.git"
+      BRANCH: "1_36_0"
+  CONFIG:
+    ARM: umbs_defconfig
+    ARM64: umbs_defconfig
+    X86: umbs_defconfig
+    X86_64: umbs_defconfig

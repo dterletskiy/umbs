@@ -35,8 +35,8 @@ class ConfigurationFormatError( Exception ):
 
 class Config:
    def __init__( self, file: str, **kwargs ):
-      def read_file( file ):
-         pattern: str = r"^\s*include:\s*\"(.*)\"\s*$"
+      def read_file( file, spaces: str = "" ):
+         pattern: str = r"^(\s*)include:\s*\"(.*)\"\s*$"
 
          lines: str = ""
          file_dir = os.path.dirname( file )
@@ -46,17 +46,22 @@ class Config:
          for line in yaml_fd:
             match = re.match( pattern, line )
             if match:
-               import_file_name = match.group( 1 )
+               import_file_name = match.group( 2 )
                import_file_path = os.path.join( file_dir, import_file_name )
-               lines += read_file( import_file_path )
+               lines += read_file( import_file_path, match.group( 1 ) )
             else:
-               lines += line
+               lines += spaces + line
 
          yaml_fd.close( )
          return lines
       # def read_file
 
-      yaml_data = yaml.load( read_file( file ), Loader = yaml.SafeLoader )
+      yaml_lines = read_file( file )
+      yaml_file = "./.gen/umbs.yaml"
+      yaml_h = open( yaml_file, "w" )
+      yaml_h.write( yaml_lines )
+      yaml_h.close( )
+      yaml_data = yaml.load( yaml_lines, Loader = yaml.SafeLoader )
       # yaml_stream = yaml.compose( yaml_fd )
 
       # Read "variables" section from yaml file
@@ -80,9 +85,9 @@ class Config:
                "Root directory must be defined in command line, confiruration file or in yaml file as 'DIRECTORIES.ROOT'"
             )
 
-      # Read "projects" section from yaml file
-      self.__projects = yaml_data.get( "projects", { } )
-      self.__process_yaml_data( self.__projects )
+      # Read "components" section from yaml file
+      self.__components = yaml_data.get( "components", { } )
+      self.__process_yaml_data( self.__components )
 
       # Read "tools" section from yaml file
       self.__tools = yaml_data.get( "tools", { } )
@@ -98,7 +103,7 @@ class Config:
       kw_msg = kwargs.get( "msg", "" )
       pfw.console.debug.info( f"{kw_msg} (type {self.__class__.__name__}):", tabs = ( kw_tabs + 0 ) )
       pfw.console.debug.info( pfw.base.str.to_string( self.__variables ) )
-      pfw.console.debug.info( pfw.base.str.to_string( self.__projects ) )
+      pfw.console.debug.info( pfw.base.str.to_string( self.__components ) )
       pfw.console.debug.info( pfw.base.str.to_string( self.__tools ) )
    # def info
 
@@ -116,13 +121,13 @@ class Config:
       pfw.base.dict.set_value( self.__variables, variable, value )
    # def set_variable
 
-   def get_project( self, name: str ):
-      return self.__projects[ name ]
-   # def get_project
+   def get_component( self, name: str ):
+      return self.__components[ name ]
+   # def get_component
 
-   def get_projects( self ):
-      return self.__projects
-   # def get_projects
+   def get_components( self ):
+      return self.__components
+   # def get_components
 
    def get_tool( self, name: str ):
       return self.__tools[ name ]
@@ -214,7 +219,7 @@ class Config:
 
 
    __variables: dict = { }
-   __projects: dict = { }
+   __components: dict = { }
    __tools: dict = { }
 # class Config
 

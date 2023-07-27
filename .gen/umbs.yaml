@@ -1,0 +1,882 @@
+author: "dterletskiy"
+version: "1.1.0"
+umbs_min_version: "0.1"
+
+variables:
+  DIRECTORIES:
+    # Current variable (DIRECTORIES.ROOT) could be changed during runtime initializetion in case if 'root_dir' parameter
+    # defined in configuration file or command line parameter
+    ROOT: "/mnt/docker/builder/"
+    CONTAINER:
+      ROOT: "/mnt/host/"
+    SOURCE: ${DIRECTORIES.ROOT}/source/
+    BUILD: ${DIRECTORIES.ROOT}/build/
+    DEPLOY: ${DIRECTORIES.ROOT}/deploy/
+  UBUNTU:
+    VERSION: 22.04
+    DOCKER:
+      DOCKERFILE: "tda/umbs/umbs/builders/docker/Dockerfile.ubuntu"
+    ROOTFS:
+      NAME:
+        COMMON: ubuntu-base-${UBUNTU.VERSION}.2-base
+        ARM64: ${UBUNTU.ROOTFS.NAME.COMMON}-arm64
+        X64: ${UBUNTU.ROOTFS.NAME.COMMON}-amd64
+        EXT: tar.gz
+      SOURCE:
+        COMMON: http://cdimage.ubuntu.com/ubuntu-base/releases/
+        ARM64: ${UBUNTU.ROOTFS.SOURCE.COMMON}/${UBUNTU.VERSION}/release/${UBUNTU.ROOTFS.NAME.ARM64}.${UBUNTU.ROOTFS.NAME.EXT}
+        X64: ${UBUNTU.ROOTFS.SOURCE.COMMON}/${UBUNTU.VERSION}/release/${UBUNTU.ROOTFS.NAME.X64}.${UBUNTU.ROOTFS.NAME.EXT}
+    USER: &UBUNTU_USER_ALIAS
+      uid: 1000
+      gid: 1000
+      name: builder
+      password: builder
+      password_salt: redliub
+      hashed_password: redegKmAeDwAM
+      workdir: workspace
+  
+    PACKAGES:
+      APT: &PACKAGES_APT_ALIAS
+        SYSTEM: &PACKAGES_APT_SYSTEM_ALIAS
+          BASE: &PACKAGES_APT_SYSTEM_BASE_ALIAS
+            - locales
+            - apt-utils
+            - autoconf
+            - fakeroot
+            - devscripts
+            - lsb-base
+            - lsb-release
+            - sudo
+            - udev
+            - rsyslog
+            - kmod
+            - util-linux
+            - dmsetup
+            - hostname
+            - uuid
+            - uuid-dev
+            - symlinks
+            - psmisc
+            - bc
+            - sysfsutils
+            - software-properties-common
+            - whois
+            # - dialog
+          DRIVERS: &PACKAGES_APT_SYSTEM_DRIVERS_ALIAS
+            - mtd-utils
+            - iiod
+          TRACE: &PACKAGES_APT_SYSTEM_TRACE_ALIAS
+            - blktrace
+            - fatrace
+            - latrace
+            - strace
+            - ltrace
+            - xtrace
+          TOP: &PACKAGES_APT_SYSTEM_TOP_ALIAS
+            - atop
+            - htop
+            - iotop
+            - iftop
+            - powertop
+            - itop
+            - kerneltop
+            - dnstop
+            - jnettop
+            - sntop
+            - latencytop
+            - xrestop
+            - slabtop
+          SYSTEMD: &PACKAGES_APT_SYSTEM_SYSTEMD_ALIAS
+            - systemd
+            - systemd-sysv
+            - libsystemd-dev
+            - sysvinit-utils
+        NET: &PACKAGES_APT_NET_ALIAS
+          - netbase
+          - dnsutils
+          - ifupdown
+          - iproute2
+          - net-tools
+          - isc-dhcp-client
+          - isc-dhcp-common
+          - iputils-ping
+          - dhcpcd5
+          - tcpd
+          - bridge-utils
+          - ethtool
+          - iptables
+          - libnss-mdns
+          - iw
+          - tcptrace
+          - tcptraceroute
+          - nfstrace
+          - nfstrace-doc
+          - iptraf
+          - nload
+          - nethogs
+          - iptstate
+          - curl
+          - rsync
+          - ssh
+          - openssh-server
+          - socat
+          - sshpass
+        DEV: &PACKAGES_APT_DEV_ALIAS
+          BASE: &PACKAGES_APT_BASE_ALIAS
+            - build-essential
+            - gcc
+            - g++
+            - ncurses-dev
+            - iasl
+            - binutils
+            - binutils-common
+            - binutils-dev
+            - binutils-doc
+            - binutils-for-build
+            - binutils-for-host
+            - device-tree-compiler
+            - pkg-config
+            - binwalk
+            - graphviz
+            # - linux-headers-generic
+          SYNTAX: &PACKAGES_APT_DEV_SYNTAX_ALIAS
+            - flex
+            - flex-doc
+            - flex++
+            - bison
+            - antlr
+            - antlr-doc
+            - antlr3
+            - antlr3-doc
+            - antlr3.2
+            - antlr3.2-doc
+            - antlr4
+            - antlr4-doc
+          PYTHON: &PACKAGES_APT_DEV_PYTHON_ALIAS
+            - python2
+            - python2-dev
+            - python2-doc
+  
+            - python3
+            - python3-dev
+            - python3-doc
+            - python3-pip
+          PERL: &PACKAGES_APT_DEV_PERL_ALIAS
+            - perl
+            - perl-doc
+            - perl-doc-html
+          SCV: &PACKAGES_APT_DEV_SCV_ALIAS
+            - git
+            - gitk
+            - patch
+          BUILD_SYSTEM: &PACKAGES_APT_DEV_BUILD_SYSTEM_ALIAS
+            - cmake
+            - ninja-build
+          LIBS: &PACKAGES_APT_DEV_LIBS_ALIAS
+            - libssl-dev
+            - libelf-dev
+            - libfdt-dev
+            - libpixman-1-dev
+            - libyajl-dev
+            - libncurses-dev
+            - libcap-ng-dev
+            - libiscsi-dev 
+            - libibverbs-dev
+            - libiio-dev
+  
+            - libglib2.0-dev
+            - libglib2.0-dev-bin
+  
+            - libdrm-common
+            - libdrm-dev
+            - libdrm-tests
+            - libdrm2
+  
+            - libsdl2-dev
+            - libsdl2-doc
+  
+            - libasound2-dev
+            - libasound2-doc
+  
+            - libprotobuf-dev
+            - protobuf-compiler
+            - protobuf-compiler-grpc
+            - protobuf-c-compiler
+  
+            - libdlt-dev
+            - libdlt-examples
+            - dlt-daemon
+            - dlt-viewer
+            - dlt-viewer-dev
+            - dlt-tools
+        TOOLS: &PACKAGES_APT_TOOLS_ALIAS
+          - mc
+          - nano
+          - vim
+          - less
+          - sed
+          - bash-completion
+          - screen
+          - tmux
+        COMPRESSION: &PACKAGES_APT_COMPRESSION_ALIAS
+          - tar
+          - zip
+          - unzip
+          - rar
+          - unrar
+          - lz4
+          - rarcrack
+          - xz-utils
+          - cpio
+          - zlib1g-dev
+        PERIPHERALS: &PACKAGES_APT_PERIPHERALS_ALIAS
+          - ser2net
+          - minicom
+  
+      PIP3: &PACKAGES_PIP3_ALIAS
+        - filetype
+        - paramiko
+        - coloredlogs
+        - pyyaml
+        - antlr4-python3-runtime
+
+  LINUX:
+    XEN:
+      SOURCE:
+        GITHUB:
+          URL: "https://github.com/xen-project/xen.git"
+          BRANCH: "RELEASE-4.16.2"
+      CONFIG:
+        ARM: defconfig
+        ARM64: defconfig
+        X86: qemu-defconfig
+        X86_64: qemu-defconfig
+    UBOOT:
+      SOURCE:
+        GITHUB:
+          URL: "https://github.com/u-boot/u-boot.git"
+          BRANCH: "v2022.07"
+      CONFIG:
+        ARM: umbs_qemu_arm_defconfig
+        ARM64: umbs_qemu_arm64_defconfig
+        X86: umbs_qemu-x86_defconfig
+        X86_64: umbs_qemu-x86_64_defconfig
+    KERNEL:
+      SOURCE:
+        GITHUB:
+          URL: "https://github.com/torvalds/linux.git"
+          BRANCH: "v6.2"
+      CONFIG:
+        ARM: vexpress_defconfig
+        ARM64: umbs_defconfig
+        X86: x86_64_defconfig
+        X86_64: x86_64_defconfig
+    BUSYBOX:
+      SOURCE:
+        GITHUB:
+          URL: "https://github.com/mirror/busybox.git"
+          BRANCH: "1_36_0"
+      CONFIG:
+        ARM: umbs_defconfig
+        ARM64: umbs_defconfig
+        X86: umbs_defconfig
+        X86_64: umbs_defconfig
+    BUILDROOT:
+      SOURCE:
+        GITHUB:
+          URL: "https://github.com/buildroot/buildroot.git"
+          BRANCH: "2023.02"
+      CONFIG:
+        ARM: umbs_qemu_arm_vexpress_defconfig
+        ARM64: umbs_qemu_aarch64_virt_defconfig
+        X86: umbs_qemu_x86_defconfig
+        X86_64: umbs_qemu_x86_64_defconfig
+
+  ANDROID:
+    UBOOT:
+      SOURCE:
+        GITHUB:
+          URL: "https://github.com/dterletskiy/aosp_manifest.git"
+          BRANCH: "u-boot/manifest/u-boot-mainline-9671786"
+      CONFIG:
+        ARM64: "//u-boot:qemu_aarch64"
+    KERNEL:
+      SOURCE:
+        GITHUB:
+          URL: "https://github.com/dterletskiy/aosp_manifest.git"
+          BRANCH: "kernel/manifest/common-android14-6.1-dev"
+      CONFIG:
+        ARM64: "//common-modules/virtual-device:virtual_device_aarch64"
+    AOSP:
+      SOURCE:
+        GITHUB:
+          URL: "https://github.com/dterletskiy/aosp_manifest.git"
+          BRANCH: "platform/manifest/android-12.1.0_r8-dev"
+      CONFIG:
+        PRODUCT:
+          ARM64:
+            NAME: "aosp_trout_arm64"
+            DEVICE: "trout_arm64"
+            VARIANT: "userdebug"
+    NDK:
+      FILE:
+        NAME: "android-ndk-r25c-linux"
+        EXT: "zip"
+      SOURCE:
+        URL: "https://dl.google.com/android/repository/${ANDROID.NDK.FILE.NAME}.${ANDROID.NDK.FILE.EXT}"
+
+  TDA:
+
+components:
+  linux-xen:
+    active: true
+    subdir: linux/xen
+    sources:
+      - type: git
+        url: ${LINUX.XEN.SOURCE.GITHUB.URL}
+        branch: ${LINUX.XEN.SOURCE.GITHUB.BRANCH}
+        depth: 1
+        subdir: "."
+    builders:
+      - type: make.xen
+        subdirs:
+          target: "."
+          product: "out/build"
+          deploy: "out/deploy"
+        defconfig: ${LINUX.XEN.CONFIG.ARM64}
+        arch: "arm64"
+        compiler: "aarch64-linux-gnu-"
+        jobs: 4
+        targets:
+          # - "dist"
+          - "dist-xen"
+          # - "dist-tools"
+          # - "dist-docs"
+        env:
+          - ""
+        artifacts:
+          - "dist/install/boot/xen"
+        deps:
+          - ""
+  linux-u-boot:
+    active: true
+    subdir: linux/u-boot
+    sources:
+      - type: git
+        url: ${LINUX.UBOOT.SOURCE.GITHUB.URL}
+        branch: ${LINUX.UBOOT.SOURCE.GITHUB.BRANCH}
+        depth: 1
+        subdir: "."
+    patches:
+      - type: copy
+        content:
+          - from: "tda/lfs/configuration/config/u-boot/v2022.07/qemu_arm64_defconfig/exp/defconfig"
+            to: "configs/${LINUX.UBOOT.CONFIG.ARM64}"
+    builders:
+      - type: make.uboot
+        subdirs:
+          target: "."
+          product: "out/build"
+          deploy: "out/deploy"
+        defconfig: ${LINUX.UBOOT.CONFIG.ARM64}
+        arch: "arm64"
+        compiler: "aarch64-linux-gnu-"
+        jobs: 4
+        env:
+          - ""
+        artifacts:
+          - "out/build/u-boot"
+          - "out/build/u-boot.bin"
+          - "out/build/scripts/dtc/dtc"
+          - "out/build/tools/dumpimage"
+          - "out/build/tools/fit_info"
+          - "out/build/tools/mkenvimage"
+          - "out/build/tools/mkimage"
+          - "out/build/tools/img2srec"
+        deps:
+          - ""
+  linux-kernel:
+    active: true
+    subdir: linux/kernel
+    sources:
+      - type: git
+        url: ${LINUX.KERNEL.SOURCE.GITHUB.URL}
+        branch: ${LINUX.KERNEL.SOURCE.GITHUB.BRANCH}
+        depth: 1
+        subdir: "."
+    patches:
+      - type: copy
+        content:
+          - from: "tda/lfs/configuration/config/kernel/6.2/arm64/exp/defconfig"
+            to: "arch/arm64/configs/${LINUX.KERNEL.CONFIG.ARM64}"
+    builders:
+      - type: make.kernel
+        subdirs:
+          target: "."
+          product: "out/build"
+          deploy: "out/deploy"
+        defconfig: ${LINUX.KERNEL.CONFIG.ARM64}
+        arch: "arm64"
+        compiler: "aarch64-linux-gnu-"
+        jobs: 4
+        env:
+          - ""
+        artifacts:
+          - "out/deploy/vmlinuz-6.2.0"
+          - "out/deploy/lib"
+        deps:
+          - ""
+  linux-busybox:
+    active: true
+    subdir: linux/busybox
+    sources:
+      - type: git
+        url: ${LINUX.BUSYBOX.SOURCE.GITHUB.URL}
+        branch: ${LINUX.BUSYBOX.SOURCE.GITHUB.BRANCH}
+        depth: 1
+        subdir: "."
+    patches:
+      - type: copy
+        content:
+          - from: "tda/lfs/configuration/config/busybox/1.35.0/arm64/exp/.config"
+            to: "configs/${LINUX.BUSYBOX.CONFIG.ARM64}"
+    builders:
+      - type: make.busybox
+        subdirs:
+          target: "."
+          product: "out/build"
+          deploy: "out/deploy"
+        defconfig: ${LINUX.BUSYBOX.CONFIG.ARM64}
+        arch: "arm64"
+        compiler: "aarch64-linux-gnu-"
+        jobs: 4
+        env:
+          - ""
+        artifacts:
+          - "_install"
+        deps:
+          - ""
+  linux-buildroot:
+    active: true
+    subdir: linux/buildroot
+    sources:
+      - type: git
+        url: ${LINUX.BUILDROOT.SOURCE.GITHUB.URL}
+        branch: ${LINUX.BUILDROOT.SOURCE.GITHUB.BRANCH}
+        depth: 1
+        subdir: "."
+    patches:
+      - type: copy
+        content:
+          - from: "tda/lfs/configuration/config/buildroot/2022.05.2/qemu_aarch64_virt_defconfig/exp/defconfig"
+            to: "configs/${LINUX.BUILDROOT.CONFIG.ARM64}"
+    builders:
+      - type: make.buildroot
+        subdirs:
+          target: "."
+          product: "out/build"
+          deploy: "out/deploy"
+        defconfig: ${LINUX.BUILDROOT.CONFIG.ARM64}
+        arch: "arm64"
+        compiler: "aarch64-linux-gnu-"
+        jobs: 4
+        env:
+          - ""
+        artifacts:
+          - "output/images/rootfs.cpio"
+          - "output/images/rootfs.ext2"
+        deps:
+          - ""
+  rootfs-x64:
+    active: true
+    subdir: rootfs/ubuntu/x64
+    sources:
+      - type: download
+        url: ${UBUNTU.ROOTFS.SOURCE.X64}
+        subdir: "."
+    builders:
+      - type: image.partition
+        file: rootfs.img
+        reuse: false
+        fs: ext4
+        size: 4096 MB
+        content:
+          - action: extract
+            format: ${UBUNTU.ROOTFS.NAME.EXT}
+            from: rootfs/ubuntu/x64/${UBUNTU.ROOTFS.NAME.X64}.${UBUNTU.ROOTFS.NAME.EXT}
+            to: "."
+          - action: copy
+            from: linux/kernel/out/deploy/lib/.
+            to: lib
+        artifacts:
+          - rootfs.img
+        deps:
+          - linux/kernel/out/deploy/lib
+      - type: rootfs.ubuntu
+        source: rootfs.img
+        user: ${UBUNTU.USER}
+        packages:
+          apt: *PACKAGES_APT_ALIAS
+          pip3: *PACKAGES_PIP3_ALIAS
+        artifacts:
+          - rootfs.img
+        deps:
+          - rootfs/ubuntu/x64/rootfs.img
+  
+  rootfs-aarch64:
+    active: true
+    subdir: rootfs/ubuntu/aarch64
+    sources:
+      - type: download
+        url: ${UBUNTU.ROOTFS.SOURCE.ARM64}
+        subdir: "."
+    builders:
+      - type: image.partition
+        file: rootfs.img
+        reuse: false
+        fs: ext4
+        size: 4096 MB
+        content:
+          - action: extract
+            format: ${UBUNTU.ROOTFS.NAME.EXT}
+            from: rootfs/ubuntu/aarch64/${UBUNTU.ROOTFS.NAME.ARM64}.${UBUNTU.ROOTFS.NAME.EXT}
+            to: "."
+          - action: copy
+            from: linux/kernel/out/deploy/lib/.
+            to: lib
+        artifacts:
+          - rootfs.img
+        deps:
+          - linux/kernel/out/deploy/lib
+      - type: rootfs.ubuntu
+        source: rootfs.img
+        user: ${UBUNTU.USER}
+        packages:
+          apt: *PACKAGES_APT_ALIAS
+          pip3: *PACKAGES_PIP3_ALIAS
+        artifacts:
+          - rootfs.img
+        deps:
+          - rootfs/ubuntu/aarch64/rootfs.img
+  
+  rootfs-aarch64-update:
+    active: true
+    subdir: rootfs/ubuntu/aarch64
+    builders:
+      - type: image.partition
+        file: rootfs.img
+        reuse: true
+        content:
+          - action: copy
+            from: linux/kernel/out/deploy/lib/.
+            to: lib
+        artifacts:
+          - rootfs.img
+        deps:
+          - rootfs/ubuntu/aarch64/rootfs.img
+          - linux/kernel/out/deploy/lib
+
+  android-u-boot:
+    active: true
+    subdir: android/u-boot
+    sources:
+      - type: repo
+        manifest:
+          url: ${ANDROID.UBOOT.SOURCE.GITHUB.URL}
+          branch: ${ANDROID.UBOOT.SOURCE.GITHUB.BRANCH}
+          name: "default.xml"
+          depth: 1
+        depth: 1
+        subdir: "."
+    builders:
+      - type: android.uboot
+        config: ${ANDROID.UBOOT.CONFIG.ARM64}
+        env:
+          - ""
+        artifacts:
+          - "out/deploy/${ANDROID.UBOOT.CONFIG.ARM64}/u-boot"
+          - "out/deploy/${ANDROID.UBOOT.CONFIG.ARM64}/u-boot.bin"
+        deps:
+          - ""
+  android-kernel:
+    active: true
+    subdir: android/kernel
+    sources:
+      - type: repo
+        manifest:
+          url: ${ANDROID.KERNEL.SOURCE.GITHUB.URL}
+          branch: ${ANDROID.KERNEL.SOURCE.GITHUB.BRANCH}
+          name: "default.xml"
+          depth: 1
+        depth: 1
+        subdir: "."
+    builders:
+      - type: android.kernel
+        config: ${ANDROID.KERNEL.CONFIG.ARM64}
+        env:
+          - ""
+        artifacts:
+          - "out/deploy/${ANDROID.KERNEL.CONFIG.ARM64}/boot.img"
+          - "out/deploy/${ANDROID.KERNEL.CONFIG.ARM64}/Image"
+          - "out/deploy/${ANDROID.KERNEL.CONFIG.ARM64}/initramfs.img"
+          - "out/deploy/${ANDROID.KERNEL.CONFIG.ARM64}/vmlinux"
+        deps:
+          - ""
+  android-aosp:
+    active: true
+    subdir: android/aosp
+    sources:
+      - type: repo
+        manifest:
+          url: ${ANDROID.AOSP.SOURCE.GITHUB.URL}
+          branch: ${ANDROID.AOSP.SOURCE.GITHUB.BRANCH}
+          name: "default.xml"
+          depth: 1
+        depth: 1
+        subdir: "."
+    builders:
+      - type: android.aosp
+        subdirs:
+          target: "."
+          product: "out/target/product/${ANDROID.AOSP.CONFIG.PRODUCT.ARM64.DEVICE}/"
+          deploy: "out/target/product/${ANDROID.AOSP.CONFIG.PRODUCT.ARM64.DEVICE}/"
+        config: ${ANDROID.AOSP.CONFIG.PRODUCT.ARM64.NAME}.${ANDROID.AOSP.CONFIG.PRODUCT.ARM64.VARIANT}
+        env:
+          - ""
+        artifacts:
+          - ""
+        deps:
+          - ""
+  android-ndk:
+    active: true
+    subdir: android/ndk
+    sources:
+      - type: download
+        url: ${ANDROID.NDK.SOURCE.URL}
+        subdir: "."
+    patches:
+      - type: unpack
+        file: "${ANDROID.NDK.FILE.NAME}.${ANDROID.NDK.FILE.EXT}"
+        format: ${ANDROID.NDK.FILE.EXT}
+
+  docker-image-x64:
+    active: true
+    subdir: None
+    version: ${UBUNTU.VERSION}
+    builders:
+      - type: docker.image
+        dockerfile: ${UBUNTU.DOCKER.DOCKERFILE}
+        from:
+          name: ubuntu
+          tag: ${UBUNTU.VERSION}
+        image:
+          name: builder/x64/ubuntu
+          tag: ${UBUNTU.VERSION}
+        user: ${UBUNTU.USER}
+        packages:
+          apt: ${UBUNTU.PACKAGES.APT}
+          pip3: ${UBUNTU.PACKAGES.PIP3}
+        container_name: builder_x64_ubuntu_${UBUNTU.VERSION}
+  
+  docker-image-aarch64:
+    active: true
+    subdir: None
+    builders:
+      - type: docker.image
+        dockerfile: ${UBUNTU.DOCKER.DOCKERFILE}
+        from:
+          name: arm64v8/ubuntu
+          tag: ${UBUNTU.VERSION}
+        image:
+          name: builder/arm64v8/ubuntu
+          tag: ${UBUNTU.VERSION}
+        user: ${UBUNTU.USER}
+        packages:
+          apt: ${UBUNTU.PACKAGES.APT}
+          pip3: ${UBUNTU.PACKAGES.PIP3}
+        container_name: builder_arm64v8_ubuntu_${UBUNTU.VERSION}
+  docker-container-x64:
+    active: true
+    subdir: None
+    builders:
+      - type: docker.container
+        name: builder_x64_ubuntu_${UBUNTU.VERSION}
+        disposable: true
+        image:
+          name: builder/x64/ubuntu
+          tag: ${UBUNTU.VERSION}
+        mapping:
+          volume:
+            - host: ${DIRECTORIES.ROOT}
+              guest: ${DIRECTORIES.CONTAINER.ROOT}
+            - host: ~/.ssh
+              guest: /home/${UBUNTU.USER.name}/.ssh
+            - host: ~/.gitconfig
+              guest: /home/${UBUNTU.USER.name}/.gitconfig
+            # - host: /tmp/.X11-unix
+            #   guest: /tmp/.X11-unix
+          port:
+            - host: 5000
+              guest: 5000
+        # environment:
+        #   - "DISPLAY=:1"
+        env:
+          - ""
+  
+  docker-container-aarch64:
+    active: true
+    subdir: None
+    builders:
+      - type: docker.container
+        name: builder_arm64v8_ubuntu_${UBUNTU.VERSION}
+        disposable: true
+        image:
+          name: builder/arm64v8/ubuntu
+          tag: ${UBUNTU.VERSION}
+        mapping:
+          volume:
+            - host: ${DIRECTORIES.ROOT}
+              guest: ${DIRECTORIES.CONTAINER.ROOT}
+            - host: ~/.ssh
+              guest: /home/${UBUNTU.USER.name}/.ssh
+            - host: ~/.gitconfig
+              guest: /home/${UBUNTU.USER.name}/.gitconfig
+            # - host: /tmp/.X11-unix
+            #   guest: /tmp/.X11-unix
+          port:
+            - host: 5000
+              guest: 5000
+        # environment:
+        #   - "DISPLAY=:1"
+        env:
+          - ""
+
+  tda-carpc:
+    active: true
+    subdir: tda/carpc
+    sources:
+      - type: git
+        url: "git@github.com:dterletskiy/carpc.git"
+        depth: 1
+        subdir: "."
+    builders:
+      - type: cmake.common
+        subdirs:
+          target: "."
+          product: "out/build"
+          deploy: "out/deploy"
+        graphviz: "out/doc/graph/project"
+        jobs: 8
+        variables:
+          - "ROOT_GEN_DIR:STRING=${DIRECTORIES.ROOT}/tda/carpc/out/gen"
+          - "TARGET_OS:STRING=linux"
+          - "DLT_TRACE:STRING=yes"
+          - "SYS_TRACE:STRING=yes"
+          - "MSG_TRACE:STRING=yes"
+          - "COLORED_TRACE:STRING=yes"
+          - "DLT_TRACE:STRING=yes"
+          - "MEMORY_HOOK:STRING=no"
+          - "INSTRUMENTAL:STRING=no"
+          - "USE_DEBUG:STRING=no"
+          - "USE_GPB:STRING=yes"
+          - "USE_RTTI:STRING=yes"
+        env:
+          - "CC=/usr/bin/cc"
+          - "CXX=/usr/bin/c++"
+        artifacts:
+          - ""
+        deps:
+          - ""
+  
+  tda-carpc-tutorial:
+    active: true
+    subdir: tda/carpc-tutorial
+    sources:
+      - type: git
+        url: "git@github.com:dterletskiy/carpc-tutorial.git"
+        depth: 1
+        subdir: "."
+    builders:
+      - type: cmake.common
+        subdirs:
+          target: "."
+          product: "out/build"
+          deploy: "out/deploy"
+        graphviz: "out/doc/graph/project"
+        jobs: 8
+        variables:
+          - "TARGET_OS:STRING=linux"
+          - "DLT_TRACE:STRING=yes"
+          - "SYS_TRACE:STRING=yes"
+          - "MSG_TRACE:STRING=yes"
+          - "COLORED_TRACE:STRING=yes"
+          - "DLT_TRACE:STRING=yes"
+          - "MEMORY_HOOK:STRING=no"
+          - "INSTRUMENTAL:STRING=no"
+          - "USE_DEBUG:STRING=no"
+          - "USE_GPB:STRING=yes"
+          - "USE_RTTI:STRING=yes"
+          - "CARPC_INCLUDE_DIR:STRING=${DIRECTORIES.ROOT}/tda/carpc/out/deploy/include"
+          - "CARPC_LIB_DIR:STRING=${DIRECTORIES.ROOT}/tda/carpc/out/deploy/lib"
+        env:
+          - "CC=/usr/bin/cc"
+          - "CXX=/usr/bin/c++"
+        artifacts:
+          - ""
+        deps:
+          - ""
+  
+  tda-carpc-examples:
+    active: true
+    subdir: tda/carpc-examples
+    sources:
+      - type: git
+        url: "git@github.com:dterletskiy/carpc-examples.git"
+        depth: 1
+        subdir: "."
+    builders:
+      - type: cmake.common
+        subdirs:
+          target: "."
+          product: "out/build"
+          deploy: "out/deploy"
+        graphviz: "out/doc/graph/project"
+        jobs: 8
+        variables:
+          - "TARGET_OS:STRING=linux"
+          - "DLT_TRACE:STRING=yes"
+          - "SYS_TRACE:STRING=yes"
+          - "MSG_TRACE:STRING=yes"
+          - "COLORED_TRACE:STRING=yes"
+          - "DLT_TRACE:STRING=yes"
+          - "MEMORY_HOOK:STRING=no"
+          - "INSTRUMENTAL:STRING=no"
+          - "USE_DEBUG:STRING=no"
+          - "USE_GPB:STRING=yes"
+          - "USE_RTTI:STRING=yes"
+          - "CARPC_INCLUDE_DIR:STRING=${DIRECTORIES.ROOT}/tda/carpc/out/deploy/include"
+          - "CARPC_LIB_DIR:STRING=${DIRECTORIES.ROOT}/tda/carpc/out/deploy/lib"
+        env:
+          - "CC=/usr/bin/cc"
+          - "CXX=/usr/bin/c++"
+        artifacts:
+          - ""
+        deps:
+          - ""
+  
+  tda-common:
+    active: true
+    subdir: tda
+    sources:
+      - type: git
+        url: "git@github.com:dterletskiy/linux_from_scratch.git"
+        depth: 1
+        subdir: lfs
+      - type: git
+        url: "git@github.com:dterletskiy/umbs.git"
+        depth: 1
+        subdir: umbs
+      - type: git
+        url: "git@github.com:dterletskiy/python_fw.git"
+        depth: 1
+        subdir: pfw

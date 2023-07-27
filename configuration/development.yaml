@@ -3,32 +3,40 @@ version: "1.1.0"
 umbs_min_version: "0.1"
 
 variables:
-  include: "variables/directories.yaml"
-  include: "variables/linux.yaml"
-  include: "variables/android.yaml"
-  include: "variables/ubuntu.yaml"
+  include: "development/directories.yaml"
+  include: "development/ubuntu.yaml"
 
-projects:
-  include: "projects/tda/common.yaml"
-  include: "projects/tda/carpc.yaml"
+  LINUX:
+    include: "development/linux/xen/variables.yaml"
+    include: "development/linux/u-boot/variables.yaml"
+    include: "development/linux/kernel/variables.yaml"
+    include: "development/linux/busybox/variables.yaml"
+    include: "development/linux/buildroot/variables.yaml"
+    include: "development/linux/rootfs/variables.yaml"
 
-  include: "projects/linux/xen.yaml"
-  include: "projects/linux/u-boot.yaml"
-  include: "projects/linux/busybox.yaml"
-  include: "projects/linux/buildroot.yaml"
+  ANDROID:
+    include: "development/android/u-boot/variables.yaml"
+    include: "development/android/kernel/variables.yaml"
+    include: "development/android/aosp/variables.yaml"
+    include: "development/android/ndk/variables.yaml"
 
-  include: "projects/docker/image/aarch64.yaml"
-  include: "projects/docker/image/x64.yaml"
+  TDA:
+    include: "development/tda/variables.yaml"
 
-  include: "projects/docker/container/aarch64.yaml"
-  include: "projects/docker/container/x64.yaml"
+components:
+  include: "development/linux/xen/components.yaml"
+  include: "development/linux/u-boot/components.yaml"
+  include: "development/linux/kernel/components.yaml"
+  include: "development/linux/busybox/components.yaml"
+  include: "development/linux/buildroot/components.yaml"
+  include: "development/linux/rootfs/components.yaml"
 
-  include: "projects/linux/rootfs/aarch64.yaml"
-  include: "projects/linux/rootfs/x64.yaml"
+  include: "development/android/u-boot/components.yaml"
+  include: "development/android/kernel/components.yaml"
+  include: "development/android/aosp/components.yaml"
+  include: "development/android/ndk/components.yaml"
 
-  include: "projects/android/u-boot.yaml"
-  include: "projects/android/kernel.yaml"
-  include: "projects/android/aosp.yaml"
-  include: "projects/android/ndk.yaml"
+  include: "development/docker/image/components.yaml"
+  include: "development/docker/container/components.yaml"
 
-  include: "projects/yocto/poky.yaml"
+  include: "development/tda/components.yaml"

@@ -1,0 +1,10 @@
+KERNEL:
+  SOURCE:
+    GITHUB:
+      URL: "https://github.com/torvalds/linux.git"
+      BRANCH: "v6.2"
+  CONFIG:
+    ARM: vexpress_defconfig
+    ARM64: umbs_defconfig
+    X86: x86_64_defconfig
+    X86_64: x86_64_defconfig

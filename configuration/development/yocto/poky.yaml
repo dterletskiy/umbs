@@ -1,0 +1,26 @@
+yocto-poky:
+  active: true
+  subdir: "yocto"
+  sources:
+    - type: git
+      url: "git://git.yoctoproject.org/poky"
+      branch: "mickledore"
+      depth: 1
+      subdir: "poky"
+      submodules: false
+  builders:
+    - type: yocto.common
+      subdirs:
+        target: "poky"
+        product: "build"
+        deploy: "."
+      jobs: 8
+      target: "core-image-minimal"
+      layers:
+        - ""
+      env:
+        - ""
+      artifacts:
+        - ""
+      deps:
+        - ""

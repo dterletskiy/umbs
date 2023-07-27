@@ -4,13 +4,13 @@
 # 
 # CONFIG=./configuration.cfg
 # PFW=/mnt/dev/repos/github.com/dterletskiy/python_fw
-# RPOJECT="u-boot"
+# COMPONENT="u-boot"
 # ACTION=build
 # 
 # 
 # 
-# ./main.py --config=./${CONFIG} --include=${PFW} --project=${RPOJECT} --action=${ACTION}
-# ./main.py --config=./${CONFIG} --project=${RPOJECT} --action=${ACTION}
+# ./main.py --config=./${CONFIG} --include=${PFW} --component=${COMPONENT} --action=${ACTION}
+# ./main.py --config=./${CONFIG} --component=${COMPONENT} --action=${ACTION}
 # 
 # In case if variable "INCLUDE" defined with path to "pfw" "--include" option could be omitted.
 # If "INCLUDE" variable defined several times in configuration file all mentioned values will be used.

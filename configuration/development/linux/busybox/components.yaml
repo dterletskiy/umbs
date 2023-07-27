@@ -1,0 +1,30 @@
+linux-busybox:
+  active: true
+  subdir: linux/busybox
+  sources:
+    - type: git
+      url: ${LINUX.BUSYBOX.SOURCE.GITHUB.URL}
+      branch: ${LINUX.BUSYBOX.SOURCE.GITHUB.BRANCH}
+      depth: 1
+      subdir: "."
+  patches:
+    - type: copy
+      content:
+        - from: "tda/lfs/configuration/config/busybox/1.35.0/arm64/exp/.config"
+          to: "configs/${LINUX.BUSYBOX.CONFIG.ARM64}"
+  builders:
+    - type: make.busybox
+      subdirs:
+        target: "."
+        product: "out/build"
+        deploy: "out/deploy"
+      defconfig: ${LINUX.BUSYBOX.CONFIG.ARM64}
+      arch: "arm64"
+      compiler: "aarch64-linux-gnu-"
+      jobs: 4
+      env:
+        - ""
+      artifacts:
+        - "_install"
+      deps:
+        - ""

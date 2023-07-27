@@ -1,0 +1,7 @@
+KERNEL:
+  SOURCE:
+    GITHUB:
+      URL: "https://github.com/dterletskiy/aosp_manifest.git"
+      BRANCH: "kernel/manifest/common-android14-6.1-dev"
+  CONFIG:
+    ARM64: "//common-modules/virtual-device:virtual_device_aarch64"

@@ -17,7 +17,7 @@ class Builder( umbs.builders.base.Builder ):
    def __init__( self, config, **kwargs ):
       super( ).__init__( config, **kwargs )
 
-      self.__graphviz_dir = os.path.join( self.__project_dir, self.__config["graphviz"] ) if "graphviz" in self.__config else None
+      self.__graphviz_dir = os.path.join( self.__component_dir, self.__config["graphviz"] ) if "graphviz" in self.__config else None
       self.__variables = [ variable for variable in self.__config.get( "variables", [ ] ) ]
    # def __init__
 

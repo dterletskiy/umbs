@@ -1,0 +1,57 @@
+  image-boot:
+    active: true
+    subdir: images/boot
+    patches:
+      - type: mkscr
+        source: "tda/lfs/configuration/scripts/boot.scr/main.scr"
+        out: "boot.scr"
+        artifacts:
+          - "boot.scr"
+      - type: mkimage
+        exe: "loader/u-boot/tools/mkimage"
+        sources:
+          - "linux/kernel/arch/arm64/boot/Image"
+        out: "linux/kernel/kernel.uimg"
+        arch: "arm64"
+        os: "linux"
+        img_type: "kernel"
+        name: "kernel"
+        load_addr: 0x40000000
+        compression: "none"
+        artifacts:
+          - "linux/kernel/kernel.uimg"
+        deps:
+          - "loader/u-boot/tools/mkimage"
+          - "linux/kernel/arch/arm64/boot/Image"
+    builders:
+      - type: image.partition
+        file: "boot.img"
+        reuse: true
+        fs: ext4
+        size: 256 MB
+        content:
+          - from: "loader/u-boot/u-boot.bin"
+            to: "linux/boot/u-boot.bin"
+          - from: "linux/kernel/arch/arm64/boot/Image"
+            to: "linux/kernel/kernel"
+        artifacts:
+          - "boot.img"
+        deps:
+          - ""
+
+  image-main:
+    active: true
+    subdir: images/main
+    builders:
+      - type: image.drive
+        file: "main.img"
+        partitions:
+          - label: boot
+            file: "images/boot/boot.img"            
+          - label: data
+            size: 1024 MB
+            fs: ext4
+        artifacts:
+          - "main.img"
+        deps:
+          - ""

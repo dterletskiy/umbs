@@ -24,7 +24,7 @@ class Tool( umbs.tools.base.Tool ):
             raise umbs.base.YamlFormatError( f"Filed '{key}' must be defined in tool" )
 
 
-      self.__file = os.path.join( self.__project_dir, self.__config[ "file" ] )
+      self.__file = os.path.join( self.__component_dir, self.__config[ "file" ] )
       self.__format = self.__config.get( "format", None )
    # def __init__
 

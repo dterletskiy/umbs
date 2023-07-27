@@ -1,0 +1,7 @@
+UBOOT:
+  SOURCE:
+    GITHUB:
+      URL: "https://github.com/dterletskiy/aosp_manifest.git"
+      BRANCH: "u-boot/manifest/u-boot-mainline-9671786"
+  CONFIG:
+    ARM64: "//u-boot:qemu_aarch64"
