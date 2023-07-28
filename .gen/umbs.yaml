@@ -362,16 +362,11 @@ components:
     active: true
     subdir: linux/u-boot
     sources:
-      # - type: git
-      #   url: ${LINUX.UBOOT.SOURCE.GITHUB.URL}
-      #   branch: ${LINUX.UBOOT.SOURCE.GITHUB.BRANCH}
-      #   depth: 1
-      #   subdir: "."
-      - type: copy
-        content:
-          - from: "tda/lfs/configuration/config/u-boot/v2022.07/qemu_arm64_defconfig/exp/defconfig"
-            to: "configs/${LINUX.UBOOT.CONFIG.ARM64}"
-    patches:
+      - type: git
+        url: ${LINUX.UBOOT.SOURCE.GITHUB.URL}
+        branch: ${LINUX.UBOOT.SOURCE.GITHUB.BRANCH}
+        depth: 1
+        subdir: "."
       - type: copy
         content:
           - from: "tda/lfs/configuration/config/u-boot/v2022.07/qemu_arm64_defconfig/exp/defconfig"
@@ -408,7 +403,6 @@ components:
         branch: ${LINUX.KERNEL.SOURCE.GITHUB.BRANCH}
         depth: 1
         subdir: "."
-    patches:
       - type: copy
         content:
           - from: "tda/lfs/configuration/config/kernel/6.2/arm64/exp/defconfig"
@@ -439,7 +433,6 @@ components:
         branch: ${LINUX.BUSYBOX.SOURCE.GITHUB.BRANCH}
         depth: 1
         subdir: "."
-    patches:
       - type: copy
         content:
           - from: "tda/lfs/configuration/config/busybox/1.35.0/arm64/exp/.config"
@@ -469,7 +462,6 @@ components:
         branch: ${LINUX.BUILDROOT.SOURCE.GITHUB.BRANCH}
         depth: 1
         subdir: "."
-    patches:
       - type: copy
         content:
           - from: "tda/lfs/configuration/config/buildroot/2022.05.2/qemu_aarch64_virt_defconfig/exp/defconfig"
@@ -507,15 +499,15 @@ components:
         content:
           - action: extract
             format: ${UBUNTU.ROOTFS.NAME.EXT}
-            from: rootfs/ubuntu/x64/${UBUNTU.ROOTFS.NAME.X64}.${UBUNTU.ROOTFS.NAME.EXT}
+            from: "rootfs/ubuntu/x64/${UBUNTU.ROOTFS.NAME.X64}.${UBUNTU.ROOTFS.NAME.EXT}"
             to: "."
           - action: copy
-            from: linux/kernel/out/deploy/lib/.
-            to: lib
+            from: "linux/kernel/out/deploy/lib/."
+            to: "lib"
         artifacts:
           - rootfs.img
         deps:
-          - linux/kernel/out/deploy/lib
+          - "linux/kernel/out/deploy/lib"
       - type: rootfs.ubuntu
         source: rootfs.img
         user: ${UBUNTU.USER}
@@ -525,7 +517,7 @@ components:
         artifacts:
           - rootfs.img
         deps:
-          - rootfs/ubuntu/x64/rootfs.img
+          - "rootfs/ubuntu/x64/rootfs.img"
   
   rootfs-aarch64:
     active: true
@@ -543,15 +535,15 @@ components:
         content:
           - action: extract
             format: ${UBUNTU.ROOTFS.NAME.EXT}
-            from: rootfs/ubuntu/aarch64/${UBUNTU.ROOTFS.NAME.ARM64}.${UBUNTU.ROOTFS.NAME.EXT}
+            from: "rootfs/ubuntu/aarch64/${UBUNTU.ROOTFS.NAME.ARM64}.${UBUNTU.ROOTFS.NAME.EXT}"
             to: "."
           - action: copy
-            from: linux/kernel/out/deploy/lib/.
-            to: lib
+            from: "linux/kernel/out/deploy/lib/."
+            to: "lib"
         artifacts:
           - rootfs.img
         deps:
-          - linux/kernel/out/deploy/lib
+          - "linux/kernel/out/deploy/lib"
       - type: rootfs.ubuntu
         source: rootfs.img
         user: ${UBUNTU.USER}
@@ -561,7 +553,7 @@ components:
         artifacts:
           - rootfs.img
         deps:
-          - rootfs/ubuntu/aarch64/rootfs.img
+          - "rootfs/ubuntu/aarch64/rootfs.img"
   
   rootfs-aarch64-update:
     active: true
