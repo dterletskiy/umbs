@@ -48,3 +48,28 @@ class Builder( umbs.builders.base.Builder ):
       return self.execute( cmd )
    # def __execute
 # class Builder
+
+
+
+
+
+# ROOT_DIR="/mnt/host/yocto/yoctoproject/"
+# BUILD_DIR="${ROOT_DIR}/build/"
+# CURRENT_DIR=${PWD}
+
+# POKY_DIR="${ROOT_DIR}/poky/"
+# POKY_URL="git://git.yoctoproject.org/poky"
+# POKY_BRANCH="mickledore"
+# POKY_DEPTH=1
+
+# TARGET="core-image-minimal"
+# TASK="do_compile"
+
+
+# cd ${ROOT_DIR}
+# git clone --branch ${POKY_BRANCH} --depth ${POKY_DEPTH} ${POKY_URL} ${POKY_DIR}
+
+# source "${POKY_DIR}/oe-init-build-env" ${BUILD_DIR}
+# # bitbake-layers create-layer ${TDA_LAYER_DIR}
+# bitbake-layers add-layer ${TDA_LAYER_DIR}
+# bitbake --verbose ${TARGET}
