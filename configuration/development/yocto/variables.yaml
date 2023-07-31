@@ -1,0 +1,8 @@
+POKY_MICKLEDORE: &POKY_MICKLEDORE_ALIAS
+  SOURCE:
+    URL: "git://git.yoctoproject.org/poky"
+    BRANCH: "mickledore"
+  CONFIG:
+    TARGET: "core-image-minimal"
+
+POKY: *POKY_MICKLEDORE_ALIAS

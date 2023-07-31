@@ -1,7 +1,15 @@
-KERNEL:
+KERNEL_ANDROID_14_6_1_LTS: &KERNEL_ANDROID_14_6_1_LTS_ALIAS
   SOURCE:
-    GITHUB:
-      URL: "https://github.com/dterletskiy/aosp_manifest.git"
-      BRANCH: "kernel/manifest/common-android14-6.1-dev"
+    URL: "https://android.googlesource.com/kernel/manifest"
+    BRANCH: "common-android14-6.1-lts"
   CONFIG:
     ARM64: "//common-modules/virtual-device:virtual_device_aarch64"
+
+KERNEL_14_6_1_TDA:
+  SOURCE:
+    URL: "https://github.com/dterletskiy/aosp_manifest.git"
+    BRANCH: "kernel/manifest/common-android14-6.1"
+  CONFIG:
+    ARM64: "//common-modules/virtual-device:virtual_device_aarch64"
+
+KERNEL: *KERNEL_ANDROID_14_6_1_LTS_ALIAS

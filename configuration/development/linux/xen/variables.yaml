@@ -1,4 +1,15 @@
-XEN:
+XEN_MASTER: &XEN_MASTER_ALIAS
+  SOURCE:
+    GITHUB:
+      URL: "https://github.com/xen-project/xen.git"
+      BRANCH: "master"
+  CONFIG:
+    ARM: defconfig
+    ARM64: defconfig
+    X86: qemu-defconfig
+    X86_64: qemu-defconfig
+
+XEN_4_16_2:
   SOURCE:
     GITHUB:
       URL: "https://github.com/xen-project/xen.git"
@@ -8,3 +19,5 @@ XEN:
     ARM64: defconfig
     X86: qemu-defconfig
     X86_64: qemu-defconfig
+
+XEN: *XEN_MASTER_ALIAS

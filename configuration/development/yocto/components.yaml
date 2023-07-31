@@ -3,8 +3,8 @@ yocto-poky:
   subdir: "yocto"
   sources:
     - type: git
-      url: "git://git.yoctoproject.org/poky"
-      branch: "mickledore"
+      url: ${YOCTO.POKY.SOURCE.URL}
+      branch: ${YOCTO.POKY.SOURCE.BRANCH}
       depth: 1
       subdir: "poky"
       submodules: false
@@ -15,7 +15,7 @@ yocto-poky:
         product: "build"
         deploy: "."
       jobs: 8
-      target: "core-image-minimal"
+      target: ${YOCTO.POKY.CONFIG.TARGET}
       layers:
         - ""
       env:

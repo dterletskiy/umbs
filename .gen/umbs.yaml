@@ -241,7 +241,18 @@ variables:
         - antlr4-python3-runtime
 
   LINUX:
-    XEN:
+    XEN_MASTER: &XEN_MASTER_ALIAS
+      SOURCE:
+        GITHUB:
+          URL: "https://github.com/xen-project/xen.git"
+          BRANCH: "master"
+      CONFIG:
+        ARM: defconfig
+        ARM64: defconfig
+        X86: qemu-defconfig
+        X86_64: qemu-defconfig
+    
+    XEN_4_16_2:
       SOURCE:
         GITHUB:
           URL: "https://github.com/xen-project/xen.git"
@@ -251,7 +262,20 @@ variables:
         ARM64: defconfig
         X86: qemu-defconfig
         X86_64: qemu-defconfig
-    UBOOT:
+    
+    XEN: *XEN_MASTER_ALIAS
+    UBOOT_MASTER: &UBOOT_MASTER_ALIAS
+      SOURCE:
+        GITHUB:
+          URL: "https://github.com/u-boot/u-boot.git"
+          BRANCH: "master"
+      CONFIG:
+        ARM: umbs_qemu_arm_defconfig
+        ARM64: umbs_qemu_arm64_defconfig
+        X86: umbs_qemu-x86_defconfig
+        X86_64: umbs_qemu-x86_64_defconfig
+    
+    UBOOT_2022_07:
       SOURCE:
         GITHUB:
           URL: "https://github.com/u-boot/u-boot.git"
@@ -261,7 +285,20 @@ variables:
         ARM64: umbs_qemu_arm64_defconfig
         X86: umbs_qemu-x86_defconfig
         X86_64: umbs_qemu-x86_64_defconfig
-    KERNEL:
+    
+    UBOOT: *UBOOT_MASTER_ALIAS
+    KERNEL_MASTER: &KERNEL_MASTER_ALIAS
+      SOURCE:
+        GITHUB:
+          URL: "https://github.com/torvalds/linux.git"
+          BRANCH: "master"
+      CONFIG:
+        ARM: vexpress_defconfig
+        ARM64: umbs_defconfig
+        X86: x86_64_defconfig
+        X86_64: x86_64_defconfig
+    
+    KERNEL_6_2:
       SOURCE:
         GITHUB:
           URL: "https://github.com/torvalds/linux.git"
@@ -271,7 +308,20 @@ variables:
         ARM64: umbs_defconfig
         X86: x86_64_defconfig
         X86_64: x86_64_defconfig
-    BUSYBOX:
+    
+    KERNEL: *KERNEL_MASTER_ALIAS
+    BUSYBOX_MASTER: &BUSYBOX_MASTER_ALIAS
+      SOURCE:
+        GITHUB:
+          URL: "https://github.com/mirror/busybox.git"
+          BRANCH: "master"
+      CONFIG:
+        ARM: umbs_defconfig
+        ARM64: umbs_defconfig
+        X86: umbs_defconfig
+        X86_64: umbs_defconfig
+    
+    BUSYBOX_1_36_0:
       SOURCE:
         GITHUB:
           URL: "https://github.com/mirror/busybox.git"
@@ -281,7 +331,20 @@ variables:
         ARM64: umbs_defconfig
         X86: umbs_defconfig
         X86_64: umbs_defconfig
-    BUILDROOT:
+    
+    BUSYBOX: *BUSYBOX_MASTER_ALIAS
+    BUILDROOT_MASTER: &BUILDROOT_MASTER_ALIAS
+      SOURCE:
+        GITHUB:
+          URL: "https://github.com/buildroot/buildroot.git"
+          BRANCH: "master"
+      CONFIG:
+        ARM: umbs_qemu_arm_vexpress_defconfig
+        ARM64: umbs_qemu_aarch64_virt_defconfig
+        X86: umbs_qemu_x86_defconfig
+        X86_64: umbs_qemu_x86_64_defconfig
+    
+    BUILDROOT_2023_02:
       SOURCE:
         GITHUB:
           URL: "https://github.com/buildroot/buildroot.git"
@@ -291,39 +354,88 @@ variables:
         ARM64: umbs_qemu_aarch64_virt_defconfig
         X86: umbs_qemu_x86_defconfig
         X86_64: umbs_qemu_x86_64_defconfig
+    
+    BUILDROOT: *BUILDROOT_MASTER_ALIAS
 
   ANDROID:
-    UBOOT:
+    UBOOT_MAINLINE: &ANDROID_UBOOT_MAINLINE_ALIAS
       SOURCE:
-        GITHUB:
-          URL: "https://github.com/dterletskiy/aosp_manifest.git"
-          BRANCH: "u-boot/manifest/u-boot-mainline-9671786"
+        URL: "https://android.googlesource.com/kernel/manifest"
+        BRANCH: "u-boot-mainline"
       CONFIG:
         ARM64: "//u-boot:qemu_aarch64"
-    KERNEL:
+    
+    UBOOT_ANDROID_13: &ANDROID_UBOOT_ANDROID_13_ALIAS
       SOURCE:
-        GITHUB:
-          URL: "https://github.com/dterletskiy/aosp_manifest.git"
-          BRANCH: "kernel/manifest/common-android14-6.1-dev"
+        URL: "https://android.googlesource.com/kernel/manifest"
+        BRANCH: "u-boot-android13"
+      CONFIG:
+        ARM64: "//u-boot:qemu_aarch64"
+    
+    UBOOT_MAINLINE_9671786_TDA:
+      SOURCE:
+        URL: "https://github.com/dterletskiy/aosp_manifest.git"
+        BRANCH: "u-boot/manifest/u-boot-mainline-9671786"
+      CONFIG:
+        ARM64: "//u-boot:qemu_aarch64"
+    
+    UBOOT: *ANDROID_UBOOT_MAINLINE_ALIAS
+    KERNEL_ANDROID_14_6_1_LTS: &KERNEL_ANDROID_14_6_1_LTS_ALIAS
+      SOURCE:
+        URL: "https://android.googlesource.com/kernel/manifest"
+        BRANCH: "common-android14-6.1-lts"
       CONFIG:
         ARM64: "//common-modules/virtual-device:virtual_device_aarch64"
-    AOSP:
+    
+    KERNEL_14_6_1_TDA:
       SOURCE:
-        GITHUB:
-          URL: "https://github.com/dterletskiy/aosp_manifest.git"
-          BRANCH: "platform/manifest/android-12.1.0_r8-dev"
+        URL: "https://github.com/dterletskiy/aosp_manifest.git"
+        BRANCH: "kernel/manifest/common-android14-6.1"
+      CONFIG:
+        ARM64: "//common-modules/virtual-device:virtual_device_aarch64"
+    
+    KERNEL: *KERNEL_ANDROID_14_6_1_LTS_ALIAS
+    AOSP_12_1_0_R27: &ANDROID_AOSP_12_1_0_R27_ALIAS
+      SOURCE:
+        URL: "https://android.googlesource.com/platform/manifest"
+        BRANCH: "platform/manifest/android-12.1.0_r27"
       CONFIG:
         PRODUCT:
           ARM64:
             NAME: "aosp_trout_arm64"
             DEVICE: "trout_arm64"
             VARIANT: "userdebug"
-    NDK:
+    
+    AOSP_12_1_0_R8_TDA:
+      SOURCE:
+        URL: "https://github.com/dterletskiy/aosp_manifest.git"
+        BRANCH: "platform/manifest/android-12.1.0_r8"
+      CONFIG:
+        PRODUCT:
+          ARM64:
+            NAME: "aosp_trout_arm64"
+            DEVICE: "trout_arm64"
+            VARIANT: "userdebug"
+    
+    AOSP: *ANDROID_AOSP_12_1_0_R27_ALIAS
+    NDK_R25C: &ANDROID_NDK_R25C_ALIAS
       FILE:
         NAME: "android-ndk-r25c-linux"
         EXT: "zip"
       SOURCE:
         URL: "https://dl.google.com/android/repository/${ANDROID.NDK.FILE.NAME}.${ANDROID.NDK.FILE.EXT}"
+    
+    NDK: *ANDROID_NDK_R25C_ALIAS
+
+  YOCTO:
+    POKY_MICKLEDORE: &POKY_MICKLEDORE_ALIAS
+      SOURCE:
+        URL: "git://git.yoctoproject.org/poky"
+        BRANCH: "mickledore"
+      CONFIG:
+        TARGET: "core-image-minimal"
+    
+    POKY: *POKY_MICKLEDORE_ALIAS
 
   TDA:
 
@@ -505,9 +617,9 @@ components:
             from: "linux/kernel/out/deploy/lib/."
             to: "lib"
         artifacts:
-          - rootfs.img
+          - "rootfs.img"
         deps:
-          - "linux/kernel/out/deploy/lib"
+          - "linux-kernel"
       - type: rootfs.ubuntu
         source: rootfs.img
         user: ${UBUNTU.USER}
@@ -517,7 +629,7 @@ components:
         artifacts:
           - rootfs.img
         deps:
-          - "rootfs/ubuntu/x64/rootfs.img"
+          - ""
   
   rootfs-aarch64:
     active: true
@@ -541,9 +653,9 @@ components:
             from: "linux/kernel/out/deploy/lib/."
             to: "lib"
         artifacts:
-          - rootfs.img
+          - "rootfs.img"
         deps:
-          - "linux/kernel/out/deploy/lib"
+          - "linux-kernel"
       - type: rootfs.ubuntu
         source: rootfs.img
         user: ${UBUNTU.USER}
@@ -553,7 +665,7 @@ components:
         artifacts:
           - rootfs.img
         deps:
-          - "rootfs/ubuntu/aarch64/rootfs.img"
+          - ""
   
   rootfs-aarch64-update:
     active: true
@@ -578,8 +690,8 @@ components:
     sources:
       - type: repo
         manifest:
-          url: ${ANDROID.UBOOT.SOURCE.GITHUB.URL}
-          branch: ${ANDROID.UBOOT.SOURCE.GITHUB.BRANCH}
+          url: ${ANDROID.UBOOT.SOURCE.URL}
+          branch: ${ANDROID.UBOOT.SOURCE.BRANCH}
           name: "default.xml"
           depth: 1
         depth: 1
@@ -600,8 +712,8 @@ components:
     sources:
       - type: repo
         manifest:
-          url: ${ANDROID.KERNEL.SOURCE.GITHUB.URL}
-          branch: ${ANDROID.KERNEL.SOURCE.GITHUB.BRANCH}
+          url: ${ANDROID.KERNEL.SOURCE.URL}
+          branch: ${ANDROID.KERNEL.SOURCE.BRANCH}
           name: "default.xml"
           depth: 1
         depth: 1
@@ -624,8 +736,8 @@ components:
     sources:
       - type: repo
         manifest:
-          url: ${ANDROID.AOSP.SOURCE.GITHUB.URL}
-          branch: ${ANDROID.AOSP.SOURCE.GITHUB.BRANCH}
+          url: ${ANDROID.AOSP.SOURCE.URL}
+          branch: ${ANDROID.AOSP.SOURCE.BRANCH}
           name: "default.xml"
           depth: 1
         depth: 1
@@ -650,7 +762,6 @@ components:
       - type: download
         url: ${ANDROID.NDK.SOURCE.URL}
         subdir: "."
-    patches:
       - type: unpack
         file: "${ANDROID.NDK.FILE.NAME}.${ANDROID.NDK.FILE.EXT}"
         format: ${ANDROID.NDK.FILE.EXT}
@@ -745,6 +856,33 @@ components:
         # environment:
         #   - "DISPLAY=:1"
         env:
+          - ""
+
+  yocto-poky:
+    active: true
+    subdir: "yocto"
+    sources:
+      - type: git
+        url: ${YOCTO.POKY.SOURCE.URL}
+        branch: ${YOCTO.POKY.SOURCE.BRANCH}
+        depth: 1
+        subdir: "poky"
+        submodules: false
+    builders:
+      - type: yocto.common
+        subdirs:
+          target: "poky"
+          product: "build"
+          deploy: "."
+        jobs: 8
+        target: ${YOCTO.POKY.CONFIG.TARGET}
+        layers:
+          - ""
+        env:
+          - ""
+        artifacts:
+          - ""
+        deps:
           - ""
 
   tda-carpc:

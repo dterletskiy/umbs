@@ -1,4 +1,15 @@
-UBOOT:
+UBOOT_MASTER: &UBOOT_MASTER_ALIAS
+  SOURCE:
+    GITHUB:
+      URL: "https://github.com/u-boot/u-boot.git"
+      BRANCH: "master"
+  CONFIG:
+    ARM: umbs_qemu_arm_defconfig
+    ARM64: umbs_qemu_arm64_defconfig
+    X86: umbs_qemu-x86_defconfig
+    X86_64: umbs_qemu-x86_64_defconfig
+
+UBOOT_2022_07:
   SOURCE:
     GITHUB:
       URL: "https://github.com/u-boot/u-boot.git"
@@ -8,3 +19,5 @@ UBOOT:
     ARM64: umbs_qemu_arm64_defconfig
     X86: umbs_qemu-x86_defconfig
     X86_64: umbs_qemu-x86_64_defconfig
+
+UBOOT: *UBOOT_MASTER_ALIAS

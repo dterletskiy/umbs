@@ -4,8 +4,8 @@ android-aosp:
   sources:
     - type: repo
       manifest:
-        url: ${ANDROID.AOSP.SOURCE.GITHUB.URL}
-        branch: ${ANDROID.AOSP.SOURCE.GITHUB.BRANCH}
+        url: ${ANDROID.AOSP.SOURCE.URL}
+        branch: ${ANDROID.AOSP.SOURCE.BRANCH}
         name: "default.xml"
         depth: 1
       depth: 1

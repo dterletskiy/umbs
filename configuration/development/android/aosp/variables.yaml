@@ -1,11 +1,23 @@
-AOSP:
+AOSP_12_1_0_R27: &ANDROID_AOSP_12_1_0_R27_ALIAS
   SOURCE:
-    GITHUB:
-      URL: "https://github.com/dterletskiy/aosp_manifest.git"
-      BRANCH: "platform/manifest/android-12.1.0_r8-dev"
+    URL: "https://android.googlesource.com/platform/manifest"
+    BRANCH: "platform/manifest/android-12.1.0_r27"
   CONFIG:
     PRODUCT:
       ARM64:
         NAME: "aosp_trout_arm64"
         DEVICE: "trout_arm64"
         VARIANT: "userdebug"
+
+AOSP_12_1_0_R8_TDA:
+  SOURCE:
+    URL: "https://github.com/dterletskiy/aosp_manifest.git"
+    BRANCH: "platform/manifest/android-12.1.0_r8"
+  CONFIG:
+    PRODUCT:
+      ARM64:
+        NAME: "aosp_trout_arm64"
+        DEVICE: "trout_arm64"
+        VARIANT: "userdebug"
+
+AOSP: *ANDROID_AOSP_12_1_0_R27_ALIAS

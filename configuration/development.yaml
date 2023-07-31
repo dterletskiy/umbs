@@ -20,6 +20,9 @@ variables:
     include: "development/android/aosp/variables.yaml"
     include: "development/android/ndk/variables.yaml"
 
+  YOCTO:
+    include: "development/yocto/variables.yaml"
+
   TDA:
     include: "development/tda/variables.yaml"
 
@@ -38,5 +41,7 @@ components:
 
   include: "development/docker/image/components.yaml"
   include: "development/docker/container/components.yaml"
+
+  include: "development/yocto/components.yaml"
 
   include: "development/tda/components.yaml"

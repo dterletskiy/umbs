@@ -4,8 +4,8 @@ android-u-boot:
   sources:
     - type: repo
       manifest:
-        url: ${ANDROID.UBOOT.SOURCE.GITHUB.URL}
-        branch: ${ANDROID.UBOOT.SOURCE.GITHUB.BRANCH}
+        url: ${ANDROID.UBOOT.SOURCE.URL}
+        branch: ${ANDROID.UBOOT.SOURCE.BRANCH}
         name: "default.xml"
         depth: 1
       depth: 1

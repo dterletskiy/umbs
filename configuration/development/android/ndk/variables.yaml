@@ -1,6 +1,8 @@
-NDK:
+NDK_R25C: &ANDROID_NDK_R25C_ALIAS
   FILE:
     NAME: "android-ndk-r25c-linux"
     EXT: "zip"
   SOURCE:
     URL: "https://dl.google.com/android/repository/${ANDROID.NDK.FILE.NAME}.${ANDROID.NDK.FILE.EXT}"
+
+NDK: *ANDROID_NDK_R25C_ALIAS

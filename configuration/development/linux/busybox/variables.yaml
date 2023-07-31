@@ -1,4 +1,15 @@
-BUSYBOX:
+BUSYBOX_MASTER: &BUSYBOX_MASTER_ALIAS
+  SOURCE:
+    GITHUB:
+      URL: "https://github.com/mirror/busybox.git"
+      BRANCH: "master"
+  CONFIG:
+    ARM: umbs_defconfig
+    ARM64: umbs_defconfig
+    X86: umbs_defconfig
+    X86_64: umbs_defconfig
+
+BUSYBOX_1_36_0:
   SOURCE:
     GITHUB:
       URL: "https://github.com/mirror/busybox.git"
@@ -8,3 +19,5 @@ BUSYBOX:
     ARM64: umbs_defconfig
     X86: umbs_defconfig
     X86_64: umbs_defconfig
+
+BUSYBOX: *BUSYBOX_MASTER_ALIAS

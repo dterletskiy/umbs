@@ -4,8 +4,8 @@ android-kernel:
   sources:
     - type: repo
       manifest:
-        url: ${ANDROID.KERNEL.SOURCE.GITHUB.URL}
-        branch: ${ANDROID.KERNEL.SOURCE.GITHUB.BRANCH}
+        url: ${ANDROID.KERNEL.SOURCE.URL}
+        branch: ${ANDROID.KERNEL.SOURCE.BRANCH}
         name: "default.xml"
         depth: 1
       depth: 1

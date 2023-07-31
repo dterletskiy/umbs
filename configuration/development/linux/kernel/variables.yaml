@@ -1,4 +1,15 @@
-KERNEL:
+KERNEL_MASTER: &KERNEL_MASTER_ALIAS
+  SOURCE:
+    GITHUB:
+      URL: "https://github.com/torvalds/linux.git"
+      BRANCH: "master"
+  CONFIG:
+    ARM: vexpress_defconfig
+    ARM64: umbs_defconfig
+    X86: x86_64_defconfig
+    X86_64: x86_64_defconfig
+
+KERNEL_6_2:
   SOURCE:
     GITHUB:
       URL: "https://github.com/torvalds/linux.git"
@@ -8,3 +19,5 @@ KERNEL:
     ARM64: umbs_defconfig
     X86: x86_64_defconfig
     X86_64: x86_64_defconfig
+
+KERNEL: *KERNEL_MASTER_ALIAS

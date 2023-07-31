@@ -1,4 +1,15 @@
-BUILDROOT:
+BUILDROOT_MASTER: &BUILDROOT_MASTER_ALIAS
+  SOURCE:
+    GITHUB:
+      URL: "https://github.com/buildroot/buildroot.git"
+      BRANCH: "master"
+  CONFIG:
+    ARM: umbs_qemu_arm_vexpress_defconfig
+    ARM64: umbs_qemu_aarch64_virt_defconfig
+    X86: umbs_qemu_x86_defconfig
+    X86_64: umbs_qemu_x86_64_defconfig
+
+BUILDROOT_2023_02:
   SOURCE:
     GITHUB:
       URL: "https://github.com/buildroot/buildroot.git"
@@ -8,3 +19,5 @@ BUILDROOT:
     ARM64: umbs_qemu_aarch64_virt_defconfig
     X86: umbs_qemu_x86_defconfig
     X86_64: umbs_qemu_x86_64_defconfig
+
+BUILDROOT: *BUILDROOT_MASTER_ALIAS

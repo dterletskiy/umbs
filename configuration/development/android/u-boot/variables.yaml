@@ -1,7 +1,22 @@
-UBOOT:
+UBOOT_MAINLINE: &ANDROID_UBOOT_MAINLINE_ALIAS
   SOURCE:
-    GITHUB:
-      URL: "https://github.com/dterletskiy/aosp_manifest.git"
-      BRANCH: "u-boot/manifest/u-boot-mainline-9671786"
+    URL: "https://android.googlesource.com/kernel/manifest"
+    BRANCH: "u-boot-mainline"
   CONFIG:
     ARM64: "//u-boot:qemu_aarch64"
+
+UBOOT_ANDROID_13: &ANDROID_UBOOT_ANDROID_13_ALIAS
+  SOURCE:
+    URL: "https://android.googlesource.com/kernel/manifest"
+    BRANCH: "u-boot-android13"
+  CONFIG:
+    ARM64: "//u-boot:qemu_aarch64"
+
+UBOOT_MAINLINE_9671786_TDA:
+  SOURCE:
+    URL: "https://github.com/dterletskiy/aosp_manifest.git"
+    BRANCH: "u-boot/manifest/u-boot-mainline-9671786"
+  CONFIG:
+    ARM64: "//u-boot:qemu_aarch64"
+
+UBOOT: *ANDROID_UBOOT_MAINLINE_ALIAS
