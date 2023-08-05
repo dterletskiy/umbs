@@ -225,3 +225,8 @@ UBUNTU:
       - coloredlogs
       - pyyaml
       - antlr4-python3-runtime
+      - numpy
+      - scipy
+      - matplotlib
+      - tensorflow
+      - keras
