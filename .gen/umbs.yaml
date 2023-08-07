@@ -138,6 +138,8 @@ variables:
             - pkg-config
             - binwalk
             - graphviz
+            - chrpath
+            - gawk
             # - linux-headers-generic
           SYNTAX: &PACKAGES_APT_DEV_SYNTAX_ALIAS
             - flex
@@ -239,6 +241,11 @@ variables:
         - coloredlogs
         - pyyaml
         - antlr4-python3-runtime
+        - numpy
+        - scipy
+        - matplotlib
+        - tensorflow
+        - keras
 
   LINUX:
     XEN_MASTER: &XEN_MASTER_ALIAS
@@ -398,7 +405,18 @@ variables:
     AOSP_12_1_0_R27: &ANDROID_AOSP_12_1_0_R27_ALIAS
       SOURCE:
         URL: "https://android.googlesource.com/platform/manifest"
-        BRANCH: "platform/manifest/android-12.1.0_r27"
+        BRANCH: "android-12.1.0_r27"
+      CONFIG:
+        PRODUCT:
+          ARM64:
+            NAME: "aosp_trout_arm64"
+            DEVICE: "trout_arm64"
+            VARIANT: "userdebug"
+    
+    AOSP_13_0_0_R66: &ANDROID_AOSP_13_0_0_R66_ALIAS
+      SOURCE:
+        URL: "https://android.googlesource.com/platform/manifest"
+        BRANCH: "android-13.0.0_r66"
       CONFIG:
         PRODUCT:
           ARM64:
@@ -417,7 +435,7 @@ variables:
             DEVICE: "trout_arm64"
             VARIANT: "userdebug"
     
-    AOSP: *ANDROID_AOSP_12_1_0_R27_ALIAS
+    AOSP: *ANDROID_AOSP_13_0_0_R66_ALIAS
     NDK_R25C: &ANDROID_NDK_R25C_ALIAS
       FILE:
         NAME: "android-ndk-r25c-linux"
@@ -431,9 +449,9 @@ variables:
     POKY_MICKLEDORE: &POKY_MICKLEDORE_ALIAS
       SOURCE:
         URL: "git://git.yoctoproject.org/poky"
-        BRANCH: "mickledore"
+        BRANCH: "master"
       CONFIG:
-        TARGET: "core-image-minimal"
+        TARGET: "core-image-weston"
     
     POKY: *POKY_MICKLEDORE_ALIAS
 

@@ -124,6 +124,8 @@ UBUNTU:
           - pkg-config
           - binwalk
           - graphviz
+          - chrpath
+          - gawk
           # - linux-headers-generic
         SYNTAX: &PACKAGES_APT_DEV_SYNTAX_ALIAS
           - flex
