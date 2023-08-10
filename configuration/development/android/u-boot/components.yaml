@@ -11,12 +11,26 @@ android-u-boot:
       depth: 1
       subdir: "."
   builders:
-    - type: android.uboot
+    - type: bazel.common
+      tool: "tools/bazel"
+      starup_options:
+        - "--max_idle_secs=1"
+      command: run
+      args:
+        - "--verbose_failures"
+        - "--sandbox_debug"
+        - "--logging=6"
       config: ${ANDROID.UBOOT.CONFIG.ARM64}
+      target_patterns:
+        - "--dist_dir=./_out_/deploy"
+      subdirs:
+        target: "."
+        product: "_out_"
+        deploy: "_out_/deploy"
       env:
         - ""
       artifacts:
-        - "out/deploy/${ANDROID.UBOOT.CONFIG.ARM64}/u-boot"
-        - "out/deploy/${ANDROID.UBOOT.CONFIG.ARM64}/u-boot.bin"
+        - "_out_/deploy/u-boot"
+        - "_out_/deploy/u-boot.bin"
       deps:
         - ""

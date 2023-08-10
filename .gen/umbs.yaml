@@ -370,21 +370,14 @@ variables:
         URL: "https://android.googlesource.com/kernel/manifest"
         BRANCH: "u-boot-mainline"
       CONFIG:
-        ARM64: "//u-boot:qemu_aarch64"
+        ARM64: "//u-boot:qemu_aarch64_dist"
     
     UBOOT_ANDROID_13: &ANDROID_UBOOT_ANDROID_13_ALIAS
       SOURCE:
         URL: "https://android.googlesource.com/kernel/manifest"
         BRANCH: "u-boot-android13"
       CONFIG:
-        ARM64: "//u-boot:qemu_aarch64"
-    
-    UBOOT_MAINLINE_9671786_TDA:
-      SOURCE:
-        URL: "https://github.com/dterletskiy/aosp_manifest.git"
-        BRANCH: "u-boot/manifest/u-boot-mainline-9671786"
-      CONFIG:
-        ARM64: "//u-boot:qemu_aarch64"
+        ARM64: "//u-boot:qemu_aarch64_dist"
     
     UBOOT: *ANDROID_UBOOT_MAINLINE_ALIAS
     KERNEL_ANDROID_14_6_1_LTS: &KERNEL_ANDROID_14_6_1_LTS_ALIAS
@@ -392,14 +385,7 @@ variables:
         URL: "https://android.googlesource.com/kernel/manifest"
         BRANCH: "common-android14-6.1-lts"
       CONFIG:
-        ARM64: "//common-modules/virtual-device:virtual_device_aarch64"
-    
-    KERNEL_14_6_1_TDA:
-      SOURCE:
-        URL: "https://github.com/dterletskiy/aosp_manifest.git"
-        BRANCH: "kernel/manifest/common-android14-6.1"
-      CONFIG:
-        ARM64: "//common-modules/virtual-device:virtual_device_aarch64"
+        ARM64: "//common-modules/virtual-device:virtual_device_aarch64_dist"
     
     KERNEL: *KERNEL_ANDROID_14_6_1_LTS_ALIAS
     AOSP_12_1_0_R27: &ANDROID_AOSP_12_1_0_R27_ALIAS
@@ -704,7 +690,7 @@ components:
 
   android-u-boot:
     active: true
-    subdir: android/u-boot
+    subdir: android/u-boot-experimental
     sources:
       - type: repo
         manifest:
@@ -715,13 +701,27 @@ components:
         depth: 1
         subdir: "."
     builders:
-      - type: android.uboot
+      - type: bazel.common
+        tool: "tools/bazel"
+        starup_options:
+          - "--max_idle_secs=1"
+        command: run
+        args:
+          - "--verbose_failures"
+          - "--sandbox_debug"
+          - "--logging=6"
         config: ${ANDROID.UBOOT.CONFIG.ARM64}
+        target_patterns:
+          - "--dist_dir=./_out_/deploy"
+        subdirs:
+          target: "."
+          product: "_out_"
+          deploy: "_out_/deploy"
         env:
           - ""
         artifacts:
-          - "out/deploy/${ANDROID.UBOOT.CONFIG.ARM64}/u-boot"
-          - "out/deploy/${ANDROID.UBOOT.CONFIG.ARM64}/u-boot.bin"
+          - "_out_/deploy/u-boot"
+          - "_out_/deploy/u-boot.bin"
         deps:
           - ""
   android-kernel:
@@ -737,15 +737,29 @@ components:
         depth: 1
         subdir: "."
     builders:
-      - type: android.kernel
+      - type: bazel.common
+        tool: "tools/bazel"
+        starup_options:
+          - "--max_idle_secs=1"
+        command: run
+        args:
+          - "--verbose_failures"
+          - "--sandbox_debug"
+          - "--logging=6"
         config: ${ANDROID.KERNEL.CONFIG.ARM64}
+        target_patterns:
+          - "--dist_dir=./_out_/deploy"
+        subdirs:
+          target: "."
+          product: "_out_"
+          deploy: "_out_/deploy"
         env:
           - ""
         artifacts:
-          - "out/deploy/${ANDROID.KERNEL.CONFIG.ARM64}/boot.img"
-          - "out/deploy/${ANDROID.KERNEL.CONFIG.ARM64}/Image"
-          - "out/deploy/${ANDROID.KERNEL.CONFIG.ARM64}/initramfs.img"
-          - "out/deploy/${ANDROID.KERNEL.CONFIG.ARM64}/vmlinux"
+          - "out/deploy/boot.img"
+          - "out/deploy/Image"
+          - "out/deploy/initramfs.img"
+          - "out/deploy/vmlinux"
         deps:
           - ""
   android-aosp:

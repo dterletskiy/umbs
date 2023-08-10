@@ -20,15 +20,4 @@ AOSP_13_0_0_R66: &ANDROID_AOSP_13_0_0_R66_ALIAS
         DEVICE: "trout_arm64"
         VARIANT: "userdebug"
 
-AOSP_12_1_0_R8_TDA:
-  SOURCE:
-    URL: "https://github.com/dterletskiy/aosp_manifest.git"
-    BRANCH: "platform/manifest/android-12.1.0_r8"
-  CONFIG:
-    PRODUCT:
-      ARM64:
-        NAME: "aosp_trout_arm64"
-        DEVICE: "trout_arm64"
-        VARIANT: "userdebug"
-
 AOSP: *ANDROID_AOSP_13_0_0_R66_ALIAS

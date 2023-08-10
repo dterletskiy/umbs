@@ -11,14 +11,28 @@ android-kernel:
       depth: 1
       subdir: "."
   builders:
-    - type: android.kernel
+    - type: bazel.common
+      tool: "tools/bazel"
+      starup_options:
+        - "--max_idle_secs=1"
+      command: run
+      args:
+        - "--verbose_failures"
+        - "--sandbox_debug"
+        - "--logging=6"
       config: ${ANDROID.KERNEL.CONFIG.ARM64}
+      target_patterns:
+        - "--dist_dir=./_out_/deploy"
+      subdirs:
+        target: "."
+        product: "_out_"
+        deploy: "_out_/deploy"
       env:
         - ""
       artifacts:
-        - "out/deploy/${ANDROID.KERNEL.CONFIG.ARM64}/boot.img"
-        - "out/deploy/${ANDROID.KERNEL.CONFIG.ARM64}/Image"
-        - "out/deploy/${ANDROID.KERNEL.CONFIG.ARM64}/initramfs.img"
-        - "out/deploy/${ANDROID.KERNEL.CONFIG.ARM64}/vmlinux"
+        - "out/deploy/boot.img"
+        - "out/deploy/Image"
+        - "out/deploy/initramfs.img"
+        - "out/deploy/vmlinux"
       deps:
         - ""
