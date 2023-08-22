@@ -11,7 +11,7 @@ import umbs.builders.image.partition
 
 
 def get_instance( config, **kwargs ):
-   return Builder( config, **kwargs )
+   return Actor( config, **kwargs )
 # def get_instance
 
 
@@ -26,7 +26,7 @@ def signal_handler( signum, frame, *args, **kwargs ):
 
 
 
-class Builder( umbs.builders.base.Builder ):
+class Actor( umbs.builders.base.Actor ):
    def __init__( self, config, **kwargs ):
       super( ).__init__( config, **kwargs )
 
@@ -90,7 +90,7 @@ class Builder( umbs.builders.base.Builder ):
 
       self.__image_builder = None
       if "image" in self.__config:
-         self.__image_builder = umbs.builders.image.partition.Builder(
+         self.__image_builder = umbs.builders.image.partition.Actor(
                self.__config["image"],
                root_dir = self.__root_dir,
                component_dir = self.__product_dir
@@ -274,4 +274,4 @@ class Builder( umbs.builders.base.Builder ):
 
       return 0 == result["code"]
    # def execute
-# class Builder
+# class Actor

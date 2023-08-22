@@ -2,55 +2,38 @@ import os
 
 import pfw.console
 import pfw.shell
-import pfw.base.dict
+import pfw.base.function
+
+import umbs.base
+import umbs.actors.base
 
 
 
-class Tool:
+class Actor( umbs.actors.base.Actor ):
    def __init__( self, config, **kwargs ):
-      self.__config = config
-      self.__root_dir = kwargs.get( "root_dir", None )
-      self.__component_dir = kwargs.get( "component_dir", None )
-      self.__target_dir = os.path.join( self.__component_dir, self.__config.get( "subdir", "" ) )
-      pfw.shell.execute( f"mkdir -p {self.__target_dir}" )
+      super( ).__init__(
+            config = config,
+            exec = [
+                  pfw.base.function.Holder( self.prepare ),
+                  pfw.base.function.Holder( self.exec ),
+                  pfw.base.function.Holder( self.test )
+               ],
+            clean = [
+                  pfw.base.function.Holder( self.clean )
+               ],
+            **kwargs
+         )
 
-      self.__artifacts = [ os.path.join( self.__component_dir, artifact ) for artifact in self.__config.get( "artifacts", [ ] ) ]
+      self.__target_dir = os.path.join( self.__component_dir, self.__config.get( "subdir", "" ) )
    # def __init__
 
-   def __del__( self ):
-      pass
-   # def __del__
-
-   def __str__( self ):
-      attr_list = [ i for i in self.__class__.__dict__.keys( ) if i[:2] != pfw.base.struct.ignore_field ]
-      vector = [ f"{str( attr )} = {str( self.__dict__.get( attr ) )}" for attr in attr_list ]
-      return self.__class__.__name__ + " { " + ", ".join( vector ) + " }"
-   # def __str__
-
-   def info( self, **kwargs ):
-      kw_tabs = kwargs.get( "tabs", 0 )
-      kw_msg = kwargs.get( "msg", "" )
-      pfw.console.debug.info( f"{kw_msg} (type {self.__class__.__name__}):", tabs = ( kw_tabs + 0 ) )
-   # def info
-
-   def do_exec( self, **kwargs ):
-      if not self.exec( ):
-         pfw.console.debug.error( "exec error" )
-         return False
-      if not self.test( ):
-         pfw.console.debug.error( "test error" )
+   def prepare( self, **kwargs ):
+      result = pfw.shell.execute( f"mkdir -p {self.__target_dir}" )
+      if 0 != result["code"]:
          return False
 
       return True
-   # def do_exec
-
-   def do_clean( self, **kwargs ):
-      if not self.clean( ):
-         pfw.console.debug.error( "clean error" )
-         return False
-
-      return True
-   # def do_clean
+   # def prepare
 
    def exec( self, **kwargs ):
       return True
@@ -73,10 +56,4 @@ class Tool:
 
       return result
    # def test
-
-
-
-   def __get_config( self, keys ):
-      return pfw.base.dict.get_value( self.__config, keys )
-   # def __get_config
-# class Tool
+# class Actor

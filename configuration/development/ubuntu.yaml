@@ -95,6 +95,7 @@ UBUNTU:
         - iw
         - tcptrace
         - tcptraceroute
+        - traceroute
         - nfstrace
         - nfstrace-doc
         - iptraf

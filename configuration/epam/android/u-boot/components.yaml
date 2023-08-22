@@ -1,11 +1,11 @@
-android-kernel:
+android-u-boot:
   active: true
-  subdir: android/kernel
+  subdir: xt/android/u-boot
   sources:
     - type: repo
       manifest:
-        url: ${ANDROID.KERNEL.SOURCE.URL}
-        branch: ${ANDROID.KERNEL.SOURCE.BRANCH}
+        url: ${ANDROID.UBOOT.SOURCE.URL}
+        branch: ${ANDROID.UBOOT.SOURCE.BRANCH}
         name: "default.xml"
         depth: 1
       depth: 1
@@ -20,7 +20,7 @@ android-kernel:
         - "--verbose_failures"
         - "--sandbox_debug"
         - "--logging=6"
-      config: ${ANDROID.KERNEL.CONFIG.ARM64}
+      config: ${ANDROID.UBOOT.CONFIG.ARM64}
       target_patterns:
         - "--dist_dir=./_out_/deploy"
       subdirs:
@@ -30,9 +30,7 @@ android-kernel:
       env:
         - ""
       artifacts:
-        - "_out_/deploy/boot.img"
-        - "_out_/deploy/Image"
-        - "_out_/deploy/initramfs.img"
-        - "_out_/deploy/vmlinux"
+        - "_out_/deploy/u-boot"
+        - "_out_/deploy/u-boot.bin"
       deps:
         - ""

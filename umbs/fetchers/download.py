@@ -10,12 +10,12 @@ import umbs.fetchers.base
 
 
 def get_instance( config, **kwargs ):
-   return Fetcher( config, **kwargs )
+   return Actor( config, **kwargs )
 # def get_instance
 
 
 
-class Fetcher( umbs.fetchers.base.Fetcher ):
+class Actor( umbs.fetchers.base.Actor ):
    def __init__( self, config, **kwargs ):
       super( ).__init__( config, **kwargs )
 
@@ -30,4 +30,4 @@ class Fetcher( umbs.fetchers.base.Fetcher ):
       # @TDA: To be implemented
       return True
    # def remove
-# class Fetcher
+# class Actor

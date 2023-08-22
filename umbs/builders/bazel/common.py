@@ -9,14 +9,19 @@ import umbs.builders.base
 
 
 def get_instance( config, **kwargs ):
-   return Builder( config, **kwargs )
+   return Actor( config, **kwargs )
 # def get_instance
 
 
 
-class Builder( umbs.builders.base.Builder ):
+class Actor( umbs.builders.base.Actor ):
    def __init__( self, config, **kwargs ):
       super( ).__init__( config, **kwargs )
+
+      strict_fields = [ "config", "command" ]
+      for key in strict_fields:
+         if key not in self.__config:
+            raise umbs.base.YamlFormatError( f"Filed '{key}' must be defined in builder" )
 
       self.__target = self.__config['config']
 
@@ -78,4 +83,4 @@ class Builder( umbs.builders.base.Builder ):
       cmd += f" -- {kw_target_patterns}" if 0 < len( kw_target_patterns ) else ""
       return self.execute( cmd )
    # def __execute
-# class Builder
+# class Actor

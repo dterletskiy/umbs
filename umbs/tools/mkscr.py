@@ -10,12 +10,12 @@ import umbs.tools.base
 
 
 def get_instance( config, **kwargs ):
-   return Tool( config, **kwargs )
+   return Actor( config, **kwargs )
 # def get_instance
 
 
 
-class Tool( umbs.tools.base.Tool ):
+class Actor( umbs.tools.base.Actor ):
    def __init__( self, config, **kwargs ):
       super( ).__init__( config, **kwargs )
 
@@ -93,4 +93,4 @@ class Tool( umbs.tools.base.Tool ):
 
       return True
    # def __build_uboot_script
-# class Tool
+# class Actor

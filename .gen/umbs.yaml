@@ -109,6 +109,7 @@ variables:
           - iw
           - tcptrace
           - tcptraceroute
+          - traceroute
           - nfstrace
           - nfstrace-doc
           - iptraf
@@ -410,17 +411,6 @@ variables:
             DEVICE: "trout_arm64"
             VARIANT: "userdebug"
     
-    AOSP_12_1_0_R8_TDA:
-      SOURCE:
-        URL: "https://github.com/dterletskiy/aosp_manifest.git"
-        BRANCH: "platform/manifest/android-12.1.0_r8"
-      CONFIG:
-        PRODUCT:
-          ARM64:
-            NAME: "aosp_trout_arm64"
-            DEVICE: "trout_arm64"
-            VARIANT: "userdebug"
-    
     AOSP: *ANDROID_AOSP_13_0_0_R66_ALIAS
     NDK_R25C: &ANDROID_NDK_R25C_ALIAS
       FILE:
@@ -437,7 +427,7 @@ variables:
         URL: "git://git.yoctoproject.org/poky"
         BRANCH: "master"
       CONFIG:
-        TARGET: "core-image-weston"
+        TARGET: "core-image-minimal"
     
     POKY: *POKY_MICKLEDORE_ALIAS
 
@@ -690,7 +680,7 @@ components:
 
   android-u-boot:
     active: true
-    subdir: android/u-boot-experimental
+    subdir: android/u-boot
     sources:
       - type: repo
         manifest:
@@ -756,10 +746,10 @@ components:
         env:
           - ""
         artifacts:
-          - "out/deploy/boot.img"
-          - "out/deploy/Image"
-          - "out/deploy/initramfs.img"
-          - "out/deploy/vmlinux"
+          - "_out_/deploy/boot.img"
+          - "_out_/deploy/Image"
+          - "_out_/deploy/initramfs.img"
+          - "_out_/deploy/vmlinux"
         deps:
           - ""
   android-aosp:
@@ -905,7 +895,7 @@ components:
         subdirs:
           target: "poky"
           product: "build"
-          deploy: "."
+          deploy: "deploy"
         jobs: 8
         target: ${YOCTO.POKY.CONFIG.TARGET}
         layers:
@@ -950,7 +940,11 @@ components:
           - "CC=/usr/bin/cc"
           - "CXX=/usr/bin/c++"
         artifacts:
-          - ""
+          - "out/deploy/bin/servicebrocker"
+          - "out/deploy/lib/libtracing.so"
+          - "out/deploy/lib/libruntime.so"
+          - "out/deploy/lib/libhooks.so"
+          - "out/deploy/lib/libinstrumental.so"
         deps:
           - ""
   

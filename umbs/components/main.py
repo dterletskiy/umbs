@@ -6,9 +6,8 @@ import pfw.console
 import pfw.shell
 
 import umbs.base
-import umbs.builders.main
-import umbs.fetchers.main
-import umbs.tools.main
+import umbs.actors.types
+import umbs.actors.main
 
 
 
@@ -35,7 +34,14 @@ class Component:
       self.__fetchers = [ ]
       if "sources" in yaml_component:
          for yaml_source in yaml_component["sources"]:
-            self.__fetchers.append( umbs.fetchers.main.Fetcher( yaml_source, root_dir = root_dir, component_dir = self.__component_dir ) )
+            self.__fetchers.append(
+               umbs.actors.main.Actor(
+                  type = umbs.actors.types.eType.FETCHER,
+                  yaml_data = yaml_source,
+                  root_dir = root_dir,
+                  component_dir = self.__component_dir
+               )
+            )
       else:
          # pfw.console.debug.warning( f"Fieled 'sources' is not defined in the component '{name}'" ) # @TDA: debug
          pass
@@ -43,7 +49,14 @@ class Component:
       self.__builders = [ ]
       if "builders" in yaml_component:
          for yaml_builder in yaml_component["builders"]:
-            self.__builders.append( umbs.builders.main.Builder( yaml_builder, root_dir = root_dir, component_dir = self.__component_dir ) )
+            self.__builders.append(
+               umbs.actors.main.Actor(
+                  type = umbs.actors.types.eType.BUILDER,
+                  yaml_data = yaml_builder,
+                  root_dir = root_dir,
+                  component_dir = self.__component_dir
+               )
+            )
       else:
          # pfw.console.debug.warning( f"Fieled 'builder' is not defined in the component '{name}'" ) # @TDA: debug
          pass
@@ -51,7 +64,14 @@ class Component:
       self.__tools = [ ]
       if "patches" in yaml_component:
          for yaml_tool in yaml_component["patches"]:
-            self.__tools.append( umbs.tools.main.Tool( yaml_tool, root_dir = root_dir, component_dir = self.__component_dir ) )
+            self.__tools.append(
+               umbs.actors.main.Actor(
+                  type = umbs.actors.types.eType.TOOL,
+                  yaml_data = yaml_tool,
+                  root_dir = root_dir,
+                  component_dir = self.__component_dir
+               )
+            )
       else:
          # pfw.console.debug.warning( f"Fieled 'patches' is not defined in the component '{name}'" ) # @TDA: debug
          pass
@@ -94,19 +114,37 @@ class Component:
       return components
    # def creator
 
+   def info( self, **kwargs ):
+      kw_tabs = kwargs.get( "tabs", kwargs.get( "tabulations", 0 ) )
+      kw_message = kwargs.get( "message", "" )
+      pfw.console.printf.info( f"{kw_message} (type {self.__class__.__name__}):", tabs = ( kw_tabs + 0 ) )
+
+      pfw.console.printf.info( "name:      \'", self.__name, "\'", tabs = ( kw_tabs + 1 ) )
+      pfw.console.printf.info( "directory: \'", self.__component_dir, "\'", tabs = ( kw_tabs + 1 ) )
+      pfw.console.printf.info( "fetchers:  \'", len( self.__fetchers ), "\'", tabs = ( kw_tabs + 1 ) )
+      for fetcher in self.__fetchers:
+         fetcher.info( tabs = kw_tabs + 1 )
+      pfw.console.printf.info( "tools:  \'", len( self.__tools ), "\'", tabs = ( kw_tabs + 1 ) )
+      for tool in self.__tools:
+         tool.info( tabs = kw_tabs + 1 )
+      pfw.console.printf.info( "builders:  \'", len( self.__builders ), "\'", tabs = ( kw_tabs + 1 ) )
+      for builder in self.__builders:
+         builder.info( tabs = kw_tabs + 1 )
+   # def info
+
    def do_fetch( self ):
       for fetcher in self.__fetchers:
-         fetcher.do_fetch( )
+         fetcher.do_action( )
    # def do_fetch
 
    def do_patch( self ):
       for tool in self.__tools:
-         tool.do_exec( )
+         tool.do_action( )
    # def do_patch
 
    def do_build( self ):
       for builder in self.__builders:
-         builder.do_build( )
+         builder.do_action( )
    # def do_build
 
    def do_clean( self ):

@@ -15,12 +15,12 @@ import umbs.builders.base
 
 
 def get_instance( config, **kwargs ):
-   return Builder( config, **kwargs )
+   return Actor( config, **kwargs )
 # def get_instance
 
 
 
-class Builder( umbs.builders.base.Builder ):
+class Actor( umbs.builders.base.Actor ):
    def __init__( self, config, **kwargs ):
       super( ).__init__( config, **kwargs )
 
@@ -119,4 +119,4 @@ class Builder( umbs.builders.base.Builder ):
 
       return True
    # def clean
-# class Builder
+# class Actor

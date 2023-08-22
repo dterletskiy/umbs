@@ -1,0 +1,12 @@
+author: "dterletskiy"
+version: "1.1.0"
+umbs_min_version: "0.1"
+
+variables:
+  include: "development/directories.yaml"
+
+  ANDROID:
+    include: "epam/android/u-boot/variables.yaml"
+
+components:
+  include: "epam/android/u-boot/components.yaml"

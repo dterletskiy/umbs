@@ -280,6 +280,7 @@ def process_cmdline( app_data, argv ):
    parser.add_argument( "--action", dest = "action", type = str, action = "store", required = False, default = "*", help = app_data.get_description( "action" ) )
 
    parser.add_argument( "--container", dest = "container", action = "store_true", help = app_data.get_description( "container" ) )
+   parser.add_argument( "--test", dest = "test", action = "store_true", help = app_data.get_description( "test" ) )
 
    # parser.print_help( )
    try:
@@ -300,10 +301,11 @@ def process_cmdline( app_data, argv ):
 
 
 
-def preprocess_config_file( file ):
-   pattern_include: str = r"^%include:\s*\"(.*)\"\s*$"
-   pattern_comment: str = r"^\s*#.*$"
+pattern_include: str = r"^%include:\s*\"(.*)\"\s*$"
+pattern_comment: str = r"^\s*#.*$"
+pattern_parameter: str = r"^\s*(.*)\s*:\s*(.*)\s*$"
 
+def preprocess_config_file( file ):
    lines: list = [ ]
    file_dir = os.path.dirname( file )
 
@@ -324,9 +326,6 @@ def preprocess_config_file( file ):
 # def preprocess_config_file
 
 def process_config_file( app_data ):
-   pattern_parameter: str = r"^\s*(.*)\s*:\s*(.*)\s*$"
-   pattern_comment: str = r"^\s*#.*$"
-
    config_files = app_data.get_values( "config" )
    print( f"Processing config files: {config_files}" )
    for config_file in config_files:
@@ -373,6 +372,7 @@ config: ConfigurationContainer = ConfigurationContainer(
          ConfigurationData( "component"         , False , "Component name" ),
          ConfigurationData( "action"            , False , "Action name" ),
          ConfigurationData( "container"         , False , "Indicates is this script must be run in container" ),
+         ConfigurationData( "test"              , False , "Run in test mode" ),
       ]
    )
 

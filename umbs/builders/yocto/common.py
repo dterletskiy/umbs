@@ -8,12 +8,12 @@ import umbs.builders.base
 
 
 def get_instance( config, **kwargs ):
-   return Builder( config, **kwargs )
+   return Actor( config, **kwargs )
 # def get_instance
 
 
 
-class Builder( umbs.builders.base.Builder ):
+class Actor( umbs.builders.base.Actor ):
    def __init__( self, config, **kwargs ):
       super( ).__init__( config, **kwargs )
 
@@ -23,6 +23,7 @@ class Builder( umbs.builders.base.Builder ):
             raise umbs.base.YamlFormatError( f"Filed '{key}' must be defined in builder" )
 
       self.__target = self.__config["target"]
+      self.__layers = [ os.path.join( self.__component_dir, i ) for i in self.__config.get( "layers", [ ] ) ]
    # def __init__
 
    def config( self, **kwargs ):
@@ -43,21 +44,23 @@ class Builder( umbs.builders.base.Builder ):
 
    def __execute( self, command ):
       cmd = f"source oe-init-build-env {self.__product_dir}"
+      for layer in self.__layers:
+         cmd += f" && {layer}"
       if command and 0 < len( command ):
          cmd += f" && {command}"
       return self.execute( cmd )
    # def __execute
-# class Builder
+# class Actor
 
 
 
 
 
-# ROOT_DIR="/mnt/host/yocto/yoctoproject/"
-# BUILD_DIR="${ROOT_DIR}/build/"
 # CURRENT_DIR=${PWD}
-
+# ROOT_DIR="/mnt/docker/builder/yocto"
+# BUILD_DIR="${ROOT_DIR}/build/"
 # POKY_DIR="${ROOT_DIR}/poky/"
+
 # POKY_URL="git://git.yoctoproject.org/poky"
 # POKY_BRANCH="mickledore"
 # POKY_DEPTH=1

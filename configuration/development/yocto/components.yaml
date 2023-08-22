@@ -13,7 +13,7 @@ yocto-poky:
       subdirs:
         target: "poky"
         product: "build"
-        deploy: "."
+        deploy: "deploy"
       jobs: 8
       target: ${YOCTO.POKY.CONFIG.TARGET}
       layers:

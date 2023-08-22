@@ -11,9 +11,6 @@ import umbs.components.main
 
 
 
-
-
-
 def init_components( yaml_config ):
    components_map: dict = { }
    for name in yaml_config.get_components( ):
@@ -28,11 +25,16 @@ def init_components( yaml_config ):
 def print_components( components: dict ):
    for name, component in components.items( ):
       pfw.console.debug.info( f"{name}" )
+      # component.info( ) # @TDA: debug
 # def print_components
 
 
 
 def run( component, action, umbs_components ):
+   if umbs.configuration.value( 'test' ):
+      pfw.console.debug.warning( "TEST MODE" )
+      return
+
    if "*" == component:
       for name, component in umbs_components.items( ):
          component.do_action( action )
@@ -63,16 +65,19 @@ def run_in_container( ):
    container_component = umbs.configuration.value( 'component' )
    container_action = umbs.configuration.value( 'action' )
 
-   command = f""
-   command += f" python3 umbs.py"
+   if not pfw.linux.docker.container.is_exists( container_name ):
+      return
+
+   if not pfw.linux.docker.container.is_started( container_name ):
+      pfw.linux.docker.container.start( container_name )
+
+   command = f" python3 umbs.py"
    command += f" --config={cfg_file}"
    command += f" --component={container_component}"
    command += f" --action={container_action}"
-   # command = ""
 
    pfw.linux.docker.container.exec( container_name, command = command, workdir = container_umbs_dir )
 # def run_in_container
-
 
 
 def main( ):

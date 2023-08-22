@@ -3,6 +3,7 @@
 import copy
 import re
 import os
+import enum
 import yaml
 
 import pfw.console
@@ -189,15 +190,13 @@ class Config:
       for_adaptation: list = [ ]
       if isinstance( iterable, dict ):
          for key, value in iterable.items( ):
-            new_address = address
-            new_address.append( key )
-            for_adaptation.extend( self.__walk( value, new_address, value_processor ) )
+            address.append( key )
+            for_adaptation.extend( self.__walk( value, address, value_processor ) )
             del address[-1]
       elif isinstance( iterable, list ) or isinstance( iterable, tuple ):
          for index, item in enumerate( iterable ):
-            new_address = address
-            new_address.append( index )
-            for_adaptation.extend( self.__walk( item, new_address, value_processor ) )
+            address.append( index )
+            for_adaptation.extend( self.__walk( item, address, value_processor ) )
             del address[-1]
       elif isinstance( iterable, str ):
          ( replaced, new_value ) = value_processor( iterable )
