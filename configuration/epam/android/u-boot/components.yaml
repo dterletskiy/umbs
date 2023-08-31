@@ -1,6 +1,6 @@
-android-u-boot:
+android-u-boot-qemu:
   active: true
-  subdir: xt/android/u-boot
+  subdir: android/u-boot
   sources:
     - type: repo
       manifest:
@@ -20,17 +20,54 @@ android-u-boot:
         - "--verbose_failures"
         - "--sandbox_debug"
         - "--logging=6"
-      config: ${ANDROID.UBOOT.CONFIG.ARM64}
+      config: ${ANDROID.UBOOT.CONFIG.ARM64.QEMU}
       target_patterns:
-        - "--dist_dir=./_out_/deploy"
+        - "--dist_dir=./_out_/qemu_aarch64/deploy"
       subdirs:
         target: "."
-        product: "_out_"
-        deploy: "_out_/deploy"
+        product: "_out_/qemu_aarch64"
+        deploy: "_out_/qemu_aarch64/deploy"
       env:
         - ""
       artifacts:
-        - "_out_/deploy/u-boot"
-        - "_out_/deploy/u-boot.bin"
+        - "_out_/qemu_aarch64/deploy/u-boot"
+        - "_out_/qemu_aarch64/deploy/u-boot.bin"
+      deps:
+        - ""
+
+android-u-boot-xen:
+  active: true
+  subdir: android/u-boot
+  sources:
+    - type: repo
+      manifest:
+        url: ${ANDROID.UBOOT.SOURCE.URL}
+        branch: ${ANDROID.UBOOT.SOURCE.BRANCH}
+        name: "default.xml"
+        depth: 1
+      depth: 1
+      subdir: "."
+  builders:
+    - type: bazel.common
+      tool: "tools/bazel"
+      starup_options:
+        - "--max_idle_secs=1"
+      command: run
+      args:
+        - "--verbose_failures"
+        - "--sandbox_debug"
+        - "--logging=6"
+      config: ${ANDROID.UBOOT.CONFIG.ARM64.XEN}
+      target_patterns:
+        - "--dist_dir=./_out_/xen_aarch64/deploy"
+      subdirs:
+        target: "."
+        product: "_out_/xen_aarch64"
+        deploy: "_out_/xen_aarch64/deploy"
+      env:
+        - ""
+      artifacts:
+        - "_out_/xen_aarch64/deploy/u-boot"
+        - "_out_/xen_aarch64/deploy/u-boot.bin"
       deps:
         - ""

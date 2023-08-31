@@ -1,8 +1,17 @@
-UBOOT_MAINLINE: &ANDROID_UBOOT_XENVM_TROUT_ALIAS
+UBOOT_XT: &ANDROID_UBOOT_XENVM_TROUT_ALIAS
   SOURCE:
     URL: "https://github.com/xen-troops/android_u-boot_manifest.git"
     BRANCH: "xenvm-trout-main"
   CONFIG:
-    ARM64: "//u-boot:xen-guest-android-virtio_aarch64"
+    ARM64: "//u-boot:xen-guest-android-virtio_aarch64_dist"
 
-UBOOT: *ANDROID_UBOOT_XENVM_TROUT_ALIAS
+UBOOT_MAINLINE: &ANDROID_UBOOT_MAINLINE_ALIAS
+  SOURCE:
+    URL: "https://android.googlesource.com/kernel/manifest"
+    BRANCH: "u-boot-mainline"
+  CONFIG:
+    ARM64:
+      QEMU: "//u-boot:qemu_aarch64_dist"
+      XEN: "//u-boot:xen_aarch64_dist"
+
+UBOOT: *ANDROID_UBOOT_MAINLINE_ALIAS

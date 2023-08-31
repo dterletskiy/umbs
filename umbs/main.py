@@ -43,6 +43,38 @@ def run( component, action, umbs_components ):
 # def run
 
 def run_in_container( ):
+   # container_user_name = "builder"
+   # container_base_dir = "/mnt/host"
+
+   # volume_mapping = [
+   #       pfw.linux.docker.container.Mapping(
+   #             host = umbs.configuration.value( 'umbs' ),
+   #             guest = os.path.join( container_base_dir, "umbs" )
+   #          ),
+   #       pfw.linux.docker.container.Mapping(
+   #             host = umbs.configuration.value( 'pfw' ),
+   #             guest = os.path.join( container_base_dir, "pfw" )
+   #          ),
+   #       pfw.linux.docker.container.Mapping(
+   #             host = yaml_config.get_variable( "DIRECTORIES.ROOT" ),
+   #             guest = os.path.join( container_base_dir, "project" )
+   #          ),
+   #       pfw.linux.docker2.Container.Mapping(
+   #             host = f"~/.ssh",
+   #             guest = f"/home/{container_user_name}/.ssh"
+   #          ),
+   #       pfw.linux.docker2.Container.Mapping(
+   #             host = f"~/.gitconfig",
+   #             guest = f"/home/{container_user_name}/.gitconfig"
+   #          ),
+   #    ]
+
+   # port_mapping = [
+   #       pfw.linux.docker2.Container.Mapping( host = "5000", guest = "5000" ),
+   #    ]
+
+
+
    cfg_file = "./.gen/umbs.cfg"
    cfg_h = open( os.path.join( cfg_file ), "w" )
    for name in umbs.configuration.names( ):
