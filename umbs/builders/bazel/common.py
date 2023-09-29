@@ -62,7 +62,11 @@ class Actor( umbs.builders.base.Actor ):
    # def build
 
    def clean( self, **kwargs ):
-      result = self.__execute( "clean", args = "--expunge" )
+      # result = self.__execute( "clean", args = "--expunge" )
+      # if 0 != result["code"]:
+      #    return False
+
+      result = self.execute( f"rm -rf {self.__product_dir}" )
       if 0 != result["code"]:
          return False
 
