@@ -23,7 +23,7 @@ class Actor( umbs.builders.base.Actor ):
 
    def config( self, **kwargs ):
       command = "./configure"
-      # parameters = "--enable-gtk --enable-kvm --static --disable-system --enable-linux-user --enable-user"
+      # parameters = "--enable-gtk --enable-kvm --static --disable-system --enable-linux-user --enable-user --enable-debug"
       # parameters = "--prefix="
       parameters = ""
 
