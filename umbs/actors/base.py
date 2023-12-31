@@ -102,7 +102,7 @@ class Actor:
    def execute( self, command, *argv, **kwargs ):
       kwargs["output"] = kwargs.get( "output", pfw.shell.eOutput.PTY )
       kwargs["cwd"] = kwargs.get( "cwd", self.__target_dir )
-      kwargs["env"] = None # kwargs.get( "env", self.__environment )
+      if "env" in kwargs: del kwargs["env"] # kwargs["env"] = None # kwargs.get( "env", self.__environment )
 
       return pfw.shell.execute( f"{self.__export} {command}", *argv, **kwargs )
    # def execute
