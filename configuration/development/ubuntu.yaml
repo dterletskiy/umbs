@@ -235,3 +235,6 @@ UBUNTU:
       - keras
       - mlxtend
       - scikit-learn
+      - getch
+      - pwinput
+      - pandas
