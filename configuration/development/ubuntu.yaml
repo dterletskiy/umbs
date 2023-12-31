@@ -238,3 +238,4 @@ UBUNTU:
       - getch
       - pwinput
       - pandas
+      - odfpy
