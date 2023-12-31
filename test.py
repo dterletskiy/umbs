@@ -38,3 +38,5 @@ import fcntl
 import yaml
 
 print( "OK" )
+
+# pip install getch pwinput filetype numpy scipy beepy coloredlogs
