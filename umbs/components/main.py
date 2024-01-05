@@ -132,33 +132,33 @@ class Component:
          builder.info( tabs = kw_tabs + 1 )
    # def info
 
-   def do_fetch( self ):
+   def do_fetch( self, **kwargs ):
       for fetcher in self.__fetchers:
-         fetcher.do_action( )
+         fetcher.do_action( **kwargs )
    # def do_fetch
 
-   def do_patch( self ):
+   def do_patch( self , **kwargs):
       for tool in self.__tools:
-         tool.do_action( )
+         tool.do_action( **kwargs )
    # def do_patch
 
-   def do_build( self ):
+   def do_build( self, **kwargs ):
       for builder in self.__builders:
-         builder.do_action( )
+         builder.do_action( **kwargs )
    # def do_build
 
-   def do_clean( self ):
+   def do_clean( self, **kwargs ):
       for builder in self.__builders:
-         builder.do_clean( )
+         builder.do_clean( **kwargs )
    # def do_clean
 
-   def do_action( self, action: str ):
+   def do_action( self, action: str, **kwargs ):
       processors = self.__action_map.get(
             action,
             [ lambda: pfw.console.debug.error( f"undefined action '{action}'" ) ]
          )
       for processor in processors:
-         processor( )
+         processor( **kwargs )
    # def do_action
 
 

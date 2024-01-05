@@ -61,7 +61,7 @@ class Actor:
       self.__status = umbs.actors.types.eStatus.PROCESSING
 
       for function in self.__functions["exec"]:
-         if True != function( ):
+         if True != function( **kwargs ):
             pfw.console.debug.error( f"{function.name( )} error" )
             self.__status = umbs.actors.types.eStatus.ERROR
             return self.__status
@@ -74,7 +74,7 @@ class Actor:
       self.__status = umbs.actors.types.eStatus.PROCESSING
 
       for function in self.__functions["clean"]:
-         if True != function( ):
+         if True != function( **kwargs ):
             pfw.console.debug.error( f"{function.name( )} error" )
             self.__status = umbs.actors.types.eStatus.ERROR
             return self.__status

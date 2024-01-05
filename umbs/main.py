@@ -30,51 +30,28 @@ def print_components( components: dict ):
 
 
 
-def run( component, action, umbs_components ):
+def run( **kwargs ):
+   kw_umbs_components = kwargs.get( "umbs_components", None )
+
+   component = umbs.configuration.value( "component" )
+   action = umbs.configuration.value( "action" )
+   targets = umbs.configuration.values( "target" )
+
    if umbs.configuration.value( 'test' ):
       pfw.console.debug.warning( "TEST MODE" )
       return
 
    if "*" == component:
-      for name, component in umbs_components.items( ):
-         component.do_action( action )
+      for _name, _component in kw_umbs_components.items( ):
+         _component.do_action( action, targets = targets )
    else:
-      umbs_components[ component ].do_action( action )
+      if component in kw_umbs_components:
+         kw_umbs_components[ component ].do_action( action, targets = targets )
+      else:
+         pfw.console.debug.error( f"undefined component '{component}'" )
 # def run
 
 def run_in_container( ):
-   # container_user_name = "builder"
-   # container_base_dir = "/mnt/host"
-
-   # volume_mapping = [
-   #       pfw.linux.docker.container.Mapping(
-   #             host = umbs.configuration.value( 'umbs' ),
-   #             guest = os.path.join( container_base_dir, "umbs" )
-   #          ),
-   #       pfw.linux.docker.container.Mapping(
-   #             host = umbs.configuration.value( 'pfw' ),
-   #             guest = os.path.join( container_base_dir, "pfw" )
-   #          ),
-   #       pfw.linux.docker.container.Mapping(
-   #             host = yaml_config.get_variable( "DIRECTORIES.ROOT" ),
-   #             guest = os.path.join( container_base_dir, "project" )
-   #          ),
-   #       pfw.linux.docker2.Container.Mapping(
-   #             host = f"~/.ssh",
-   #             guest = f"/home/{container_user_name}/.ssh"
-   #          ),
-   #       pfw.linux.docker2.Container.Mapping(
-   #             host = f"~/.gitconfig",
-   #             guest = f"/home/{container_user_name}/.gitconfig"
-   #          ),
-   #    ]
-
-   # port_mapping = [
-   #       pfw.linux.docker2.Container.Mapping( host = "5000", guest = "5000" ),
-   #    ]
-
-
-
    cfg_file = "./.gen/umbs.cfg"
    cfg_h = open( os.path.join( cfg_file ), "w" )
    for name in umbs.configuration.names( ):
@@ -96,6 +73,7 @@ def run_in_container( ):
 
    container_component = umbs.configuration.value( 'component' )
    container_action = umbs.configuration.value( 'action' )
+   container_target = umbs.configuration.value( 'target' )
 
    if not pfw.linux.docker.container.is_exists( container_name ):
       return
@@ -103,11 +81,7 @@ def run_in_container( ):
    if not pfw.linux.docker.container.is_started( container_name ):
       pfw.linux.docker.container.start( container_name )
 
-   command = f" python3 umbs.py"
-   command += f" --config={cfg_file}"
-   command += f" --component={container_component}"
-   command += f" --action={container_action}"
-
+   command = f" python3 umbs.py --config={cfg_file}"
    pfw.linux.docker.container.exec( container_name, command = command, workdir = container_umbs_dir )
 # def run_in_container
 
@@ -116,17 +90,14 @@ def main( ):
    yaml_config: umbs.base.Config = umbs.base.Config( umbs.configuration.value( "yaml_config" ) )
    # yaml_config.info( ) # @TDA: debug
    umbs_components: dict = init_components( yaml_config )
-   print_components( umbs_components ) # @TDA: debug
+   # print_components( umbs_components ) # @TDA: debug
 
    pfw.console.debug.ok( "------------------------- BEGIN -------------------------" )
-
-   component = umbs.configuration.value( "component" )
-   action = umbs.configuration.value( "action" )
 
    if umbs.configuration.value( 'container' ):
       run_in_container( )
    else:
-      run( component, action, umbs_components )
+      run( umbs_components = umbs_components )
 
    pfw.console.debug.ok( "-------------------------- END --------------------------" )
 # def main

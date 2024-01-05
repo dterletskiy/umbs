@@ -30,9 +30,9 @@ class Actor:
       self.__instance.info( tabs = kw_tabs + 1 )
    # def info
 
-   def do_action( self ):
+   def do_action( self, **kwargs ):
       begin = datetime.datetime.now( )
-      self.__instance.do_action( )
+      self.__instance.do_action( **kwargs )
       end = datetime.datetime.now( )
       pfw.console.debug.info( f"'{self.__namespase}' '{self.__module}': action time {end - begin}" )
    # def do_action

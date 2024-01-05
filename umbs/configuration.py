@@ -276,8 +276,9 @@ def process_cmdline( app_data, argv ):
    parser.add_argument( "--include", dest = "include", type = str, action = "append", required = False, help = app_data.get_description( "include" ) )
    parser.add_argument( "--pfw", dest = "pfw", type = str, action = "append", required = False, help = app_data.get_description( "pfw" ) )
 
-   parser.add_argument( "--component", dest = "component", type = str, action = "store", required = False, default = "*", help = app_data.get_description( "component" ) )
-   parser.add_argument( "--action", dest = "action", type = str, action = "store", required = False, default = "*", help = app_data.get_description( "action" ) )
+   parser.add_argument( "--component", dest = "component", type = str, action = "store", required = False, help = app_data.get_description( "component" ) )
+   parser.add_argument( "--action", dest = "action", type = str, action = "store", required = False, help = app_data.get_description( "action" ) )
+   parser.add_argument( "--target", dest = "target", type = str, action = "append", required = False, help = app_data.get_description( "target" ) )
 
    parser.add_argument( "--container", dest = "container", action = "store_true", help = app_data.get_description( "container" ) )
    parser.add_argument( "--test", dest = "test", action = "store_true", help = app_data.get_description( "test" ) )
@@ -371,6 +372,7 @@ config: ConfigurationContainer = ConfigurationContainer(
          ConfigurationData( "pfw"               , False , "Python Framework directory location" ),
          ConfigurationData( "component"         , False , "Component name" ),
          ConfigurationData( "action"            , False , "Action name" ),
+         ConfigurationData( "target"            , False , "Target name" ),
          ConfigurationData( "container"         , False , "Indicates is this script must be run in container" ),
          ConfigurationData( "test"              , False , "Run in test mode" ),
       ]
