@@ -207,6 +207,7 @@ UBUNTU:
         - bash-completion
         - screen
         - tmux
+        - dosfstools
       COMPRESSION: &PACKAGES_APT_COMPRESSION_ALIAS
         - tar
         - zip
