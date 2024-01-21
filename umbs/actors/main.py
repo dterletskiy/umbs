@@ -37,9 +37,9 @@ class Actor:
       pfw.console.debug.info( f"'{self.__namespase}' '{self.__module}': action time {end - begin}" )
    # def do_action
 
-   def do_clean( self ):
+   def do_clean( self, **kwargs ):
       begin = datetime.datetime.now( )
-      self.__instance.do_clean( )
+      self.__instance.do_clean( **kwargs )
       end = datetime.datetime.now( )
       pfw.console.debug.info( f"'{self.__namespase}' '{self.__module}': clean time {end - begin}" )
    # def do_clean
