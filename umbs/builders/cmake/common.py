@@ -41,7 +41,7 @@ class Actor( umbs.builders.base.Actor ):
 
       command = "cmake"
       command += f" --build {self.__product_dir}"
-      command += f" -j {str( self.__config['jobs'] )}" if "jobs" in self.__config else ""
+      command += f" -j{str( self.__config['jobs'] )}" if "jobs" in self.__config else ""
       if None != kw_targets:
          for target in kw_targets:
             command += f" --target {target}"
