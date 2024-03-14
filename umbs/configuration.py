@@ -397,7 +397,7 @@ def value( name: str, index: int = 0 ):
 
 
 
-def init( argv = sys.argv[1:] ):
+def init( argv = sys.argv[1:], **kwargs ):
    MIN_PYTHON = (3, 9)
    if sys.version_info < MIN_PYTHON:
       print( "Python minimal required version is %s.%s" % MIN_PYTHON )
@@ -405,6 +405,10 @@ def init( argv = sys.argv[1:] ):
       sys.exit( 255 )
 
    process_configuration( config, sys.argv[1:] )
+
+   kw_verbose = kwargs.get( "verbose", False )
+   if kw_verbose:
+      info( )
 # def init
 
 def info( ):
