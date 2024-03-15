@@ -55,14 +55,13 @@ def run_in_container( ):
    cfg_file = "./.gen/umbs.cfg"
    cfg_h = open( os.path.join( cfg_file ), "w" )
    for name in umbs.configuration.names( ):
-      if name in [ "container", "config", "umbs" ]:
+      if name in [ "container", "config", "umbs", "YAML.DIRECTORIES.ROOT" ]:
          continue
 
       for value in umbs.configuration.values( name ):
-         if "YAML.DIRECTORIES.ROOT" == name:
-            value = umbs.configuration.value( 'container_root_dir' )
-
          cfg_h.write( f"{name}:         {value}\n" )
+
+   cfg_h.write( f"YAML.DIRECTORIES.ROOT:         {umbs.configuration.value( 'container_root_dir' )}\n" )
    cfg_h.close( )
 
 
@@ -82,6 +81,7 @@ def run_in_container( ):
       pfw.linux.docker.container.start( container_name )
 
    command = f" python3 umbs.py --config={cfg_file}"
+   command += f" --test" if umbs.configuration.value( 'test' ) else ""
    pfw.linux.docker.container.exec( container_name, command = command, workdir = container_umbs_dir )
 # def run_in_container
 
