@@ -11,9 +11,7 @@ import umbs.components.main
 
 
 
-def run( **kwargs ):
-   kw_umbs_components = kwargs.get( "umbs_components", None )
-
+def run( umbs_components, **kwargs ):
    component = umbs.configuration.value( "component" )
    action = umbs.configuration.value( "action" )
    targets = umbs.configuration.values( "target" )
@@ -23,11 +21,11 @@ def run( **kwargs ):
       return
 
    if "*" == component:
-      for _name, _component in kw_umbs_components.items( ):
+      for _name, _component in umbs_components.items( ):
          _component.do_action( action, targets = targets )
    else:
-      if component in kw_umbs_components:
-         kw_umbs_components[ component ].do_action( action, targets = targets )
+      if component in umbs_components:
+         umbs_components[ component ].do_action( action, targets = targets )
       else:
          pfw.console.debug.error( f"undefined component '{component}'" )
 # def run
@@ -76,7 +74,7 @@ def main( ):
    if umbs.configuration.value( 'container' ):
       run_in_container( )
    else:
-      run( umbs_components = umbs_components )
+      run( umbs_components )
 
    pfw.console.debug.ok( "-------------------------- END --------------------------" )
 # def main
