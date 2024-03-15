@@ -36,6 +36,8 @@ class ConfigurationFormatError( Exception ):
 
 class Config:
    def __init__( self, file: str, **kwargs ):
+      kw_verbose = kwargs.get( "verbose", False )
+
       def read_file( file, spaces: str = "" ):
          pattern: str = r"^(\s*)include:\s*\"(.*)\"\s*$"
 
@@ -93,6 +95,9 @@ class Config:
       # Read "tools" section from yaml file
       self.__tools = yaml_data.get( "tools", { } )
       self.__process_yaml_data( self.__tools )
+
+      if kw_verbose:
+         self.info( )
    # def __init__
 
    def __del__( self ):

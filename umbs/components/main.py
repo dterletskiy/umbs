@@ -11,6 +11,33 @@ import umbs.actors.main
 
 
 
+def init( yaml_config, **kwargs ):
+   kw_verbose = kwargs.get( "verbose", False )
+
+   components_map: dict = { }
+   for name in yaml_config.get_components( ):
+      if name in components_map:
+         raise umbs.base.ConfigurationFormatError( f"component '{name}' redefinition" )
+      if component := umbs.components.main.Component( name, yaml_config.get_component( name ), yaml_config.get_variable( "DIRECTORIES.ROOT" ) ):
+         components_map[ name ] = component
+
+   if kw_verbose:
+      info( components_map )
+
+   return components_map
+# def init
+
+def info( components: dict, **kwargs ):
+   kw_verbose = kwargs.get( "verbose", False )
+
+   for name, component in components.items( ):
+      pfw.console.debug.info( f"{name}" )
+      if kw_verbose:
+         component.info( ) # @TDA: debug
+# def info
+
+
+
 class Component:
    def __new__( cls, name: str, yaml_component: dict, root_dir: str ):
       if "active" in yaml_component:
