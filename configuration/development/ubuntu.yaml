@@ -1,5 +1,5 @@
 UBUNTU:
-  VERSION: 22.04
+  VERSION: 20.04
   DOCKER:
     DOCKERFILE: "tda/umbs/umbs/builders/docker/Dockerfile.ubuntu"
   ROOTFS:
@@ -47,6 +47,7 @@ UBUNTU:
           - sysfsutils
           - software-properties-common
           - whois
+          - debianutils
           # - dialog
         DRIVERS: &PACKAGES_APT_SYSTEM_DRIVERS_ALIAS
           - mtd-utils
@@ -103,6 +104,7 @@ UBUNTU:
         - nethogs
         - iptstate
         - curl
+        - wget
         - rsync
         - ssh
         - openssh-server
@@ -113,6 +115,8 @@ UBUNTU:
           - build-essential
           - gcc
           - g++
+          - gcc-multilib
+          - g++-multilib
           - ncurses-dev
           - iasl
           - binutils
@@ -127,6 +131,7 @@ UBUNTU:
           - graphviz
           - chrpath
           - gawk
+          - diffstat
           # - linux-headers-generic
         SYNTAX: &PACKAGES_APT_DEV_SYNTAX_ALIAS
           - flex
@@ -175,12 +180,14 @@ UBUNTU:
 
           - libglib2.0-dev
           - libglib2.0-dev-bin
+          - libegl1-mesa
 
           - libdrm-common
           - libdrm-dev
           - libdrm-tests
           - libdrm2
 
+          - libsdl1.2-dev
           - libsdl2-dev
           - libsdl2-doc
 
@@ -207,7 +214,10 @@ UBUNTU:
         - bash-completion
         - screen
         - tmux
+        - xterm
         - dosfstools
+        - time
+        - file
       COMPRESSION: &PACKAGES_APT_COMPRESSION_ALIAS
         - tar
         - zip
@@ -218,7 +228,9 @@ UBUNTU:
         - rarcrack
         - xz-utils
         - cpio
+        - zstd
         - zlib1g-dev
+        - liblz4-tool
       PERIPHERALS: &PACKAGES_APT_PERIPHERALS_ALIAS
         - ser2net
         - minicom
@@ -240,3 +252,6 @@ UBUNTU:
       - pwinput
       - pandas
       - odfpy
+      - pexpect
+      - jinja2
+      - python-git
