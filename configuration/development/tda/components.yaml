@@ -18,9 +18,9 @@ tda-python_fw:
       subdir: pfw
 
 
-tda-carpc:
+tda-carpc-repo:
   active: true
-  subdir: tda/carpc
+  subdir: tda/carpc-repo
   sources:
     - type: repo
       manifest:
@@ -60,6 +60,91 @@ tda-carpc:
         - "out/deploy/lib/libruntime.so"
         - "out/deploy/lib/libhooks.so"
         - "out/deploy/lib/libinstrumental.so"
+      deps:
+        - ""
+
+
+tda-carpc-framework:
+  active: true
+  subdir: tda/carpc-umbs
+  sources:
+    - type: git
+      url: git@github.com:dterletskiy/carpc-builder.git
+      depth: 1
+      subdir: carpc-builder
+    - type: git
+      url: git@github.com:dterletskiy/carpc-tracing.git
+      depth: 1
+      subdir: framework/carpc-tracing
+    - type: git
+      url: git@github.com:dterletskiy/carpc-base.git
+      depth: 1
+      subdir: framework/carpc-base
+    - type: git
+      url: git@github.com:dterletskiy/carpc-tools.git
+      depth: 1
+      subdir: framework/carpc-tools
+    - type: git
+      url: git@github.com:dterletskiy/carpc-osw.git
+      depth: 1
+      subdir: framework/carpc-osw
+    - type: git
+      url: git@github.com:dterletskiy/carpc-runtime.git
+      depth: 1
+      subdir: framework/carpc-runtime
+    - type: git
+      url: git@github.com:dterletskiy/carpc-servicebrocker.git
+      depth: 1
+      subdir: framework/carpc-servicebrocker
+  patches:
+    - type: file
+      create: true
+      location: framework
+      name: CMakeLists.txt
+      content:
+        - "fenix_add_subdirectory( carpc-tracing )"
+        - "fenix_add_subdirectory( carpc-base )"
+        - "fenix_add_subdirectory( carpc-tools )"
+        - "fenix_add_subdirectory( carpc-osw )"
+        - "fenix_add_subdirectory( carpc-runtime )"
+        - "fenix_add_subdirectory( carpc-servicebrocker )"
+  builders:
+    - type: cmake.common
+      subdirs:
+        target: "carpc-builder"
+        product: "_product_/build"
+        deploy: "_product_/deploy"
+      graphviz: "_product_/doc/graph/project"
+      jobs: 8
+      variables:
+        - "ROOT_GEN_DIR:STRING=${DIRECTORIES.ROOT}/tda/carpc-umbs/_product_/gen"
+        - "SOURCE_DIR=${DIRECTORIES.ROOT}/tda/carpc-umbs/framework"
+        # - "CARPC_API="
+        # - "CARPC_LIB="
+        - "TARGET_OS:STRING=linux"
+        - "DLT_TRACE:STRING=yes"
+        - "SYS_TRACE:STRING=yes"
+        - "MSG_TRACE:STRING=yes"
+        - "COLORED_TRACE:STRING=yes"
+        - "DEBUG_STREAM:STRING=no"
+        - "MEMORY_HOOK:STRING=no"
+        - "INSTRUMENTAL:STRING=no"
+        - "USE_DEBUG:STRING=no"
+        - "USE_GPB:STRING=yes"
+        - "CMAKE_C_COMPILER:STRING=cc"
+        - "CMAKE_CXX_COMPILER:STRING=c++"
+        - "CMAKE_VERBOSE_MAKEFILE=TRUE"
+      env:
+        - "CC=/usr/bin/cc"
+        - "CXX=/usr/bin/c++"
+      artifacts:
+        - "_product_/deploy/bin/servicebrocker"
+        - "_product_/deploy/lib/libtracing.so"
+        - "_product_/deploy/lib/libbase.so"
+        - "_product_/deploy/lib/libtools.so"
+        - "_product_/deploy/lib/libosw.so"
+        - "_product_/deploy/lib/libruntime.so"
+        - "_product_/deploy/bin/servicebrocker"
       deps:
         - ""
 
