@@ -26,12 +26,12 @@ class Actor:
 
       self.__dependencies = self.__config.get( "deps", [ ] )
       self.__artifacts = [
-            os.path.join( self.__component_dir, a ) for a in self.__config.get( "artifacts", [ ] )
+            os.path.join( self.__component_dir, a ) for a in self.__config.get( "artifacts", [ ] ) if a
          ]
 
       self.__export = ""
       for env in self.__config.get( "env", [ ] ):
-         self.__export += f" export {env};" if 0 < len( env ) else ""
+         self.__export += f"export {env}; " if 0 < len( env ) else ""
 
       self.__functions = {
             "exec": kwargs.get( "exec", [ ] ),
