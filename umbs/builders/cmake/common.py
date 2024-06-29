@@ -28,7 +28,7 @@ class Actor( umbs.builders.base.Actor ):
       command += f" --install-prefix {self.__deploy_dir}"
       command += f" --graphviz={self.__graphviz_dir}" if self.__graphviz_dir else ""
       for variable in self.__variables:
-         command += f" -D{variable}"
+         command += f" -D {variable}"
       result = self.execute( command )
       if 0 != result["code"]:
          return False
@@ -54,8 +54,8 @@ class Actor( umbs.builders.base.Actor ):
 
    def deploy( self, **kwargs ):
       command = "cmake"
-      command += f" --build {self.__product_dir}"
-      command += f" --target install"
+      command += f" --install {self.__product_dir}"
+      # command += f" --target install"
       result = self.execute( command )
       if 0 != result["code"]:
          return False
