@@ -23,11 +23,12 @@ class Actor( umbs.builders.base.Actor ):
             raise umbs.base.YamlFormatError( f"Filed '{key}' must be defined in builder" )
 
       self.__target = self.__config["target"]
-      self.__layers = [ os.path.join( self.__component_dir, i ) for i in self.__config.get( "layers", [ ] ) ]
+      self.__layers = [ os.path.join( self.__component_dir, i ) for i in self.__config.get( "layers", [ ] ) if i ]
    # def __init__
 
    def config( self, **kwargs ):
-      command = f""
+      command = "bitbake-layers add-layer "
+      command += f" && bitbake-layers add-layer ".join( self.__layers )
       return 0 == self.__execute( command )["code"]
    # def config
 
@@ -43,12 +44,10 @@ class Actor( umbs.builders.base.Actor ):
    # def clean
 
    def __execute( self, command ):
-      cmd = f"source oe-init-build-env {self.__product_dir}"
-      for layer in self.__layers:
-         cmd += f" && {layer}"
-      if command and 0 < len( command ):
-         cmd += f" && {command}"
-      return self.execute( cmd )
+      if not command:
+         return False
+
+      return self.execute( f"source poky/oe-init-build-env {self.__product_dir} && {command}" )
    # def __execute
 # class Actor
 

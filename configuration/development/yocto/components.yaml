@@ -3,21 +3,31 @@ yocto-poky:
   subdir: "yocto"
   sources:
     - type: git
-      url: ${YOCTO.POKY.SOURCE.URL}
-      branch: ${YOCTO.POKY.SOURCE.BRANCH}
+      url: "git://git.yoctoproject.org/poky"
+      branch: "mickledore"
       depth: 1
       subdir: "poky"
+      submodules: false
+    - type: git
+      url: "https://git.openembedded.org/meta-openembedded/"
+      branch: "mickledore"
+      depth: 1
+      subdir: "meta-openembedded"
       submodules: false
   builders:
     - type: yocto.common
       subdirs:
-        target: "poky"
+        target: "."
         product: "build"
         deploy: "deploy"
       jobs: 8
-      target: ${YOCTO.POKY.CONFIG.TARGET}
+      target: "core-image-minimal"
       layers:
-        - ""
+        - "poky/meta"
+        - "poky/meta-poky"
+        - "poky/meta-yocto-bsp"
+        - "meta-openembedded/meta-oe"
+        - "meta-openembedded/meta-python"
       env:
         - ""
       artifacts:
