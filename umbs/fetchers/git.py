@@ -24,6 +24,7 @@ class Actor( umbs.fetchers.base.Actor ):
             branch = self.__config.get( "branch", None ),
             directory = self.__target_dir,
             depth = self.__config.get( "depth", 1 ),
+            single_branch = self.__config.get( "single_branch", True ),
          )
    # def __init__
 
