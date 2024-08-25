@@ -1,19 +1,44 @@
-yocto-poky:
+yocto-ros:
   active: true
   subdir: "yocto"
   sources:
     - type: git
-      url: "git://git.yoctoproject.org/poky"
-      branch: "mickledore"
+      url: "https://git.yoctoproject.org/poky"
+      branch: "dunfell"
       depth: 1
       subdir: "poky"
       submodules: false
     - type: git
       url: "https://git.openembedded.org/meta-openembedded/"
-      branch: "mickledore"
+      branch: "dunfell"
       depth: 1
       subdir: "meta-openembedded"
       submodules: false
+    - type: git
+      url: "https://github.com/ros/meta-ros.git"
+      branch: "dunfell"
+      depth: 1
+      subdir: "meta-ros"
+      submodules: false
+    - type: git
+      url: "https://github.com/ros2-gbp/demos-release.git"
+      depth: 1
+      subdir: "demos-release"
+      submodules: false
+      single_branch: false
+  # patches:
+  #   - type: yocto.layers
+  #     layers:
+  #       - "poky/meta"
+  #       - "poky/meta-poky"
+  #       - "poky/meta-yocto-bsp"
+  #       - "meta-openembedded/meta-oe"
+  #       - "meta-openembedded/meta-python"
+  #       - "meta-ros/meta-ros-backports-gatesgarth"
+  #       - "meta-ros/meta-ros-backports-hardknott"
+  #       - "meta-ros/meta-ros-common"
+  #       - "meta-ros/meta-ros2"
+  #       - "meta-ros/meta-ros2-foxy"
   builders:
     - type: yocto.common
       subdirs:
@@ -21,13 +46,18 @@ yocto-poky:
         product: "build"
         deploy: "deploy"
       jobs: 8
-      target: "core-image-minimal"
       layers:
         - "poky/meta"
         - "poky/meta-poky"
         - "poky/meta-yocto-bsp"
         - "meta-openembedded/meta-oe"
         - "meta-openembedded/meta-python"
+        - "meta-ros/meta-ros-backports-gatesgarth"
+        - "meta-ros/meta-ros-backports-hardknott"
+        - "meta-ros/meta-ros-common"
+        - "meta-ros/meta-ros2"
+        - "meta-ros/meta-ros2-foxy"
+      target: "ros-image-core"
       env:
         - ""
       artifacts:
