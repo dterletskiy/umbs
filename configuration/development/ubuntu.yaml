@@ -110,6 +110,8 @@ UBUNTU:
         - openssh-server
         - socat
         - sshpass
+        - valgrind
+        - kcachegrind
       DEV: &PACKAGES_APT_DEV_ALIAS
         BASE: &PACKAGES_APT_BASE_ALIAS
           - build-essential
