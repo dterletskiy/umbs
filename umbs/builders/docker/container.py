@@ -21,7 +21,7 @@ class Actor( umbs.builders.base.Actor ):
 
       for key in ["name", "image"]:
          if key not in self.__config:
-            raise umbs.base.YamlFormatError( f"Filed '{key}' must be defined in builder" )
+            raise pfw.base.yaml.YamlFormatError( f"Filed '{key}' must be defined in builder" )
 
       self.__container_name = self.__config["name"]
       self.__image_name = self.__config["image"]["name"]

@@ -5,11 +5,11 @@ import subprocess
 import pfw.console
 import pfw.shell
 import pfw.size
+import pfw.base.yaml
 import pfw.linux.image
 import pfw.linux.fs
 import pfw.linux.file
 
-import umbs.base
 import umbs.builders.base
 
 
@@ -26,16 +26,16 @@ class Actor( umbs.builders.base.Actor ):
 
       for key in [ "file" ]:
          if key not in self.__config:
-            raise umbs.base.YamlFormatError( f"Filed '{key}' must be defined in builder" )
+            raise pfw.base.yaml.YamlFormatError( f"Filed '{key}' must be defined in builder" )
 
 
       if "size" in self.__config:
          if match := re.match( r'(\d+[.]?\d*)\s*(\w+)', self.__config["size"] ):
             if not pfw.size.text_to_size( match.group( 2 ) ):
-               raise umbs.base.YamlFormatError( f"image size dimention error" )
+               raise pfw.base.yaml.YamlFormatError( f"image size dimention error" )
             self.__size = pfw.size.Size( float( match.group( 1 ) ), pfw.size.text_to_size( match.group( 2 ) ) )
          else:
-            raise umbs.base.YamlFormatError( f"image size format error" )
+            raise pfw.base.yaml.YamlFormatError( f"image size format error" )
 
       self.__file = os.path.join( self.__target_dir, self.__config["file"] )
       self.__partitions = self.__config.get( "partitions", [ ] )
@@ -71,14 +71,14 @@ class Actor( umbs.builders.base.Actor ):
             size = None
             if match := re.match( r'(\d+[.]?\d*)\s*(\w+)', partition["size"] ):
                if not pfw.size.text_to_size( match.group( 2 ) ):
-                  raise umbs.base.YamlFormatError( f"aprtition size dimention error" )
+                  raise pfw.base.yaml.YamlFormatError( f"aprtition size dimention error" )
                size = pfw.size.Size( float( match.group( 1 ) ), pfw.size.text_to_size( match.group( 2 ) ) )
             else:
-               raise umbs.base.YamlFormatError( f"partition size format error" )
+               raise pfw.base.yaml.YamlFormatError( f"partition size format error" )
 
             fs = pfw.linux.fs.builder( partition["fs"] )
             if not fs:
-               raise umbs.base.YamlFormatError( f"partition fs format error" )
+               raise pfw.base.yaml.YamlFormatError( f"partition fs format error" )
 
             partitions.append(
                   pfw.linux.image.Partition(
@@ -88,7 +88,7 @@ class Actor( umbs.builders.base.Actor ):
                      )
                )
          else:
-            raise umbs.base.YamlFormatError( f"Filed 'file' or 'size' and 'fs' must be defined in partition definition" )
+            raise pfw.base.yaml.YamlFormatError( f"Filed 'file' or 'size' and 'fs' must be defined in partition definition" )
 
       device = pfw.linux.image.Device( partitions = partitions )
       pfw.linux.image.create( self.__file, device.size( ) )

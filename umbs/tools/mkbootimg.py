@@ -2,8 +2,8 @@ import os
 
 import pfw.console
 import pfw.shell
+import pfw.base.yaml
 
-import umbs.base
 import umbs.tools.base
 
 
@@ -20,7 +20,7 @@ class Actor( umbs.tools.base.Actor ):
 
       for key in [ "kernel", "ramdisk", "out" ]:
          if key not in self.__config:
-            raise umbs.base.YamlFormatError( f"Filed '{key}' must be defined in tool" )
+            raise pfw.base.yaml.YamlFormatError( f"Filed '{key}' must be defined in tool" )
 
       __exe = "mkbootimg"
       if "exe" in self.__config:

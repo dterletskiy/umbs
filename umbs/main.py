@@ -3,9 +3,10 @@ import sys
 
 import pfw.console
 import pfw.shell
+import pfw.base.yaml
+import pfw.base.function
 import pfw.linux.docker.container
 
-import umbs.base
 import umbs.configuration
 import umbs.components.main
 
@@ -65,8 +66,35 @@ def run_in_container( ):
 # def run_in_container
 
 
+def yaml_postprocessor( yaml_config: pfw.base.yaml.Processor ):
+   pfw.console.debug.warning( "yaml_postprocessor" )
+   # Override some variables according to "config" file or command line
+   for name in umbs.configuration.names( ):
+      if not name.startswith( "YAML." ):
+         continue
+
+      replace_name = name.removeprefix( "YAML." )
+      replace_value = umbs.configuration.value( name )
+
+      pfw.console.debug.info( f"detected configuration variable '{name}' with value '{replace_value}'" )
+      pfw.console.debug.info( f"changing value of variable '{replace_name}'" )
+      pfw.console.debug.info( f"'{replace_name}' = '{yaml_config.get_variable( replace_name )}'" )
+      yaml_config.set_variable( replace_name, replace_value )
+      pfw.console.debug.info( f"'{replace_name}' = '{yaml_config.get_variable( replace_name )}'" )
+# def yaml_postprocessor
+
+
+
 def main( ):
-   yaml_config: umbs.base.Config = umbs.base.Config( umbs.configuration.value( "yaml_config" ), verbose = True )
+   yaml_config: pfw.base.yaml.Processor = pfw.base.yaml.Processor(
+      umbs.configuration.value( "yaml_config" ),
+      critical_variables = [ "DIRECTORIES.ROOT" ],
+      root_nodes = [ "components" ],
+      verbose = False,
+      gen_dir = "./.gen",
+      postprocessor = pfw.base.function.Holder( yaml_postprocessor )
+   )
+
    umbs_components: dict = umbs.components.main.init( yaml_config, verbose = True )
 
    pfw.console.debug.ok( "------------------------- BEGIN -------------------------" )

@@ -20,7 +20,7 @@ class Actor( umbs.builders.base.Actor ):
       strict_fields = [ "target" ]
       for key in strict_fields:
          if key not in self.__config:
-            raise umbs.base.YamlFormatError( f"Filed '{key}' must be defined in builder" )
+            raise pfw.base.yaml.YamlFormatError( f"Filed '{key}' must be defined in builder" )
 
       self.__target = self.__config["target"]
       self.__layers = [ os.path.join( self.__component_dir, i ) for i in self.__config.get( "layers", [ ] ) if i ]

@@ -21,7 +21,7 @@ class Actor( umbs.builders.base.Actor ):
       strict_fields = [ "config", "command" ]
       for key in strict_fields:
          if key not in self.__config:
-            raise umbs.base.YamlFormatError( f"Filed '{key}' must be defined in builder" )
+            raise pfw.base.yaml.YamlFormatError( f"Filed '{key}' must be defined in builder" )
 
       self.__target = self.__config['config']
 

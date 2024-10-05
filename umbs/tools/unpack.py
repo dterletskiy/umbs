@@ -2,9 +2,9 @@ import os
 
 import pfw.console
 import pfw.shell
+import pfw.base.yaml
 import pfw.linux.archive
 
-import umbs.base
 import umbs.tools.base
 
 
@@ -21,7 +21,7 @@ class Actor( umbs.tools.base.Actor ):
 
       for key in [ "file" ]:
          if key not in self.__config:
-            raise umbs.base.YamlFormatError( f"Filed '{key}' must be defined in tool" )
+            raise pfw.base.yaml.YamlFormatError( f"Filed '{key}' must be defined in tool" )
 
 
       self.__file = os.path.join( self.__component_dir, self.__config[ "file" ] )

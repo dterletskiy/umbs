@@ -6,12 +6,12 @@ import pfw.console
 import pfw.shell
 import pfw.size
 import pfw.archive
+import pfw.base.yaml
 import pfw.linux.image
 import pfw.linux.fs
 import pfw.linux.file
 import pfw.linux.archive
 
-import umbs.base
 import umbs.builders.base
 
 
@@ -34,21 +34,21 @@ class Actor( umbs.builders.base.Actor ):
       strict_fields = [ "file" ] if self.__reuse else [ "file", "size", "fs" ]
       for key in strict_fields:
          if key not in self.__config:
-            raise umbs.base.YamlFormatError( f"Filed '{key}' must be defined in builder" )
+            raise pfw.base.yaml.YamlFormatError( f"Filed '{key}' must be defined in builder" )
 
       self.__file = os.path.join( self.__target_dir, self.__config["file"] )
 
       if not self.__reuse:
          if match := re.match( r'(\d+[.]?\d*)\s*(\w+)', self.__config["size"] ):
             if not pfw.size.text_to_size( match.group( 2 ) ):
-               raise umbs.base.YamlFormatError( f"image size dimention error" )
+               raise pfw.base.yaml.YamlFormatError( f"image size dimention error" )
             self.__size = pfw.size.Size( float( match.group( 1 ) ), pfw.size.text_to_size( match.group( 2 ) ) )
          else:
-            raise umbs.base.YamlFormatError( f"image size format error" )
+            raise pfw.base.yaml.YamlFormatError( f"image size format error" )
 
          self.__fs = pfw.linux.fs.builder( self.__config["fs"] )
          if not self.__fs:
-            raise umbs.base.YamlFormatError( f"image fs format error" )
+            raise pfw.base.yaml.YamlFormatError( f"image fs format error" )
       else:
          if not os.path.exists( self.__file ):
             pfw.console.debug.warning( f"'reuse' flag is set to 'true' for not existing file '{self.__file}'" )

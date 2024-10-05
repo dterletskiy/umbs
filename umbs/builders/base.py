@@ -5,7 +5,6 @@ import pfw.shell
 import pfw.base.function
 import pfw.os.environment
 
-import umbs.base
 import umbs.actors.base
 
 

@@ -4,8 +4,8 @@ import os
 
 import pfw.console
 import pfw.shell
+import pfw.base.yaml
 
-import umbs.base
 import umbs.actors.types
 import umbs.actors.main
 
@@ -15,10 +15,10 @@ def init( yaml_config, **kwargs ):
    kw_verbose = kwargs.get( "verbose", False )
 
    components_map: dict = { }
-   for name in yaml_config.get_components( ):
+   for name in yaml_config.get_root_node( "components" ):
       if name in components_map:
-         raise umbs.base.ConfigurationFormatError( f"component '{name}' redefinition" )
-      if component := umbs.components.main.Component( name, yaml_config.get_component( name ), yaml_config.get_variable( "DIRECTORIES.ROOT" ) ):
+         raise pfw.base.yaml.ConfigurationFormatError( f"component '{name}' redefinition" )
+      if component := umbs.components.main.Component( name, yaml_config.get_root_node( "components" )[ name ], yaml_config.get_variable( "DIRECTORIES.ROOT" ) ):
          components_map[ name ] = component
 
    if kw_verbose:
@@ -52,7 +52,7 @@ class Component:
 
       for key in [ "subdir" ]:
          if key not in yaml_component:
-            raise umbs.base.YamlFormatError( f"Filed '{key}' must be defined in the component '{name}'" )
+            raise pfw.base.yaml.YamlFormatError( f"Filed '{key}' must be defined in the component '{name}'" )
 
 
       self.__component_dir = os.path.join( root_dir, yaml_component["subdir"] )
@@ -134,7 +134,7 @@ class Component:
    @staticmethod
    def creator( yaml_config ):
       components: dict = { }
-      for name in yaml_config.get_components( ):
+      for name in yaml_config.get_root_node( "components" ):
          if component := Component( name, yaml_config ):
             components[ name ] = component
 

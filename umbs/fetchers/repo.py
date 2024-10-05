@@ -2,9 +2,9 @@ import os
 
 import pfw.console
 import pfw.shell
+import pfw.base.yaml
 import pfw.linux.repo
 
-import umbs.base
 import umbs.fetchers.base
 
 
@@ -22,7 +22,7 @@ class Actor( umbs.fetchers.base.Actor ):
 
       for key in [ "manifest" ]:
          if key not in self.__config:
-            raise umbs.base.YamlFormatError( f"Filed '{key}' must be defined in fetcher" )
+            raise pfw.base.yaml.YamlFormatError( f"Filed '{key}' must be defined in fetcher" )
 
       self.__repo = pfw.linux.repo.Repo(
             destination = self.__target_dir,

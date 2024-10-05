@@ -4,7 +4,6 @@ import pfw.console
 import pfw.shell
 import pfw.linux.file
 
-import umbs.base
 import umbs.fetchers.base
 import umbs.tools.copy
 

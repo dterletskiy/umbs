@@ -2,8 +2,8 @@ import os
 
 import pfw.console
 import pfw.shell
+import pfw.base.yaml
 
-import umbs.base
 import umbs.tools.base
 
 
@@ -20,7 +20,7 @@ class Actor( umbs.tools.base.Actor ):
 
       for key in [ "sources", "out" ]:
          if key not in self.__config:
-            raise umbs.base.YamlFormatError( f"Filed '{key}' must be defined in tool" )
+            raise pfw.base.yaml.YamlFormatError( f"Filed '{key}' must be defined in tool" )
 
       __exe = "mkimage"
       if "exe" in self.__config:
@@ -39,9 +39,9 @@ class Actor( umbs.tools.base.Actor ):
       if isinstance( __sources, str ):
          __sources = [ __sources ]
       if not isinstance( __sources, list ) and not isinstance( __sources, tuple ):
-         raise umbs.base.YamlFormatError( f"Filed 'sources' must be string or list" )
+         raise pfw.base.yaml.YamlFormatError( f"Filed 'sources' must be string or list" )
       if "multi" != __img_type and 1 < len( __sources ):
-         raise umbs.base.YamlFormatError( f"image type could be only 'multi' for multiple source files" )
+         raise pfw.base.yaml.YamlFormatError( f"image type could be only 'multi' for multiple source files" )
       for index, source in enumerate( __sources ):
          __sources[ index ] = os.path.join( self.__root_dir, source )
       __sources = ':'.join( __sources )

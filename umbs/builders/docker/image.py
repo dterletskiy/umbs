@@ -20,7 +20,7 @@ class Actor( umbs.builders.base.Actor ):
 
       for key in ["dockerfile", "image"]:
          if key not in self.__config:
-            raise umbs.base.YamlFormatError( f"Filed '{key}' must be defined in builder" )
+            raise pfw.base.yaml.YamlFormatError( f"Filed '{key}' must be defined in builder" )
 
       self.__dockerfile = os.path.join( self.__root_dir, self.__config["dockerfile"] )
       self.__image_name = self.__config["image"]["name"]

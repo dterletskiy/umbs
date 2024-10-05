@@ -4,7 +4,6 @@ import pfw.console
 import pfw.shell
 import pfw.base.net
 
-import umbs.base
 import umbs.fetchers.base
 
 
