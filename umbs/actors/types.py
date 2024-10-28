@@ -20,7 +20,7 @@ class eType( enum.Enum ):
    def __str__( self ):
       return str( self.value )
 
-   FETCHER = "umbs.fetchers"
-   BUILDER = "umbs.builders"
-   TOOL = "umbs.tools"
+   FETCHER = "umbs.actors.fetchers"
+   BUILDER = "umbs.actors.builders"
+   TOOL = "umbs.actors.tools"
 # class eType

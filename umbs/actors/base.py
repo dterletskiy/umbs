@@ -7,7 +7,6 @@ import enum
 import yaml
 
 import pfw.console
-import pfw.base.str
 import pfw.base.dict
 import pfw.base.function
 
@@ -25,9 +24,6 @@ class Actor:
       self.__component_dir = kwargs["component_dir"]
 
       self.__dependencies = self.__config.get( "deps", [ ] )
-      self.__artifacts = [
-            os.path.join( self.__component_dir, a ) for a in self.__config.get( "artifacts", [ ] ) if a
-         ]
 
       self.__export = ""
       for env in self.__config.get( "env", [ ] ):
@@ -37,14 +33,6 @@ class Actor:
             "exec": kwargs.get( "exec", [ ] ),
             "clean": kwargs.get( "clean", [ ] ),
          }
-
-      # environment: dict = { }
-      # for env in self.__config.get( "env", [ ] ):
-      #    env_list = env.split( "=" )
-      #    if len( env_list ) not in [1, 2]:
-      #       continue
-      #    environment[ env_list[0] ] = env_list[1] if 2 == len( env_list ) else ""
-      # self.__environment = pfw.os.environment.build( env_add = environment )
    # def __init__
 
    def __del__( self ):
@@ -89,19 +77,33 @@ class Actor:
       return self.__component_dir
    # def component_dir
 
-   def artifacts( self ):
-      return self.__artifacts
-   # def artifacts
-
    def dependencies( self ):
       return self.__dependencies
    # def dependencies
+
+   def artifacts( self ):
+      pass
+   # def artifacts
+
+   def test( self, **kwargs ):
+      result: bool = True
+
+      for artifact in self.artifacts( ):
+         if os.path.exists( artifact ):
+            pfw.console.debug.ok( f"artifact '{artifact}' exists" )
+            self.execute( f"file {artifact}", output = pfw.shell.eOutput.PTY )
+         else:
+            pfw.console.debug.error( f"artifact '{artifact}' does not exist" )
+            result = False
+
+      return result
+   # def test
 
 
 
    def execute( self, command, *argv, **kwargs ):
       kwargs["output"] = kwargs.get( "output", pfw.shell.eOutput.PTY )
-      kwargs["cwd"] = kwargs.get( "cwd", self.__target_dir )
+      kwargs["cwd"] = kwargs.get( "cwd", self.__component_dir )
       if "env" in kwargs: del kwargs["env"] # kwargs["env"] = None # kwargs.get( "env", self.__environment )
 
       return pfw.shell.execute( f"{self.__export} {command}", *argv, **kwargs )
@@ -109,7 +111,7 @@ class Actor:
 
 
 
-   def __get_config( self, keys ):
-      return pfw.base.dict.get_value( self.__config, keys )
+   def __get_config( self, keys, default_value = None ):
+      return pfw.base.dict.get_value( self.__config, keys, default_value )
    # def __get_config
 # class Actor

@@ -1,0 +1,9 @@
+XEN_STABLE_4_19: &XEN_STABLE_4_19_ALIAS
+  SOURCE:
+    GITHUB:
+      URL: "https://github.com/xen-project/xen.git"
+      BRANCH: "stable-4.19"
+
+
+
+XEN: *XEN_STABLE_4_19_ALIAS

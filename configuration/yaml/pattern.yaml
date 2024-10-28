@@ -1,0 +1,57 @@
+author: <string>
+version: <string>
+umbs_min_version: <string>
+
+variables:
+  DIRECTORIES:
+    # Current variable (DIRECTORIES.ROOT) could be changed during runtime initializetion in case if 'root_dir' parameter
+    # defined in configuration file or command line parameter
+    ROOT: <string>
+
+
+<component_name>:
+  active: <bool>
+  # Component subdirectory location
+  # component.dir = root.dir + component.subdir
+  subdir: <string>
+  sources:
+    - type: git
+      # Repository url to clone
+      # required
+      url: <string>
+      # Branch name to clone
+      # optional
+      branch: <string>
+      # Create a shallow clone with a history truncated to the specified number of commits
+      # optional
+      depth: <integer>
+      # Destination directory to clone repository = root.dir + component.subdir + component.source[this].subdir
+      # optional
+      subdir: <string>
+      # Clone only the history leading to the tip of a single branch
+      # optional
+      single_branch: <bool>
+    - type: repo
+      # Manifest file description
+      # required
+      manifest:
+        # Manifest repository location
+        # required
+        url: <string>
+        # Branch name to clone
+        # optional
+        branch: <string>
+        # Manifest file name (default 'default.xml')
+        # optional
+        name: <string>
+        # Create a shallow clone of the manifest repo with given depth (0 for full clone).
+        # See git clone (default: 0)
+        # optional
+        depth: <integer>
+      # Create a shallow clone with given depth; see git clone
+      # optional
+      depth: <integer>
+      # optional
+      subdir: <string>
+  patches:
+  builders:

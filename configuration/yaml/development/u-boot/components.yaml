@@ -1,0 +1,67 @@
+uboot_x64:
+  active: true
+  subdir: u-boot/2024.10/x64
+  sources:
+    - type: git
+      url: ${UBOOT.SOURCE.GITHUB.URL}
+      branch: ${UBOOT.SOURCE.GITHUB.BRANCH}
+      depth: 1
+      single_branch: true
+      subdir: "."
+  builders:
+    - type: make.uboot
+      subdirs:
+        target: "."
+        product: "."
+        deploy: "."
+      defconfig: ${UBOOT.CONFIG.X86_64}
+      arch: "x86_64"
+      compiler: "x86_64-linux-gnu-"
+      jobs: 4
+      env:
+        - ""
+      artifacts:
+        - "u-boot"
+        - "u-boot.bin"
+        - "scripts/dtc/dtc"
+        - "tools/dumpimage"
+        - "tools/fit_info"
+        - "tools/mkenvimage"
+        - "tools/mkimage"
+        - "tools/img2srec"
+      deps:
+        - ""
+
+uboot_aarch64:
+  active: true
+  subdir: u-boot/2024.10/aarch64
+  sources:
+    - type: git
+      url: ${UBOOT.SOURCE.GITHUB.URL}
+      branch: ${UBOOT.SOURCE.GITHUB.BRANCH}
+      depth: 1
+      single_branch: true
+      subdir: "."
+  builders:
+    - type: make.uboot
+      subdirs:
+        target: "."
+        product: "."
+        deploy: "."
+      defconfig: ${UBOOT.CONFIG.ARM64}
+      arch: "arm64"
+      compiler: "aarch64-linux-gnu-"
+      jobs: 4
+      env:
+        - ""
+      artifacts:
+        - "u-boot"
+        - "u-boot.bin"
+        - "scripts/dtc/dtc"
+        - "tools/dumpimage"
+        - "tools/fit_info"
+        - "tools/mkenvimage"
+        - "tools/mkimage"
+        - "tools/img2srec"
+      deps:
+        - ""

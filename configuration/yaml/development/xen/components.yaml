@@ -1,0 +1,55 @@
+xen_x64:
+  active: true
+  subdir: xen/4.19/x64
+  sources:
+    - type: git
+      url: ${XEN.SOURCE.GITHUB.URL}
+      branch: ${XEN.SOURCE.GITHUB.BRANCH}
+      depth: 1
+      single_branch: true
+      subdir: "."
+  builders:
+    - type: make.xen
+      subdirs:
+        target: "."
+        product: "."
+        deploy: "."
+      arch: "x86_64"
+      compiler: "x86_64-linux-gnu-"
+      jobs: 4
+      targets:
+        - "xen"
+      env:
+        - ""
+      artifacts:
+        - "boot"
+      deps:
+        - ""
+
+xen_aarch64:
+  active: true
+  subdir: xen/4.19/aarch64
+  sources:
+    - type: git
+      url: ${XEN.SOURCE.GITHUB.URL}
+      branch: ${XEN.SOURCE.GITHUB.BRANCH}
+      depth: 1
+      single_branch: true
+      subdir: "."
+  builders:
+    - type: make.xen
+      subdirs:
+        target: "."
+        product: "."
+        deploy: "."
+      arch: "arm64"
+      compiler: "aarch64-linux-gnu-"
+      jobs: 4
+      targets:
+        - "xen"
+      env:
+        - ""
+      artifacts:
+        - "boot"
+      deps:
+        - ""

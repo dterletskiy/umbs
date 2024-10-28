@@ -1,0 +1,84 @@
+image_partition_esp:
+  active: true
+  subdir: images/partition
+  # patches:
+  #   - type: copy
+  #     content:
+  #       - # Absolute path or path related from component directory
+  #         from: "%{components.xen_x64.deploy}/usr/local/include"
+  #         # Related path from component directory
+  #         to: "usr/local/include"
+  #   - type: unpack
+  #     # Absolute path or path related from component directory
+  #     file: "%{root}/#_workspace_#/_technical_.zip"
+  #     format: "zip"
+  #     # Related path from component directory
+  #     destination: "unpacked"
+  builders:
+    - type: image.partition
+      file: "esp.img"
+      reuse: false
+      fs: fat32
+      size: 512MB
+      content:
+        - # Absolute path or path related from component directory
+          from: "%{components.xen_aarch64.deploy}/usr/lib64/efi/xen-4.19.1-pre.efi"
+          # Related path from component directory
+          to: "EFI/xen/xen.efi"
+        - from: "%{root}/#_workspace_#/xen.cfg"
+          to: "EFI/xen/xen.cfg"
+        - from: "%{components.xen_aarch64.deploy}/usr/lib64/efi/xen-4.19.1-pre.efi"
+          to: "EFI/BOOT/BOOTAA64.EFI"
+        - from: "%{root}/#_workspace_#/xen.cfg"
+          to: "EFI/BOOT/BOOTAA64.cfg"
+        - from: "%{components.yocto.root}/product/tmp/deploy/images/qemuarm64/Image--6.6.50+git0+c82d4e5d08_1060401052-r0-qemuarm64-20241023150241.bin"
+          to: "EFI/BOOT/Image"
+        - from: "%{components.yocto.root}/product/tmp/deploy/images/qemuarm64/xen-image-minimal-qemuarm64.rootfs-20241023150241.cpio.gz"
+          to: "EFI/BOOT/rootfs.cpio.gz"
+      artifacts:
+        - "esp.img"
+      deps:
+        - ""
+
+image_partition_system:
+  active: true
+  subdir: images/partition
+  builders:
+    - type: image.partition
+      file: "system.img"
+      reuse: false
+      fs: ext2
+      size: 1GB
+      content:
+        - from: "%{root}/#_workspace_#/domd.cfg"
+          to: "domd.cfg"
+        - from: "%{root}/#_workspace_#/Image-6.6.50"
+          to: "domd.kernel"
+        - from: "%{root}/#_workspace_#/qemu.dtb"
+          to: "domd.dtb"
+      artifacts:
+        - "system.img"
+      deps:
+        - ""
+
+image_drive_main:
+  active: true
+  subdir: images/drive
+  builders:
+    - type: image.drive
+      file: "main.img"
+      # size: 5 GB
+      partitions:
+        - label: esp
+          file: "%{components.image_partition_esp.deploy}/esp.img"
+          bootable: true
+          esp: true
+        - label: system
+          file: "%{components.image_partition_system.deploy}/system.img"
+        - label: data
+          size: 1 GB
+          fs: ext4
+      artifacts:
+        - "main.img"
+      deps:
+        - ""

@@ -1,0 +1,14 @@
+UBOOT_2024_10: &UBOOT_2024_10_ALIAS
+  SOURCE:
+    GITHUB:
+      URL: "https://github.com/u-boot/u-boot.git"
+      BRANCH: "v2024.10"
+  CONFIG:
+    ARM: qemu_arm_defconfig
+    ARM64: qemu_arm64_defconfig
+    X86: qemu-x86_defconfig
+    X86_64: qemu-x86_64_defconfig
+
+
+
+UBOOT: *UBOOT_2024_10_ALIAS

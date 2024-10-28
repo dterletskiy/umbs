@@ -1,0 +1,54 @@
+kernel_x64:
+  active: true
+  subdir: kernel/6.11/x64
+  sources:
+    - type: git
+      url: ${KERNEL.SOURCE.GITHUB.URL}
+      branch: ${KERNEL.SOURCE.GITHUB.BRANCH}
+      depth: 1
+      subdir: "."
+  builders:
+    - type: make.kernel
+      subdirs:
+        target: "."
+        product: "."
+        deploy: "."
+      defconfig: ${KERNEL.CONFIG.X64}
+      arch: "x86_64"
+      compiler: "x86_64-linux-gnu-"
+      jobs: 4
+      env:
+        - ""
+      artifacts:
+        - "vmlinuz-6.11.0"
+        - "lib"
+      deps:
+        - ""
+
+kernel_aarch64:
+  active: true
+  subdir: kernel/6.11/aarch64
+  sources:
+    - type: git
+      url: ${KERNEL.SOURCE.GITHUB.URL}
+      branch: ${KERNEL.SOURCE.GITHUB.BRANCH}
+      depth: 1
+      subdir: "."
+  builders:
+    - type: make.kernel
+      subdirs:
+        target: "."
+        product: "."
+        deploy: "."
+      defconfig: ${KERNEL.CONFIG.ARM64}
+      arch: "arm64"
+      compiler: "aarch64-linux-gnu-"
+      jobs: 4
+      env:
+        - ""
+      artifacts:
+        - "vmlinuz-6.11.0"
+        - "lib"
+      deps:
+        - ""
+

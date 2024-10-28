@@ -6,6 +6,7 @@ import pfw.console
 import pfw.shell
 import pfw.base.yaml
 
+import umbs.variables
 import umbs.actors.types
 import umbs.actors.main
 
@@ -56,7 +57,7 @@ class Component:
 
 
       self.__component_dir = os.path.join( root_dir, yaml_component["subdir"] )
-      pfw.shell.execute( f"mkdir -p {self.__component_dir}" )
+      # pfw.shell.execute( f"mkdir -p {self.__component_dir}" )
 
       self.__fetchers = [ ]
       if "sources" in yaml_component:
@@ -110,6 +111,15 @@ class Component:
          "clean": [ self.do_clean ],
          "clean_build": [ self.do_clean, self.do_build ],
          "*": [ self.do_fetch, self.do_patch, self.do_build ],
+         "world": [ self.do_fetch, self.do_patch, self.do_build ],
+         "all": [ self.do_fetch, self.do_patch, self.do_build ],
+      }
+
+      umbs.variables.components[ self.__name ] = {
+         "root": self.__component_dir,
+         "source": os.path.join( self.__component_dir, "source" ),
+         "product": os.path.join( self.__component_dir, "product" ),
+         "deploy": os.path.join( self.__component_dir, "install" )
       }
    # def __init__
 

@@ -1,0 +1,9 @@
+QEMU_STABLE_9_1: &QEMU_STABLE_9_1_ALIAS
+  SOURCE:
+    GITHUB:
+      URL: "https://gitlab.com/qemu-project/qemu.git"
+      BRANCH: "stable-9.1"
+
+
+
+QEMU: *QEMU_STABLE_9_1_ALIAS

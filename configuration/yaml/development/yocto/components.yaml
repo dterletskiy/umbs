@@ -1,0 +1,16 @@
+yocto:
+  active: true
+  subdir: "yocto"
+  sources:
+    - type: git
+      url: "https://git.yoctoproject.org/poky"
+      branch: "scarthgap"
+      subdir: "poky"
+    - type: git
+      url: "https://git.openembedded.org/meta-openembedded/"
+      branch: "scarthgap"
+      subdir: "meta-openembedded"
+    - type: git
+      url: "http://git.yoctoproject.org/git/meta-virtualization"
+      branch: "scarthgap"
+      subdir: "meta-virtualization"

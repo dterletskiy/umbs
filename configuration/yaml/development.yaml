@@ -1,0 +1,41 @@
+author: "dterletskiy"
+version: "1.1.0"
+umbs_min_version: "0.1"
+
+variables:
+
+  ### TEST BEGIN
+  NAME_A: AAA
+  NAME_B: BBB
+  NAME_C: CCC
+  NAME_X: ${NAME_C}
+  A: A
+  B: B
+  C: C
+  AC: AC
+  NAME_AC: ${NAME_${C}}
+  NAME_AB: ${NAME_${${A}C}}
+  ### TEST END
+
+  include: "development/directories.yaml"
+  include: "development/ubuntu.yaml"
+
+  include: "development/u-boot/variables.yaml"
+  include: "development/xen/variables.yaml"
+  include: "development/kernel/variables.yaml"
+  include: "development/qemu/variables.yaml"
+
+  include: "development/yocto/variables.yaml"
+
+components:
+  include: "development/docker/image/components.yaml"
+  include: "development/docker/container/components.yaml"
+
+  include: "development/u-boot/components.yaml"
+  include: "development/xen/components.yaml"
+  include: "development/kernel/components.yaml"
+  include: "development/qemu/components.yaml"
+
+  include: "development/yocto/components.yaml"
+
+  include: "development/image.yaml"
