@@ -320,7 +320,7 @@ def process_configuration( app_data, argv ):
 
    app_data.set_value( "umbs", os.path.dirname( os.path.realpath( sys.argv[0] ) ) )
    if None == app_data.get_value( "pfw" ):
-      app_data.set_value( "pfw", "submodules/python_fw" )
+      app_data.set_value( "pfw", "submodules/dterletskiy/python_fw" )
       print( "Using internal 'pfw': ", app_data.get_value( "pfw" ) )
    else:
       print( "Using external 'pfw': ", app_data.get_value( "pfw" ) )
