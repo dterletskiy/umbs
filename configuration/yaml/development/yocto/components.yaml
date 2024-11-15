@@ -1,6 +1,6 @@
-yocto:
+yocto-virtual:
   active: true
-  subdir: "yocto"
+  subdir: "yocto/virtual"
   sources:
     - type: git
       url: "https://git.yoctoproject.org/poky"
@@ -14,3 +14,109 @@ yocto:
       url: "http://git.yoctoproject.org/git/meta-virtualization"
       branch: "scarthgap"
       subdir: "meta-virtualization"
+  builders:
+    - type: yocto.common
+      subdirs:
+        target: "."
+        product: "."
+        deploy: "."
+      jobs: 8
+      layers:
+        - "poky/meta"
+        - "poky/meta-poky"
+        - "poky/meta-yocto-bsp"
+        - "meta-openembedded/meta-oe"
+        - "meta-openembedded/meta-filesystems"
+        - "meta-openembedded/meta-python"
+        - "meta-openembedded/meta-networking"
+        - "meta-virtualization"
+        - "meta-epam"
+      target: "mc:dom0:xen-image-minimal"
+      env:
+        - ""
+      artifacts:
+        - ""
+      deps:
+        - ""
+
+yocto-dom0:
+  active: true
+  subdir: "yocto/dom0"
+  sources:
+    - type: git
+      url: "https://git.yoctoproject.org/poky"
+      branch: "scarthgap"
+      subdir: "poky"
+    - type: git
+      url: "https://git.openembedded.org/meta-openembedded/"
+      branch: "scarthgap"
+      subdir: "meta-openembedded"
+    - type: git
+      url: "http://git.yoctoproject.org/git/meta-virtualization"
+      branch: "scarthgap"
+      subdir: "meta-virtualization"
+  builders:
+    - type: yocto.common
+      subdirs:
+        target: "."
+        product: "."
+        deploy: "."
+      jobs: 8
+      layers:
+        - "poky/meta"
+        - "poky/meta-poky"
+        - "poky/meta-yocto-bsp"
+        - "meta-openembedded/meta-oe"
+        - "meta-openembedded/meta-filesystems"
+        - "meta-openembedded/meta-python"
+        - "meta-openembedded/meta-networking"
+        - "meta-virtualization"
+        - "meta-epam"
+      target: "xen-image-minimal"
+      env:
+        - ""
+      artifacts:
+        - ""
+      deps:
+        - ""
+
+yocto-domd:
+  active: true
+  subdir: "yocto/domd"
+  sources:
+    - type: git
+      url: "https://git.yoctoproject.org/poky"
+      branch: "scarthgap"
+      subdir: "poky"
+    - type: git
+      url: "https://git.openembedded.org/meta-openembedded/"
+      branch: "scarthgap"
+      subdir: "meta-openembedded"
+    - type: git
+      url: "http://git.yoctoproject.org/git/meta-virtualization"
+      branch: "scarthgap"
+      subdir: "meta-virtualization"
+  builders:
+    - type: yocto.common
+      subdirs:
+        target: "."
+        product: "."
+        deploy: "."
+      jobs: 8
+      layers:
+        - "poky/meta"
+        - "poky/meta-poky"
+        - "poky/meta-yocto-bsp"
+        - "meta-openembedded/meta-oe"
+        - "meta-openembedded/meta-filesystems"
+        - "meta-openembedded/meta-python"
+        - "meta-openembedded/meta-networking"
+        - "meta-virtualization"
+        - "meta-epam"
+      target: "xen-guest-image-minimal"
+      env:
+        - ""
+      artifacts:
+        - ""
+      deps:
+        - ""

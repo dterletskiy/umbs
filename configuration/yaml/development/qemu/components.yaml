@@ -1,10 +1,10 @@
-qemu_x64:
+qemu_master_x64:
   active: true
-  subdir: qemu/9.1/x64
+  subdir: qemu/master/x64_0
   sources:
     - type: git
-      url: ${QEMU.SOURCE.GITHUB.URL}
-      branch: ${QEMU.SOURCE.GITHUB.BRANCH}
+      url: ${QEMU_MASTER.SOURCE.GITHUB.URL}
+      branch: ${QEMU_MASTER.SOURCE.GITHUB.BRANCH}
       depth: 1
       single_branch: true
       subdir: "."
@@ -15,36 +15,37 @@ qemu_x64:
         product: "."
         deploy: "."
       arch: "x86_64"
-      compiler: "x86_64-linux-gnu-"
+      # compiler: "x86_64-linux-gnu-"
       jobs: 4
       params:
         config:
           - ""
           - "--target-list=aarch64-softmmu,x86_64-softmmu"
+          - "--enable-user"
+          - "--enable-slirp"
           - "--enable-tools"
           - "--enable-fdt"
           - "--enable-kvm"
           - "--enable-libusb"
-          - "--enable-alsa"
-          - "--audio-drv-list=alsa,oss,pa"
+          # - "--enable-alsa"
+          # - "--audio-drv-list=alsa,oss,pa"
           - "--enable-blkio"
           - "--enable-virtfs"
-          - "--enable-virtfs-proxy-helper"
-          - "--enable-opengl"
+          - "--disable-gtk"
+          - "--disable-sdl"
+          - "--disable-opengl"
           # - "--enable-virglrenderer"
-          # - "--enable-gtk"
-          # - "--enable-sdl"
-          - "--enable-xen"
+          # - "--enable-xen"
           # - "--disable-xen-pci-passthrough"
           # - "--enable-docs"
-          - "--extra-cflags=\"-I%{components.xen_x64.deploy}/usr/local/include\""
+          # - "--extra-cflags=\"-I%{components.xen_x64.deploy}/usr/local/include\""
           - "--extra-cflags=\"-Wno-error=unused-result\""
-          - "--extra-cflags=\"-DXC_WANT_COMPAT_EVTCHN_API=1\""
-          - "--extra-cflags=\"-DXC_WANT_COMPAT_GNTTAB_API=1\""
-          - "--extra-cflags=\"-DXC_WANT_COMPAT_MAP_FOREIGN_API=1\""
-          - "--extra-cflags=\"-DXC_WANT_COMPAT_DEVICEMODEL_API=1\""
-          - "--extra-ldflags=\"-L%{components.xen_x64.deploy}/usr/local/lib\""
-          - "--extra-ldflags=\"-Wl,-rpath,%{components.xen_x64.deploy}/usr/local/lib\""
+          # - "--extra-cflags=\"-DXC_WANT_COMPAT_EVTCHN_API=1\""
+          # - "--extra-cflags=\"-DXC_WANT_COMPAT_GNTTAB_API=1\""
+          # - "--extra-cflags=\"-DXC_WANT_COMPAT_MAP_FOREIGN_API=1\""
+          # - "--extra-cflags=\"-DXC_WANT_COMPAT_DEVICEMODEL_API=1\""
+          # - "--extra-ldflags=\"-L%{components.xen_x64.deploy}/usr/local/lib\""
+          # - "--extra-ldflags=\"-Wl,-rpath,%{components.xen_x64.deploy}/usr/local/lib\""
         build:
           - ""
       targets:
@@ -52,17 +53,18 @@ qemu_x64:
       env:
         - "PATH=/opt/glibc-2.40.9000/sbin:/opt/glibc-2.40.9000/bin:$PATH"
       artifacts:
-        - "boot"
+        - "usr"
+        - "var"
       deps:
         - ""
 
-qemu_aarch64:
+qemu_master_aarch64:
   active: true
-  subdir: qemu/9.1/aarch64
+  subdir: qemu/master/aarch64
   sources:
     - type: git
-      url: ${QEMU.SOURCE.GITHUB.URL}
-      branch: ${QEMU.SOURCE.GITHUB.BRANCH}
+      url: ${QEMU_MASTER.SOURCE.GITHUB.URL}
+      branch: ${QEMU_MASTER.SOURCE.GITHUB.BRANCH}
       depth: 1
       single_branch: true
       subdir: "."
@@ -79,6 +81,69 @@ qemu_aarch64:
         config:
           - ""
           - "--target-list=aarch64-softmmu,x86_64-softmmu"
+          - "--enable-user"
+          - "--enable-slirp"
+          - "--enable-tools"
+          - "--enable-fdt"
+          - "--enable-kvm"
+          - "--enable-libusb"
+          - "--enable-alsa"
+          - "--audio-drv-list=alsa,oss,pa"
+          - "--enable-blkio"
+          - "--enable-virtfs"
+          # - "--enable-virtfs-proxy-helper"
+          - "--enable-opengl"
+          # - "--enable-virglrenderer"
+          # - "--enable-gtk"
+          # - "--enable-sdl"
+          # - "--enable-xen"
+          # - "--disable-xen-pci-passthrough"
+          # - "--enable-docs"
+          # - "--extra-cflags=\"-I%{components.xen_x64.deploy}/usr/local/include\""
+          - "--extra-cflags=\"-Wno-error=unused-result\""
+          # - "--extra-cflags=\"-DXC_WANT_COMPAT_EVTCHN_API=1\""
+          # - "--extra-cflags=\"-DXC_WANT_COMPAT_GNTTAB_API=1\""
+          # - "--extra-cflags=\"-DXC_WANT_COMPAT_MAP_FOREIGN_API=1\""
+          # - "--extra-cflags=\"-DXC_WANT_COMPAT_DEVICEMODEL_API=1\""
+          # - "--extra-ldflags=\"-L%{components.xen_x64.deploy}/usr/local/lib\""
+          # - "--extra-ldflags=\"-Wl,-rpath,%{components.xen_x64.deploy}/usr/local/lib\""
+        build:
+          - ""
+      targets:
+        - ""
+      env:
+        - "PATH=/opt/glibc-2.40.9000/sbin:/opt/glibc-2.40.9000/bin:$PATH"
+      artifacts:
+        - "usr"
+        - "var"
+      deps:
+        - ""
+
+qemu_9_1_x64:
+  active: true
+  subdir: qemu/9.1/x64
+  sources:
+    - type: git
+      url: ${QEMU_STABLE_9_1.SOURCE.GITHUB.URL}
+      branch: ${QEMU_STABLE_9_1.SOURCE.GITHUB.BRANCH}
+      depth: 1
+      single_branch: true
+      subdir: "."
+  builders:
+    - type: make.qemu
+      subdirs:
+        target: "."
+        product: "."
+        deploy: "."
+      arch: "x86_64"
+      compiler: "x86_64-linux-gnu-"
+      jobs: 4
+      params:
+        config:
+          - ""
+          - "--target-list=aarch64-softmmu,x86_64-softmmu"
+          - "--enable-user"
+          - "--enable-slirp"
           - "--enable-tools"
           - "--enable-fdt"
           - "--enable-kvm"
@@ -110,6 +175,68 @@ qemu_aarch64:
       env:
         - "PATH=/opt/glibc-2.40.9000/sbin:/opt/glibc-2.40.9000/bin:$PATH"
       artifacts:
-        - "boot"
+        - "usr"
+        - "var"
+      deps:
+        - ""
+
+qemu_9_1_aarch64:
+  active: true
+  subdir: qemu/9.1/aarch64
+  sources:
+    - type: git
+      url: ${QEMU_STABLE_9_1.SOURCE.GITHUB.URL}
+      branch: ${QEMU_STABLE_9_1.SOURCE.GITHUB.BRANCH}
+      depth: 1
+      single_branch: true
+      subdir: "."
+  builders:
+    - type: make.qemu
+      subdirs:
+        target: "."
+        product: "."
+        deploy: "."
+      arch: "arm64"
+      compiler: "aarch64-linux-gnu-"
+      jobs: 4
+      params:
+        config:
+          - ""
+          - "--target-list=aarch64-softmmu,x86_64-softmmu"
+          - "--enable-user"
+          - "--enable-slirp"
+          - "--enable-tools"
+          - "--enable-fdt"
+          - "--enable-kvm"
+          - "--enable-libusb"
+          - "--enable-alsa"
+          - "--audio-drv-list=alsa,oss,pa"
+          - "--enable-blkio"
+          - "--enable-virtfs"
+          - "--enable-virtfs-proxy-helper"
+          - "--enable-opengl"
+          # - "--enable-virglrenderer"
+          # - "--enable-gtk"
+          # - "--enable-sdl"
+          - "--enable-xen"
+          # - "--disable-xen-pci-passthrough"
+          # - "--enable-docs"
+          - "--extra-cflags=\"-I%{components.xen_x64.deploy}/usr/local/include\""
+          - "--extra-cflags=\"-Wno-error=unused-result\""
+          - "--extra-cflags=\"-DXC_WANT_COMPAT_EVTCHN_API=1\""
+          - "--extra-cflags=\"-DXC_WANT_COMPAT_GNTTAB_API=1\""
+          - "--extra-cflags=\"-DXC_WANT_COMPAT_MAP_FOREIGN_API=1\""
+          - "--extra-cflags=\"-DXC_WANT_COMPAT_DEVICEMODEL_API=1\""
+          - "--extra-ldflags=\"-L%{components.xen_x64.deploy}/usr/local/lib\""
+          - "--extra-ldflags=\"-Wl,-rpath,%{components.xen_x64.deploy}/usr/local/lib\""
+        build:
+          - ""
+      targets:
+        - ""
+      env:
+        - "PATH=/opt/glibc-2.40.9000/sbin:/opt/glibc-2.40.9000/bin:$PATH"
+      artifacts:
+        - "usr"
+        - "var"
       deps:
         - ""

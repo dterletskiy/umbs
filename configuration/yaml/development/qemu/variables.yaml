@@ -1,3 +1,9 @@
+QEMU_MASTER: &QEMU_MASTER_ALIAS
+  SOURCE:
+    GITHUB:
+      URL: "https://gitlab.com/qemu-project/qemu.git"
+      BRANCH: "master"
+
 QEMU_STABLE_9_1: &QEMU_STABLE_9_1_ALIAS
   SOURCE:
     GITHUB:
@@ -6,4 +12,4 @@ QEMU_STABLE_9_1: &QEMU_STABLE_9_1_ALIAS
 
 
 
-QEMU: *QEMU_STABLE_9_1_ALIAS
+QEMU: *QEMU_MASTER_ALIAS

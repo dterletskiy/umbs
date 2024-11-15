@@ -1,19 +1,55 @@
-image_partition_esp:
+image_prepare:
   active: true
-  subdir: images/partition
-  # patches:
-  #   - type: copy
-  #     content:
-  #       - # Absolute path or path related from component directory
-  #         from: "%{components.xen_x64.deploy}/usr/local/include"
-  #         # Related path from component directory
-  #         to: "usr/local/include"
+  subdir: images
+  patches:
+    - type: copy
+      content:
+        - from: "%{root}/yocto/product/tmp/deploy/images/qemuarm64/xen-qemuarm64"
+          to: "artifacts/xen/xen"
+        - from: "%{root}/yocto/product/tmp/deploy/images/qemuarm64/xen-qemuarm64.efi"
+          to: "artifacts/xen/xen.efi"
+    - type: copy
+      content:
+        - from: "%{root}/yocto/product/tmp/deploy/images/qemuarm64/Image"
+          to: "artifacts/xen/dom0/kernel"
+        - from: "%{root}/yocto/product/tmp/deploy/images/qemuarm64/modules-qemuarm64.tgz"
+          to: "artifacts/xen/dom0/modules.tgz"
+        - from: "%{root}/yocto/product/tmp/deploy/images/qemuarm64/xen-image-minimal-qemuarm64.rootfs.cpio.gz"
+          to: "artifacts/xen/dom0/rootfs.cpio.gz"
+        - from: "%{root}/yocto/product/tmp/deploy/images/qemuarm64/xen-image-minimal-qemuarm64.rootfs.tar.bz2"
+          to: "artifacts/xen/dom0/rootfs.tar.bz2"
+        - from: "%{root}/yocto/product/tmp/deploy/images/qemuarm64/xen-image-minimal-qemuarm64.rootfs.ext4"
+          to: "artifacts/xen/dom0/rootfs.ext4"
+        - from: "%{root}/yocto/product/tmp/deploy/images/qemuarm64/xen-image-minimal-qemuarm64.rootfs.qemuboot.conf"
+          to: "artifacts/xen/dom0/qemuboot.conf"
+        - from: "%{root}/yocto/product/tmp/deploy/images/qemuarm64/xen-image-minimal-qemuarm64.rootfs.qemuboot.dtb"
+          to: "artifacts/xen/dom0/qemuboot.dtb"
+    - type: copy
+      content:
+        - from: "%{root}/yocto/product/tmp/deploy/images/qemuarm64/Image"
+          to: "artifacts/xen/domd/kernel"
+        - from: "%{root}/yocto/product/tmp/deploy/images/qemuarm64/modules-qemuarm64.tgz"
+          to: "artifacts/xen/domd/modules.tgz"
+        - from: "%{root}/yocto/product/tmp/deploy/images/qemuarm64/xen-image-minimal-qemuarm64.rootfs.cpio.gz"
+          to: "artifacts/xen/domd/rootfs.cpio.gz"
+        - from: "%{root}/yocto/product/tmp/deploy/images/qemuarm64/xen-image-minimal-qemuarm64.rootfs.tar.bz2"
+          to: "artifacts/xen/domd/rootfs.tar.bz2"
+        - from: "%{root}/yocto/product/tmp/deploy/images/qemuarm64/xen-image-minimal-qemuarm64.rootfs.ext4"
+          to: "artifacts/xen/domd/rootfs.ext4"
+        - from: "%{root}/yocto/product/tmp/deploy/images/qemuarm64/xen-image-minimal-qemuarm64.rootfs.qemuboot.conf"
+          to: "artifacts/xen/domd/qemuboot.conf"
+        - from: "%{root}/yocto/product/tmp/deploy/images/qemuarm64/xen-image-minimal-qemuarm64.rootfs.qemuboot.dtb"
+          to: "artifacts/xen/domd/qemuboot.dtb"
   #   - type: unpack
   #     # Absolute path or path related from component directory
   #     file: "%{root}/#_workspace_#/_technical_.zip"
   #     format: "zip"
   #     # Related path from component directory
   #     destination: "unpacked"
+
+image_partition_esp:
+  active: true
+  subdir: images/partition
   builders:
     - type: image.partition
       file: "esp.img"
