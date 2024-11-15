@@ -28,21 +28,21 @@ class Actor( module_builder_base.Actor ):
    # def __init__
 
    def config( self, **kwargs ):
-      command = "./configure"
+      command = f"./configure {self.__params_config}"
       command += f" --cross-prefix={self.__compiler}" if self.__compiler else ""
-      return 0 == self.execute( "./configure", self.__params_config, print = False, collect = False )["code"]
+      return 0 == self.execute( command, cwd = self.__target_dir, print = False, collect = False )["code"]
    # def config
 
    def build( self, **kwargs ):
-      return 0 == self.execute( self.build_command( ), self.__params_build, self.__targets )["code"]
+      return 0 == self.execute( self.build_command( ), self.__params_build, self.__targets, cwd = self.__target_dir )["code"]
    # def build
 
    def deploy( self, **kwargs ):
-      return 0 == self.execute( "make", "install", f"DESTDIR={self.__deploy_dir}" )["code"]
+      return 0 == self.execute( "make", "install", f"DESTDIR={self.__deploy_dir}", cwd = self.__target_dir )["code"]
    # def deploy
 
    def clean( self, **kwargs ):
-      return 0 == self.execute( self.build_command( ), "clean distclean mrproper" )
+      return 0 == self.execute( self.build_command( ), "clean distclean mrproper", cwd = self.__target_dir )
    # def clean
 
    def build_command( self, **kwargs ):
