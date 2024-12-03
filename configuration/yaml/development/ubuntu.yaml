@@ -139,6 +139,9 @@ UBUNTU:
           - swig
           - cargo
           # - linux-headers-generic
+          - linux-tools-common
+          - linux-tools-generic
+          - linux-tools-$(uname -r)
         SYNTAX: &PACKAGES_APT_DEV_SYNTAX_ALIAS
           - flex
           - flex-doc

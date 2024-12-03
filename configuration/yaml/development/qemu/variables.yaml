@@ -1,15 +1,16 @@
-QEMU_MASTER: &QEMU_MASTER_ALIAS
-  SOURCE:
-    GITHUB:
-      URL: "https://gitlab.com/qemu-project/qemu.git"
-      BRANCH: "master"
+QEMU: 
+  MASTER: &QEMU_MASTER_ALIAS
+    RELEASE: "master"
+    SOURCE:
+      GITHUB:
+        URL: "https://gitlab.com/qemu-project/qemu.git"
+        BRANCH: ${QEMU.MASTER.RELEASE}
 
-QEMU_STABLE_9_1: &QEMU_STABLE_9_1_ALIAS
-  SOURCE:
-    GITHUB:
-      URL: "https://gitlab.com/qemu-project/qemu.git"
-      BRANCH: "stable-9.1"
+  STABLE_9_1: &QEMU_STABLE_9_1_ALIAS
+    RELEASE: "stable-9.1"
+    SOURCE:
+      GITHUB:
+        URL: "https://gitlab.com/qemu-project/qemu.git"
+        BRANCH: ${QEMU.STABLE_9_1.RELEASE}
 
-
-
-QEMU: *QEMU_MASTER_ALIAS
+  DEFAULT: *QEMU_MASTER_ALIAS

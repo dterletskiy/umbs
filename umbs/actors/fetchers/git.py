@@ -1,10 +1,12 @@
+import importlib
 import os
 
 import pfw.console
 import pfw.shell
 import pfw.linux.git
 
-import umbs.actors.fetchers.base
+import umbs.actors.types
+module_fetcher_base = importlib.import_module( f"{umbs.actors.types.eType.FETCHER}.base", __package__ )
 
 
 
@@ -14,7 +16,7 @@ def get_instance( config, **kwargs ):
 
 
 
-class Actor( umbs.actors.fetchers.base.Actor ):
+class Actor( module_fetcher_base.Actor ):
    def __init__( self, config, **kwargs ):
       super( ).__init__( config, **kwargs )
 

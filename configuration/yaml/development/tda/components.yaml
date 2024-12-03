@@ -1,0 +1,103 @@
+carpc:
+  active: true
+  subdir: tda/carpc
+  sources:
+    - type: git
+      url: git@github.com:dterletskiy/carpc-builder.git
+      depth: 1
+      subdir: carpc-builder
+    - type: git
+      url: git@github.com:dterletskiy/carpc-tracing.git
+      depth: 1
+      subdir: framework/carpc-tracing
+    - type: git
+      url: git@github.com:dterletskiy/carpc-base.git
+      depth: 1
+      subdir: framework/carpc-base
+    - type: git
+      url: git@github.com:dterletskiy/carpc-tools.git
+      depth: 1
+      subdir: framework/carpc-tools
+    - type: git
+      url: git@github.com:dterletskiy/carpc-osw.git
+      depth: 1
+      subdir: framework/carpc-osw
+    - type: git
+      url: git@github.com:dterletskiy/carpc-runtime.git
+      depth: 1
+      subdir: framework/carpc-runtime
+    - type: git
+      url: git@github.com:dterletskiy/carpc-servicebrocker.git
+      depth: 1
+      subdir: framework/carpc-servicebrocker
+  patches:
+    - type: file
+      create: true
+      location: source/framework
+      name: CMakeLists.txt
+      content:
+        - "fenix_add_subdirectory( carpc-tracing )"
+        - "fenix_add_subdirectory( carpc-base )"
+        - "fenix_add_subdirectory( carpc-tools )"
+        - "fenix_add_subdirectory( carpc-osw )"
+        - "fenix_add_subdirectory( carpc-runtime )"
+        - "fenix_add_subdirectory( carpc-servicebrocker )"
+  builders:
+    - type: cmake.common
+      subdirs:
+        target: "carpc-builder"
+        product: "."
+        deploy: "."
+      graphviz: "%{components.carpc.product}/doc/graph/project"
+      jobs: 8
+      variables:
+        - "ROOT_GEN_DIR:STRING=%{components.carpc.product}/gen"
+        - "SOURCE_DIR=%{components.carpc.source}/framework"
+        # - "CARPC_API="
+        # - "CARPC_LIB="
+        - "TARGET_OS:STRING=linux"
+        - "DLT_TRACE:STRING=yes"
+        - "SYS_TRACE:STRING=yes"
+        - "MSG_TRACE:STRING=yes"
+        - "COLORED_TRACE:STRING=yes"
+        - "DEBUG_STREAM:STRING=no"
+        - "MEMORY_HOOK:STRING=no"
+        - "INSTRUMENTAL:STRING=no"
+        - "USE_DEBUG:STRING=no"
+        - "USE_GPB:STRING=yes"
+        - "CMAKE_C_COMPILER:STRING=cc"
+        - "CMAKE_CXX_COMPILER:STRING=c++"
+        - "CMAKE_VERBOSE_MAKEFILE=TRUE"
+      env:
+        - "CC=/usr/bin/cc"
+        - "CXX=/usr/bin/c++"
+      targets:
+        # - "install"
+        - "deploy_carpc-tracing"
+        - "deploy_carpc-base"
+        - "deploy_carpc-tools"
+        - "deploy_carpc-osw"
+        - "deploy_carpc-runtime"
+        - "deploy_servicebrocker"
+      artifacts:
+        - "lib/carpc/libcarpc-tracing.so"
+        - "lib/carpc/libcarpc-base.so"
+        - "lib/carpc/libcarpc-tools.so"
+        - "lib/carpc/libcarpc-osw.so"
+        - "lib/carpc/libcarpc-runtime.so"
+        - "bin/carpc/servicebrocker"
+      deps:
+        - ""
+
+carpc-repo:
+  active: true
+  subdir: tda/carpc-repo
+  sources:
+    - type: repo
+      manifest:
+        url: "https://github.com/dterletskiy/carpc-manifest.git"
+        branch: "main"
+        name: "default.xml"
+        depth: 1
+      depth: 1
+      subdir: "."

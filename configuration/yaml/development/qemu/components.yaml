@@ -1,10 +1,10 @@
 qemu_master_x64:
   active: true
-  subdir: qemu/master/x64_0
+  subdir: qemu/${QEMU.DEFAULT.RELEASE}/x64_0
   sources:
     - type: git
-      url: ${QEMU_MASTER.SOURCE.GITHUB.URL}
-      branch: ${QEMU_MASTER.SOURCE.GITHUB.BRANCH}
+      url: ${QEMU.DEFAULT.SOURCE.GITHUB.URL}
+      branch: ${QEMU.DEFAULT.SOURCE.GITHUB.BRANCH}
       depth: 1
       single_branch: true
       subdir: "."
@@ -60,11 +60,11 @@ qemu_master_x64:
 
 qemu_master_aarch64:
   active: true
-  subdir: qemu/master/aarch64
+  subdir: qemu/${QEMU.DEFAULT.RELEASE}/aarch64
   sources:
     - type: git
-      url: ${QEMU_MASTER.SOURCE.GITHUB.URL}
-      branch: ${QEMU_MASTER.SOURCE.GITHUB.BRANCH}
+      url: ${QEMU.DEFAULT.SOURCE.GITHUB.URL}
+      branch: ${QEMU.DEFAULT.SOURCE.GITHUB.BRANCH}
       depth: 1
       single_branch: true
       subdir: "."
@@ -121,11 +121,11 @@ qemu_master_aarch64:
 
 qemu_9_1_x64:
   active: true
-  subdir: qemu/9.1/x64
+  subdir: qemu/${QEMU.STABLE_9_1.RELEASE}/x64
   sources:
     - type: git
-      url: ${QEMU_STABLE_9_1.SOURCE.GITHUB.URL}
-      branch: ${QEMU_STABLE_9_1.SOURCE.GITHUB.BRANCH}
+      url: ${QEMU.STABLE_9_1.SOURCE.GITHUB.URL}
+      branch: ${QEMU.STABLE_9_1.SOURCE.GITHUB.BRANCH}
       depth: 1
       single_branch: true
       subdir: "."
@@ -182,11 +182,11 @@ qemu_9_1_x64:
 
 qemu_9_1_aarch64:
   active: true
-  subdir: qemu/9.1/aarch64
+  subdir: qemu/${QEMU.STABLE_9_1.RELEASE}/aarch64
   sources:
     - type: git
-      url: ${QEMU_STABLE_9_1.SOURCE.GITHUB.URL}
-      branch: ${QEMU_STABLE_9_1.SOURCE.GITHUB.BRANCH}
+      url: ${QEMU.STABLE_9_1.SOURCE.GITHUB.URL}
+      branch: ${QEMU.STABLE_9_1.SOURCE.GITHUB.BRANCH}
       depth: 1
       single_branch: true
       subdir: "."

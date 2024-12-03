@@ -1,23 +1,26 @@
-KERNEL_MASTER: &KERNEL_MASTER_ALIAS
-  SOURCE:
-    GITHUB:
-      URL: "https://github.com/torvalds/linux.git"
-      BRANCH: "master"
-  CONFIG:
-    ARM: vexpress_defconfig
-    ARM64: defconfig
-    X86: x86_64_defconfig
-    X64: x86_64_defconfig
+KERNEL:
+  MASTER: &KERNEL_MASTER_ALIAS
+    RELEASE: "master"
+    SOURCE:
+      GITHUB:
+        URL: "https://github.com/torvalds/linux.git"
+        BRANCH: ${KERNEL.MASTER.RELEASE}
+    CONFIG:
+      ARM: vexpress_defconfig
+      ARM64: defconfig
+      X86: x86_64_defconfig
+      X64: x86_64_defconfig
 
-KERNEL_6_11: &KERNEL_6_11_ALIAS
-  SOURCE:
-    GITHUB:
-      URL: "https://github.com/torvalds/linux.git"
-      BRANCH: "v6.11"
-  CONFIG:
-    ARM: vexpress_defconfig
-    ARM64: defconfig
-    X86: x86_64_defconfig
-    X64: x86_64_defconfig
+  v6_12: &KERNEL_6_12_ALIAS
+    RELEASE: "v6.12"
+    SOURCE:
+      GITHUB:
+        URL: "https://github.com/torvalds/linux.git"
+        BRANCH: ${KERNEL.v6_12.RELEASE}
+    CONFIG:
+      ARM: vexpress_defconfig
+      ARM64: defconfig
+      X86: x86_64_defconfig
+      X64: x86_64_defconfig
 
-KERNEL: *KERNEL_6_11_ALIAS
+  DEFAULT: *KERNEL_6_12_ALIAS

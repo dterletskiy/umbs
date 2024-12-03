@@ -25,6 +25,8 @@ variables:
   include: "development/kernel/variables.yaml"
   include: "development/qemu/variables.yaml"
 
+  include: "development/tda/variables.yaml"
+
   include: "development/yocto/variables.yaml"
 
 components:
@@ -35,6 +37,8 @@ components:
   include: "development/xen/components.yaml"
   include: "development/kernel/components.yaml"
   include: "development/qemu/components.yaml"
+
+  include: "development/tda/components.yaml"
 
   include: "development/yocto/components.yaml"
 

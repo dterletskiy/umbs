@@ -1,10 +1,10 @@
 kernel_x64:
   active: true
-  subdir: kernel/6.11/x64
+  subdir: kernel/${KERNEL.DEFAULT.RELEASE}/x64
   sources:
     - type: git
-      url: ${KERNEL.SOURCE.GITHUB.URL}
-      branch: ${KERNEL.SOURCE.GITHUB.BRANCH}
+      url: ${KERNEL.DEFAULT.SOURCE.GITHUB.URL}
+      branch: ${KERNEL.DEFAULT.SOURCE.GITHUB.BRANCH}
       depth: 1
       subdir: "."
   builders:
@@ -13,7 +13,7 @@ kernel_x64:
         target: "."
         product: "."
         deploy: "."
-      defconfig: ${KERNEL.CONFIG.X64}
+      defconfig: ${KERNEL.DEFAULT.CONFIG.X64}
       arch: "x86_64"
       compiler: "x86_64-linux-gnu-"
       jobs: 4
@@ -27,11 +27,11 @@ kernel_x64:
 
 kernel_aarch64:
   active: true
-  subdir: kernel/6.11/aarch64
+  subdir: kernel/${KERNEL.DEFAULT.RELEASE}/aarch64
   sources:
     - type: git
-      url: ${KERNEL.SOURCE.GITHUB.URL}
-      branch: ${KERNEL.SOURCE.GITHUB.BRANCH}
+      url: ${KERNEL.DEFAULT.SOURCE.GITHUB.URL}
+      branch: ${KERNEL.DEFAULT.SOURCE.GITHUB.BRANCH}
       depth: 1
       subdir: "."
   builders:
@@ -40,7 +40,7 @@ kernel_aarch64:
         target: "."
         product: "."
         deploy: "."
-      defconfig: ${KERNEL.CONFIG.ARM64}
+      defconfig: ${KERNEL.DEFAULT.CONFIG.ARM64}
       arch: "arm64"
       compiler: "aarch64-linux-gnu-"
       jobs: 4
