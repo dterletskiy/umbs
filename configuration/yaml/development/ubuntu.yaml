@@ -142,6 +142,7 @@ UBUNTU:
           - linux-tools-common
           - linux-tools-generic
           - linux-tools-$(uname -r)
+          - u-boot-tools
         SYNTAX: &PACKAGES_APT_DEV_SYNTAX_ALIAS
           - flex
           - flex-doc
