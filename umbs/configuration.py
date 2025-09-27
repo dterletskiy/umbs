@@ -71,8 +71,29 @@ class ConfigurationData:
    # def get_values
 
    def set_value( self, value ):
-      self.__values.append( value )
+      self.set_value_single( value )
    # def set_value
+
+   def set_value_single( self, value ):
+      self.__values.append( value )
+   # def set_value_single
+
+   # Set single value or list of values of variable
+   # In fact this operation adds new value/values to existing value list of variable
+   def set_value_ext( self, value ):
+      if None == value:
+         return
+
+      values_to_add: list = [ ]
+      if isinstance( value, list ) or isinstance( value, tuple ):
+         values_to_add = value
+      elif isinstance( value, dict ) or isinstance( value, set ):
+         return
+      else:
+         values_to_add = [ value ]
+
+      self.__values.extend( values_to_add )
+   # def set_value_ext
 
    # Clear all values of variable
    def reset_value( self, name: str, value = None ):
@@ -159,11 +180,14 @@ class ConfigurationContainer:
       print( self.__class__.__name__, ":" )
       for name, data in self.__map.items( ):
          data.info( )
+         print( );
    # def info
 
 
 
-   def set_data( self, name: str, data: ConfigurationData ):
+   def set_data( self, data: ConfigurationData ):
+      if data.get_name( ) in self.__map.keys( ):
+         print( f"update (rewrite) existing data with name '{data.get_name( )}'" )
       self.__map[ data.get_name( ) ] = data
    # def set_data
 
@@ -314,11 +338,16 @@ def process_config_file( app_data ):
 
 
 
-def process_configuration( app_data, argv ):
-   process_cmdline( app_data, argv )
-   process_config_file( app_data )
+def process_configuration( app_data, argv, **kwargs ):
+   kw_process_cmdline = kwargs.get( "process_cmdline", process_cmdline )
+   kw_process_config_file = kwargs.get( "process_config_file", process_config_file )
 
-   app_data.set_value( "umbs", os.path.dirname( os.path.realpath( sys.argv[0] ) ) )
+   if kw_process_cmdline: 
+      kw_process_cmdline( app_data, argv )
+   if kw_process_config_file:
+      kw_process_config_file( app_data )
+
+   app_data.set_value( "application", os.path.dirname( os.path.realpath( sys.argv[0] ) ) )
    if None == app_data.get_value( "pfw" ):
       app_data.set_value( "pfw", "submodules/dterletskiy/python_fw" )
       print( "Using internal 'pfw': ", app_data.get_value( "pfw" ) )
@@ -376,7 +405,7 @@ def init( argv = sys.argv[1:], **kwargs ):
       print( "Current version is %s.%s" % ( sys.version_info.major, sys.version_info.minor ) )
       sys.exit( 255 )
 
-   process_configuration( config, sys.argv[1:] )
+   process_configuration( config, sys.argv[1:], **kwargs )
 
    kw_verbose = kwargs.get( "verbose", False )
    if kw_verbose:
@@ -384,5 +413,6 @@ def init( argv = sys.argv[1:], **kwargs ):
 # def init
 
 def info( ):
+   print( )
    config.info( )
 # def info
