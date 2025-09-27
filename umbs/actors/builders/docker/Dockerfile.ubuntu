@@ -5,12 +5,17 @@ FROM ${ARG_OS_NAME}:${ARG_OS_VERSION}
 
 ARG ARG_MESSAGE_HEADER="----- "
 
+SHELL ["/bin/bash", "-c"]
+
+
+
 # Fix for tzdata for docker image build
 ENV TZ=UTC
 RUN ln -snf /usr/share/zoneinfo/${TZ} /etc/localtime && echo ${TZ} > /etc/timezone
 
 
-# Install necessary for build packages
+
+# Install apt packages
 ARG ARG_PACKAGES=""
 RUN for PACKAGE in ${ARG_PACKAGES}; do \
       echo ${ARG_MESSAGE_HEADER} "Installing package: ${PACKAGE}" && \
@@ -18,7 +23,7 @@ RUN for PACKAGE in ${ARG_PACKAGES}; do \
    done
 
 
-# Install necessary for build packages
+# Install pip2 packages
 ARG ARG_PIP2_PACKAGES=""
 RUN for PACKAGE in ${ARG_PIP2_PACKAGES}; do \
       echo ${ARG_MESSAGE_HEADER} "Installing pip2 package: ${PACKAGE}" && \
@@ -26,12 +31,26 @@ RUN for PACKAGE in ${ARG_PIP2_PACKAGES}; do \
    done
 
 
-# Install necessary for build packages
+# Install pip3 packages
 ARG ARG_PIP3_PACKAGES=""
 RUN for PACKAGE in ${ARG_PIP3_PACKAGES}; do \
       echo ${ARG_MESSAGE_HEADER} "Installing pip3 package: ${PACKAGE}" && \
       pip3 install ${PACKAGE} || true; \
    done
+
+# Install repo
+RUN echo ${ARG_MESSAGE_HEADER} "Installing google 'repo' tool" && \
+   curl https://storage.googleapis.com/git-repo-downloads/repo > /usr/bin/repo && chmod a+x /usr/bin/repo
+
+
+
+# Set the locale for fix this:
+# "Please use a locale setting which supports UTF-8 (such as LANG=en_US.UTF-8)."
+RUN locale-gen en_US.UTF-8
+ENV LANG en_US.UTF-8
+ENV LANGUAGE en_US:en
+ENV LC_ALL en_US.UTF-8
+
 
 
 # Define user credentials and data
