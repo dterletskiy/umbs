@@ -42,7 +42,7 @@ class Actor( module_builder_base.Actor ):
 
          size = partition.get( "size", None )
          if size:
-            size = umbs.utils.string_to_size( size )
+            size = pfw.size.string_to_size( size )
             if not size:
                raise pfw.base.yaml.YamlFormatError( f"image size format error" )
 
@@ -69,7 +69,7 @@ class Actor( module_builder_base.Actor ):
 
       self.__size = self.__get_config( "size", None )
       if self.__size:
-         self.__size = umbs.utils.string_to_size( self.__size )
+         self.__size = pfw.size.string_to_size( self.__size )
          if None == self.__size:
             raise pfw.base.yaml.YamlFormatError( f"image size format error" )
       else:

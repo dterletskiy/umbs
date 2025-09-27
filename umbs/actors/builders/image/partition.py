@@ -46,7 +46,7 @@ class Actor( module_builder_base.Actor ):
          if not self.__size:
             raise pfw.base.yaml.YamlFormatError( f"image size must be defined" )
 
-         self.__size = umbs.utils.string_to_size( self.__size )
+         self.__size = pfw.size.string_to_size( self.__size )
          if None == self.__size:
             raise pfw.base.yaml.YamlFormatError( f"image size format error" )
 
