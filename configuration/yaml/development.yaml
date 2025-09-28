@@ -33,13 +33,13 @@ components:
   include: "development/docker/image/components.yaml"
   include: "development/docker/container/components.yaml"
 
-  include: "development/u-boot/components.yaml"
-  include: "development/xen/components.yaml"
-  include: "development/kernel/components.yaml"
-  include: "development/qemu/components.yaml"
+  # include: "development/u-boot/components.yaml"
+  # include: "development/xen/components.yaml"
+  # include: "development/kernel/components.yaml"
+  # include: "development/qemu/components.yaml"
 
   include: "development/tda/components.yaml"
 
-  include: "development/yocto/components.yaml"
+  # include: "development/yocto/components.yaml"
 
   # include: "development/image.yaml"

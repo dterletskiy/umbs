@@ -1,6 +1,6 @@
 carpc:
   active: true
-  subdir: tda/carpc
+  subdir: tda/umbs-build/carpc
   sources:
     - type: git
       url: git@github.com:dterletskiy/carpc-builder.git
@@ -78,20 +78,20 @@ carpc:
         - "deploy_carpc-tools"
         - "deploy_carpc-osw"
         - "deploy_carpc-runtime"
-        - "deploy_servicebrocker"
+        - "deploy_carpc-servicebrocker"
       artifacts:
         - "lib/carpc/libcarpc-tracing.so"
         - "lib/carpc/libcarpc-base.so"
         - "lib/carpc/libcarpc-tools.so"
         - "lib/carpc/libcarpc-osw.so"
         - "lib/carpc/libcarpc-runtime.so"
-        - "bin/carpc/servicebrocker"
+        - "bin/carpc/carpc-servicebrocker"
       deps:
         - ""
 
 carpc-repo:
   active: true
-  subdir: tda/carpc-repo
+  subdir: tda/umbs-build/carpc-repo
   sources:
     - type: repo
       manifest:
