@@ -23,7 +23,9 @@ class Actor( umbs.actors.base.Actor ):
             **kwargs
          )
 
-      self.__target_dir = os.path.join( self.__component_dir, "source", self.__config.get( "subdir", "" ) )
+      self.__target_dir = os.path.join(
+            self.__component_dir, "source", self.__config.get( "subdir", "" )
+         )
 
       self.__artifacts = [
             os.path.join( self.__target_dir, a ) for a in self.__get_config( "artifacts", [ ] ) if a

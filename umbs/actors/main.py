@@ -17,7 +17,9 @@ class Actor:
    def __init__( self, **kwargs ):
       self.__namespase = str( kwargs["type"] )
       self.__yaml_data = kwargs["yaml_data"]
-      self.__module = importlib.import_module( f"{self.__namespase}.{self.__yaml_data['type']}", __package__ )
+      self.__module = importlib.import_module(
+               f"{self.__namespase}.{self.__yaml_data['type']}", __package__
+            )
       self.__instance = self.__module.get_instance( self.__yaml_data, **kwargs )
    # def __init__
 
