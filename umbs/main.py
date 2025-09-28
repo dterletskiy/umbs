@@ -29,8 +29,6 @@ def run( umbs_components, **kwargs ):
          _component.do_action( action, targets = targets )
    else:
       if component in umbs_components:
-         pfw.console.debug.error( f"{targets}" )
-         pfw.console.debug.error( f"{type(targets)}" )
          umbs_components[ component ].do_action( action, targets = targets )
       else:
          pfw.console.debug.error( f"undefined component '{component}'" )
@@ -39,6 +37,10 @@ def run( umbs_components, **kwargs ):
 def run_in_container( **kwargs ):
    docker_container_name = kwargs.get( "container", None )
    docker_image_name = kwargs.get( "image", None )
+
+   # container_root_dir = "/mnt/host"
+   stay_in_container = True
+   do_not_remove_container = False
 
    cfg_file = "./.gen/umbs.cfg"
    cfg_h = open( cfg_file, "w" )
@@ -63,28 +65,16 @@ def run_in_container( **kwargs ):
       os.path.join( host_umbs_dir, host_pfw_dir )
    container_pfw_dir = os.path.join( container_root_dir, "../pfw" )
 
-   if( docker_container_name ):
-      if not pfw.linux.docker.container.is_exists( docker_container_name ):
-         pfw.console.debug.error( f"container '{docker_container_name}' does not exist" )
-         return False
-
-      if not pfw.linux.docker.container.is_started( docker_container_name ):
-         pfw.linux.docker.container.start( docker_container_name )
-
-      command = f" python3 umbs.py --config={cfg_file}"
-      command += f" --test" if umbs.configuration.value( 'test' ) else ""
-      pfw.linux.docker.container.exec(
-            docker_container_name,
-            command = command,
-            workdir = container_umbs_dir
-         )
-   elif( docker_image_name ):
+   if( docker_image_name ):
       if not pfw.linux.docker.image.is_exists( docker_image_name ):
          pfw.console.debug.error( f"image '{docker_image_name}' does not exist" )
          return False
 
-      command = f" python3 umbs.py --config={cfg_file}"
-      command += f" --test" if umbs.configuration.value( 'test' ) else ""
+      bash_command = f" python3 umbs.py --config={cfg_file}"
+      bash_command += f" --test" if umbs.configuration.value( 'test' ) else ""
+      if stay_in_container:
+         bash_command += "; exec bash"
+      command = f"bash -c \"{bash_command}\""
       # command = f"bash"
 
       container_umbs_dir = os.path.join( container_root_dir, "../umbs" )
@@ -106,7 +96,22 @@ def run_in_container( **kwargs ):
             command = command,
             workdir = container_umbs_dir,
             volume_mapping = mapping_list,
-            disposable = True
+            disposable = not do_not_remove_container
+         )
+   elif( docker_container_name ):
+      if not pfw.linux.docker.container.is_exists( docker_container_name ):
+         pfw.console.debug.error( f"container '{docker_container_name}' does not exist" )
+         return False
+
+      if not pfw.linux.docker.container.is_started( docker_container_name ):
+         pfw.linux.docker.container.start( docker_container_name )
+
+      command = f" python3 umbs.py --config={cfg_file}"
+      command += f" --test" if umbs.configuration.value( 'test' ) else ""
+      pfw.linux.docker.container.exec(
+            docker_container_name,
+            command = command,
+            workdir = container_umbs_dir
          )
 
    return True
