@@ -275,7 +275,6 @@ def process_cmdline( app_data, argv ):
    parser.add_argument( "--component", dest = "component", type = str, action = "store", required = False, help = app_data.get_description( "component" ) )
    parser.add_argument( "--action", dest = "action", type = str, action = "store", required = False, help = app_data.get_description( "action" ) )
    parser.add_argument( "--target", dest = "target", type = str, action = "append", required = False, help = app_data.get_description( "target" ) )
-   parser.add_argument( "--container", dest = "container", type = str, action = "store", required = False, help = app_data.get_description( "container" ) )
    parser.add_argument( "--container_from", dest = "container_from", type = str, action = "store", required = False, help = app_data.get_description( "container_from" ) )
 
    parser.add_argument( "--test", dest = "test", action = "store_true", help = app_data.get_description( "test" ) )
@@ -375,7 +374,6 @@ config: ConfigurationContainer = ConfigurationContainer(
          ConfigurationData( "component"         , False , "Component name" ),
          ConfigurationData( "action"            , False , "Action name" ),
          ConfigurationData( "target"            , False , "Target name" ),
-         ConfigurationData( "container"         , False , "Define container name what must be used for processing action" ),
          ConfigurationData( "container_from"    , False , "Define image name what must be used to create container for processing action" ),
          ConfigurationData( "test"              , False , "Run in test mode" ),
       ]

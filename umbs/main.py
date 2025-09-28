@@ -35,7 +35,6 @@ def run( umbs_components, **kwargs ):
 # def run
 
 def run_in_container( **kwargs ):
-   docker_container_name = kwargs.get( "container", None )
    docker_image_name = kwargs.get( "image", None )
 
    # container_root_dir = "/mnt/host"
@@ -45,7 +44,7 @@ def run_in_container( **kwargs ):
    cfg_file = "./.gen/umbs.cfg"
    cfg_h = open( cfg_file, "w" )
    for name in umbs.configuration.names( ):
-      if name in [ "container", "config", "application", "YAML.DIRECTORIES.ROOT" ]:
+      if name in [ "container_from", "config", "application", "YAML.DIRECTORIES.ROOT" ]:
          continue
 
       for value in umbs.configuration.values( name ):
@@ -97,21 +96,6 @@ def run_in_container( **kwargs ):
             workdir = container_umbs_dir,
             volume_mapping = mapping_list,
             disposable = not do_not_remove_container
-         )
-   elif( docker_container_name ):
-      if not pfw.linux.docker.container.is_exists( docker_container_name ):
-         pfw.console.debug.error( f"container '{docker_container_name}' does not exist" )
-         return False
-
-      if not pfw.linux.docker.container.is_started( docker_container_name ):
-         pfw.linux.docker.container.start( docker_container_name )
-
-      command = f" python3 umbs.py --config={cfg_file}"
-      command += f" --test" if umbs.configuration.value( 'test' ) else ""
-      pfw.linux.docker.container.exec(
-            docker_container_name,
-            command = command,
-            workdir = container_umbs_dir
          )
 
    return True
@@ -199,9 +183,7 @@ def main( ):
 
    pfw.console.debug.ok( "------------------------- BEGIN -------------------------" )
 
-   if docker_container_name := umbs.configuration.value( 'container' ):
-      run_in_container( container = docker_container_name )
-   elif docker_image_name := umbs.configuration.value( 'container_from' ):
+   if docker_image_name := umbs.configuration.value( 'container_from' ):
       run_in_container( image = docker_image_name )
    else:
       run( umbs_components )
