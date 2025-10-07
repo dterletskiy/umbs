@@ -54,17 +54,14 @@ def run_in_container( docker_image_name, **kwargs ):
    for name in umbs.configuration.names( ):
       # Skip parameters what must not be present in config for container execution
       # because they will be substituted or should not be at all
-      if name in [ "container_from", "config", "application", "YAML.DIRECTORIES.ROOT" ]:
+      if name in [ "pfw", "container_from", "config", "application", "YAML.DIRECTORIES.ROOT" ]:
          continue
-      # Replacing 'pfw' path corresponding to container path
-      if name == "pfw":
-         cfg_h.write( f"{name}:         {container_pfw_dir}\n" )
       # Write all values for each parameter
       for value in umbs.configuration.values( name ):
          cfg_h.write( f"{name}:         {value}\n" )
-   cfg_h.write( f"YAML.DIRECTORIES.ROOT:         {container_project_dir}\n" )
+   cfg_h.write( f"YAML.DIRECTORIES.ROOT:        {container_project_dir}\n" )
+   cfg_h.write( f"pfw:                          {container_pfw_dir}\n" )
    cfg_h.close( )
-
 
 
 

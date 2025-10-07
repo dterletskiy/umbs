@@ -1,0 +1,8 @@
+KERNEL_ANDROID_14_6_1_LTS: &KERNEL_ANDROID_14_6_1_LTS_ALIAS
+  SOURCE:
+    URL: "https://android.googlesource.com/kernel/manifest"
+    BRANCH: "common-android14-6.1-lts"
+  CONFIG:
+    ARM64: "//common-modules/virtual-device:virtual_device_aarch64_dist"
+
+KERNEL: *KERNEL_ANDROID_14_6_1_LTS_ALIAS

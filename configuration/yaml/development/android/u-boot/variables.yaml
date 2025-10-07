@@ -1,0 +1,16 @@
+ANDROID:
+  UBOOT_MAINLINE: &ANDROID_UBOOT_MAINLINE_ALIAS
+    SOURCE:
+      URL: "https://android.googlesource.com/kernel/manifest"
+      BRANCH: "u-boot-mainline"
+    CONFIG:
+      ARM64: "//u-boot:qemu_aarch64_dist"
+
+  UBOOT_ANDROID_EPAM: &ANDROID_UBOOT_ANDROID_EPAM
+    SOURCE:
+      URL: "https://github.com/xen-troops/android_u-boot_manifest.git"
+      BRANCH: "30adce0c709887d9788f33b494ae79090b8bcc17"
+    CONFIG:
+      ARM64: "//u-boot:xen_aarch64_dist"
+
+  UBOOT: *ANDROID_UBOOT_ANDROID_EPAM

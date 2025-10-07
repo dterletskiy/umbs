@@ -18,27 +18,32 @@ variables:
   ### TEST END
 
   include: "development/directories.yaml"
-  include: "development/ubuntu.yaml"
 
-  include: "development/u-boot/variables.yaml"
-  include: "development/xen/variables.yaml"
-  include: "development/kernel/variables.yaml"
-  include: "development/qemu/variables.yaml"
+  # include: "development/ubuntu.yaml"
 
-  include: "development/tda/variables.yaml"
+  # include: "development/u-boot/variables.yaml"
+  # include: "development/xen/variables.yaml"
+  # include: "development/kernel/variables.yaml"
+  # include: "development/qemu/variables.yaml"
 
-  include: "development/yocto/variables.yaml"
+  include: "development/android/u-boot/variables.yaml"
+
+  # include: "development/tda/variables.yaml"
+
+  # include: "development/yocto/variables.yaml"
 
 components:
-  include: "development/docker/image/components.yaml"
-  include: "development/docker/container/components.yaml"
+  # include: "development/docker/image/components.yaml"
+  # include: "development/docker/container/components.yaml"
 
   # include: "development/u-boot/components.yaml"
   # include: "development/xen/components.yaml"
   # include: "development/kernel/components.yaml"
   # include: "development/qemu/components.yaml"
 
-  include: "development/tda/components.yaml"
+  include: "development/android/u-boot/components.yaml"
+
+  # include: "development/tda/components.yaml"
 
   # include: "development/yocto/components.yaml"
 
