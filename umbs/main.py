@@ -34,69 +34,77 @@ def run( umbs_components, **kwargs ):
          pfw.console.debug.error( f"undefined component '{component}'" )
 # def run
 
-def run_in_container( **kwargs ):
-   docker_image_name = kwargs.get( "image", None )
+def run_in_container( docker_image_name, **kwargs ):
 
-   # container_root_dir = "/mnt/host"
-   stay_in_container = True
+   container_root_dir = "/mnt/host"
+   host_project_dir = umbs.configuration.value( "YAML.DIRECTORIES.ROOT" )
+   container_project_dir = os.path.join( container_root_dir, "project" )
+   host_umbs_dir = umbs.configuration.value( "application" )
+   container_umbs_dir = os.path.join( container_root_dir, "umbs" )
+   host_pfw_dir = umbs.configuration.value( "pfw" )
+   container_pfw_dir = os.path.join( container_root_dir, "pfw" )
+
+   stay_in_container = False
    do_not_remove_container = False
 
+   # Generation configuration file from command line and passed configuration file
+   # to execute 'umbs' inside the docker container using this configuration file
    cfg_file = "./.gen/umbs.cfg"
    cfg_h = open( cfg_file, "w" )
    for name in umbs.configuration.names( ):
+      # Skip parameters what must not be present in config for container execution
+      # because they will be substituted or should not be at all
       if name in [ "container_from", "config", "application", "YAML.DIRECTORIES.ROOT" ]:
          continue
-
+      # Replacing 'pfw' path corresponding to container path
+      if name == "pfw":
+         cfg_h.write( f"{name}:         {container_pfw_dir}\n" )
+      # Write all values for each parameter
       for value in umbs.configuration.values( name ):
          cfg_h.write( f"{name}:         {value}\n" )
-
-   cfg_h.write( f"YAML.DIRECTORIES.ROOT:         {umbs.configuration.value( 'container_root_dir' )}\n" )
+   cfg_h.write( f"YAML.DIRECTORIES.ROOT:         {container_project_dir}\n" )
    cfg_h.close( )
 
 
 
-   host_root_dir = umbs.configuration.value( "YAML.DIRECTORIES.ROOT" )
-   container_root_dir = umbs.configuration.value( "container_root_dir" )
-   host_umbs_dir = umbs.configuration.value( "application" )
-   container_umbs_dir = os.path.join( container_root_dir, "tda/umbs" )
-   host_pfw_dir = umbs.configuration.value( "pfw" )
-   if not os.path.isabs( host_pfw_dir ):
-      os.path.join( host_umbs_dir, host_pfw_dir )
-   container_pfw_dir = os.path.join( container_root_dir, "../pfw" )
 
-   if( docker_image_name ):
-      if not pfw.linux.docker.image.is_exists( docker_image_name ):
-         pfw.console.debug.error( f"image '{docker_image_name}' does not exist" )
-         return False
+   if not pfw.linux.docker.image.is_exists( docker_image_name ):
+      pfw.console.debug.error( f"image '{docker_image_name}' does not exist" )
+      return False
 
-      bash_command = f" python3 umbs.py --config={cfg_file}"
-      bash_command += f" --test" if umbs.configuration.value( 'test' ) else ""
-      if stay_in_container:
-         bash_command += "; exec bash"
-      command = f"bash -c \"{bash_command}\""
-      # command = f"bash"
+   bash_command = f" python3 umbs.py --config={cfg_file}"
+   bash_command += f" --test" if umbs.configuration.value( 'test' ) else ""
+   if stay_in_container:
+      bash_command += "; exec bash"
+   command = f"bash -c \"{bash_command}\""
+   # command = "bash"
 
-      container_umbs_dir = os.path.join( container_root_dir, "../umbs" )
+   mapping_list = [
+         pfw.linux.docker.container.Mapping(
+               "~/.ssh", "/home/builder/.ssh"
+            ),
+         pfw.linux.docker.container.Mapping(
+               "~/.gitconfig", "/home/builder/.gitconfig"
+            ),
+         pfw.linux.docker.container.Mapping(
+               host_project_dir, container_project_dir
+            ),
+         pfw.linux.docker.container.Mapping(
+               host_umbs_dir, container_umbs_dir
+            ),
+         pfw.linux.docker.container.Mapping(
+               host_pfw_dir, container_pfw_dir
+            )
+      ]
 
-      mapping_list = [
-            pfw.linux.docker.container.Mapping(
-                  host_root_dir, container_root_dir
-               ),
-            pfw.linux.docker.container.Mapping(
-                  host_umbs_dir, container_umbs_dir
-               ),
-            pfw.linux.docker.container.Mapping(
-                  host_pfw_dir, container_pfw_dir
-               )
-         ]
-      pfw.linux.docker.container.run(
-            "android_builder",
-            docker_image_name,
-            command = command,
-            workdir = container_umbs_dir,
-            volume_mapping = mapping_list,
-            disposable = not do_not_remove_container
-         )
+   pfw.linux.docker.container.run(
+         "android_builder",
+         docker_image_name,
+         command = command,
+         workdir = container_umbs_dir,
+         volume_mapping = mapping_list,
+         disposable = not do_not_remove_container
+      )
 
    return True
 # def run_in_container
@@ -184,7 +192,7 @@ def main( ):
    pfw.console.debug.ok( "------------------------- BEGIN -------------------------" )
 
    if docker_image_name := umbs.configuration.value( 'container_from' ):
-      run_in_container( image = docker_image_name )
+      run_in_container( docker_image_name )
    else:
       run( umbs_components )
 
